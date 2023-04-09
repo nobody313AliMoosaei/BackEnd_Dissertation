@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "4WTkQMg2L68vTrO2E0CtVWSkhWwdDh5ra81ny2WbUpo=",
+  "Source": "Dissertation_Project",
+  "BasePath": "_content/Dissertation_Project",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Dissertation_Project\\wwwroot",
+      "Source": "Dissertation_Project",
+      "ContentRoot": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}

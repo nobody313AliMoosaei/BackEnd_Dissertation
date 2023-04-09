@@ -1,0 +1,14 @@
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\bin\Debug\net7.0\DataLayer.deps.json
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\bin\Debug\net7.0\DataLayer.dll
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\bin\Debug\net7.0\DataLayer.pdb
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.csproj.AssemblyReference.cache
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.AssemblyInfoInputs.cache
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.AssemblyInfo.cs
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.csproj.CoreCompileInputs.cache
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.dll
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\refint\DataLayer.dll
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.pdb
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\ref\DataLayer.dll
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\bin\Debug\net7.0\DataLayer.runtimeconfig.json
+D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.genruntimeconfig.cache
