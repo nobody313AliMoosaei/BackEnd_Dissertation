@@ -47,10 +47,20 @@ namespace Dissertation_Project.Controllers.V1
 
         #endregion
 
+        /// <summary>
+        /// کدملی، شماره دانشجویی و ایمیل در بادی دریافت می شود و برای فعال سازی ایمیل برای کاربر ایمیل ارسال میشود
+        /// 
+        /// </summary>
+        /// <param name="registeruser"></param>
+        /// <returns>Status Code </returns>
         [HttpPost("Register")]
-        public async Task<IActionResult> Register_User([FromBody] Model.DTO.INPUT
+        public async Task<IActionResult> Register_User(CancellationToken cancellationToken,[FromBody] Model.DTO.INPUT
             .SignUp.RegisterUserDTO registeruser)
         {
+            if(cancellationToken.IsCancellationRequested)
+            {
+                return BadRequest("فرایند توسط کاربر متوقف شده است");
+            }
             try
             {
                 if (!ModelState.IsValid)
@@ -58,19 +68,25 @@ namespace Dissertation_Project.Controllers.V1
                     return BadRequest("اطلاعات به درستی وارد نشده اند");
                 }
 
+                // ساخت کاربر با مشخصات ارسال شده
                 var newuser = new Users()
                 {
-                    FirstName = registeruser.FirstName,
-                    LastName = registeruser.LastName,
+                    //FirstName = registeruser.FirstName,
+                    //LastName = registeruser.LastName,
                     Email = registeruser.Email,
-                    College = registeruser.College,
+                    //College = registeruser.College,
                     UserName = registeruser.UserName,
                     NationalCode = registeruser.NationalCode,
-                    Teachers = new List<Users>()
+                    Teachers = new List<Users>(),
                 };
 
-
-                var Resualt = await _userManager.CreateAsync(newuser, registeruser.Password);
+                
+                if(string.IsNullOrWhiteSpace(registeruser.NationalCode))
+                {
+                    return BadRequest("کد ملی وارد نشده است");
+                }
+                // ساخت کاربر
+                var Resualt = await _userManager.CreateAsync(newuser, registeruser.NationalCode);
                 if (Resualt != null && Resualt.Succeeded)
                 {
                     string Token_Confirm_User = await _userManager.GenerateEmailConfirmationTokenAsync(newuser);
@@ -95,6 +111,7 @@ namespace Dissertation_Project.Controllers.V1
                     BackgroundJob.Enqueue<Model.Infra.Interfaces.IEmailSender>(p =>
                     p.SendEmailAsync(newuser.Email, title.ToString(), body.ToString()));
 
+                    // اضافه کردن نقش پیش فرض برای کاربر
                     if (!await Add_Defualt_Role(newuser))
                     {
                         return BadRequest("نقش مدنظر برای کاربر اضافه نشده است");
@@ -234,7 +251,7 @@ namespace Dissertation_Project.Controllers.V1
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                return Challenge("Cancel proceses ...");
+                return BadRequest("فرایند از طرف کاربر متوقف شده است");
             }
             try
             {

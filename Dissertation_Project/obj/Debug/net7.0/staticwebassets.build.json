@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "4WTkQMg2L68vTrO2E0CtVWSkhWwdDh5ra81ny2WbUpo=",
+  "Hash": "3FywVS8CmAdCh6K+EAJWD1S1SZg0U/KJFQ77pNqDhBw=",
   "Source": "Dissertation_Project",
   "BasePath": "_content/Dissertation_Project",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "Dissertation_Project\\wwwroot",
       "Source": "Dissertation_Project",
-      "ContentRoot": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\Dissertation_Project\\wwwroot\\",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
       "BasePath": "_content/Dissertation_Project",
       "Pattern": "**"
     }

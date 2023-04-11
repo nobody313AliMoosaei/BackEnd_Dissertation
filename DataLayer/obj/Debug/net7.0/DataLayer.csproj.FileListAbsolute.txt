@@ -12,3 +12,17 @@ D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.
 D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\ref\DataLayer.dll
 D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\bin\Debug\net7.0\DataLayer.runtimeconfig.json
 D:\Project\Visual Studio 2022\Web\Dissertation_Project\DataLayer\obj\Debug\net7.0\DataLayer.genruntimeconfig.cache
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\bin\Debug\net7.0\DataLayer.deps.json
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\bin\Debug\net7.0\DataLayer.runtimeconfig.json
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\bin\Debug\net7.0\DataLayer.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\bin\Debug\net7.0\DataLayer.pdb
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.csproj.AssemblyReference.cache
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.AssemblyInfoInputs.cache
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.AssemblyInfo.cs
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.csproj.CoreCompileInputs.cache
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\refint\DataLayer.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.pdb
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\DataLayer.genruntimeconfig.cache
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\DataLayer\obj\Debug\net7.0\ref\DataLayer.dll

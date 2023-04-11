@@ -4649,11 +4649,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\Dissertation_Project\\Dissertation_Project.csproj",
+      "projectUniqueName": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\Dissertation_Project.csproj",
       "projectName": "Dissertation_Project",
-      "projectPath": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\Dissertation_Project\\Dissertation_Project.csproj",
+      "projectPath": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\Dissertation_Project.csproj",
       "packagesPath": "C:\\Users\\AliMoosaei\\.nuget\\packages\\",
-      "outputPath": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\Dissertation_Project\\obj\\",
+      "outputPath": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\AliMoosaei\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -4670,8 +4670,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\DataLayer\\DataLayer.csproj": {
-              "projectPath": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\DataLayer\\DataLayer.csproj"
+            "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\DataLayer\\DataLayer.csproj": {
+              "projectPath": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\DataLayer\\DataLayer.csproj"
             }
           }
         }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\DataLayer\\DataLayer.csproj": {}
+    "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\DataLayer\\DataLayer.csproj": {}
   },
   "projects": {
-    "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\DataLayer\\DataLayer.csproj": {
+    "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\DataLayer\\DataLayer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\DataLayer\\DataLayer.csproj",
+        "projectUniqueName": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\DataLayer\\DataLayer.csproj",
         "projectName": "DataLayer",
-        "projectPath": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\DataLayer\\DataLayer.csproj",
+        "projectPath": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\DataLayer\\DataLayer.csproj",
         "packagesPath": "C:\\Users\\AliMoosaei\\.nuget\\packages\\",
-        "outputPath": "D:\\Project\\Visual Studio 2022\\Web\\Dissertation_Project\\DataLayer\\obj\\",
+        "outputPath": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\DataLayer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\AliMoosaei\\AppData\\Roaming\\NuGet\\NuGet.Config",
