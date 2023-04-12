@@ -10,10 +10,8 @@ namespace DataLayer.Entities
 {
     public class Users:IdentityUser<ulong>
     {
-        [Required(ErrorMessage ="وارد کردن نام کوچک اجباری است")]
         public string? FirstName { get; set; }
 
-        [Required(ErrorMessage ="وارد کردن نام خانوادگی اجباری است")]
         public string? LastName { get; set; }
         
         public string? College { get; set; }

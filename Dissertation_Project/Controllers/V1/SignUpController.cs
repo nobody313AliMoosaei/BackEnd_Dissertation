@@ -14,10 +14,9 @@ namespace Dissertation_Project.Controllers.V1
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]
-
     public class SignUpController : ControllerBase
     {
-        #region Dependency Injection
+        #region IOC
 
         private const string Controller_Name = "SignUp";
         private UserManager<Users> _userManager;
@@ -54,10 +53,10 @@ namespace Dissertation_Project.Controllers.V1
         /// <param name="registeruser"></param>
         /// <returns>Status Code </returns>
         [HttpPost("Register")]
-        public async Task<IActionResult> Register_User(CancellationToken cancellationToken,[FromBody] Model.DTO.INPUT
+        public async Task<IActionResult> Register_User(CancellationToken cancellationToken, [FromBody] Model.DTO.INPUT
             .SignUp.RegisterUserDTO registeruser)
         {
-            if(cancellationToken.IsCancellationRequested)
+            if (cancellationToken.IsCancellationRequested)
             {
                 return BadRequest("فرایند توسط کاربر متوقف شده است");
             }
@@ -80,8 +79,8 @@ namespace Dissertation_Project.Controllers.V1
                     Teachers = new List<Users>(),
                 };
 
-                
-                if(string.IsNullOrWhiteSpace(registeruser.NationalCode))
+
+                if (string.IsNullOrWhiteSpace(registeruser.NationalCode))
                 {
                     return BadRequest("کد ملی وارد نشده است");
                 }
@@ -271,6 +270,11 @@ namespace Dissertation_Project.Controllers.V1
                 {
                     return BadRequest("کاربر یافت نشد");
                 }
+                var RoleUser = await _userManager.GetRolesAsync(user);
+                if (RoleUser == null || RoleUser.Count < 0)
+                {
+                    return BadRequest("کاربر نقشی ندارد");
+                }
 
                 var Resualt = await _signInManager.
                     PasswordSignInAsync(user, LoginUser.Password, LoginUser.IsRememberMe, true);
@@ -279,20 +283,32 @@ namespace Dissertation_Project.Controllers.V1
                 {
                     // Generate Token For User
 
-                    var Token = _jwtBearer.GetUserToken(user.Id, user.UserName);
+                    var Token = _jwtBearer.GetUserToken(user.Id, user.UserName, RoleUser.ToList());
                     if (Token == null)
                     {
                         return BadRequest("ساختن مجوز برای کاربر انجام نشد");
                     }
 
-                    Model.DTO.OUTPUT.SignUp.UserInfo_LoginDTO userinfo
-                        = new Model.DTO.OUTPUT.SignUp.UserInfo_LoginDTO()
+                    Model.DTO.OUTPUT.SignUp.UserInfo_LoginDTO userinfo;
+                    if (string.IsNullOrWhiteSpace(user.FirstName)
+                        || string.IsNullOrWhiteSpace(user.LastName))
+                    {
+                        userinfo = new Model.DTO.OUTPUT.SignUp.UserInfo_LoginDTO()
                         {
-                            FullName = user.FirstName + " " + user.LastName,
                             UserName = user.UserName,
                             Token = Token
                         };
-                    
+
+                        return Ok(userinfo);
+                    }
+
+                    userinfo = new Model.DTO.OUTPUT.SignUp.UserInfo_LoginDTO()
+                    {
+                        FullName = user.FirstName + " " + user.FirstName,
+                        UserName = user.UserName,
+                        Token = Token
+                    };
+
                     return Ok(userinfo);
                 }
 

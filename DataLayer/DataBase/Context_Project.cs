@@ -39,6 +39,8 @@ namespace DataLayer.DataBase
             builder.Entity<Users>().Ignore(t => t.PhoneNumberConfirmed);
             builder.Entity<Users>().Property(t => t.NationalCode).IsRequired(false);
             builder.Entity<Users>().Property(t => t.Email).IsRequired(true);
+            builder.Entity<Users>().Property(t => t.FirstName).IsRequired(false);
+            builder.Entity<Users>().Property(t => t.LastName).IsRequired(false);
 
             // Comments Confing
             builder.Entity<Comments>().Property(t => t.Description).IsRequired(true);
