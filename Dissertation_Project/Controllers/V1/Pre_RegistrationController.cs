@@ -13,6 +13,7 @@ namespace Dissertation_Project.Controllers.V1
     [Authorize(Roles = "Student")]
     public class Pre_RegistrationController : ControllerBase
     {
+        private const string CONTROLLER_NAME = "Pre_Registration";
         #region IOC
         private DataLayer.DataBase.Context_Project _context;
         private UserManager<DataLayer.Entities.Users> _userManager;
@@ -28,6 +29,7 @@ namespace Dissertation_Project.Controllers.V1
 
 
         // Step_1
+        #region Personal Information
         [HttpPost("Personal_Info")]
         public async Task<IActionResult> PersonalInformation(Model.DTO.INPUT.Pre_Registration.Personal_Info_DTO PersonalInfo)
         {
@@ -138,19 +140,77 @@ namespace Dissertation_Project.Controllers.V1
             }
             return false;
         }
-
+        #endregion
 
         // Step_2
+        #region Dissertaion Information
 
+        [HttpPost("Dissertaion_Info")]
+        public async Task<IActionResult> Dissertation_Info(CancellationToken cancellationToken,[FromBody]Model.DTO.INPUT.Pre_Registration.Dissertation_Info Dissertation)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("اطلاعات به درستی وارد نشده است");
+            }
+            // Fine User
+            var User_Id = User.Claims.FirstOrDefault(t => t.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(User_Id))
+            {
+                return BadRequest("شناسه کاربر از توکن ارسالی دریافت نشده است");
+            }
+            var user = await _userManager.FindByIdAsync(User_Id);
+            if (user == null)
+            {
+                return BadRequest("کاربری با چنین مشخصاتی یافت نشد");
+            }
+            // add Dissertation
+            var New_Dissertation = new DataLayer.Entities.Dissertations()
+            {
+                Title_English = Dissertation.Title_English,
+                Title_Persian = Dissertation.Title_Persian,
+                Abstract = Dissertation.Abstract,
+                Allow_Edit = true,
+                Insert_DateTime = DateTime.Now,
+                Term_Number = Dissertation.Term_Number,
+                Student=user
+            };
+
+            // Save Dissertation in database
+            await _context.Dissertations.AddAsync(New_Dissertation, cancellationToken);
+
+            // استخراج Id
+            var Id_Dissertation = await _context.Dissertations
+                .Where(t => t.Title_Persian == Dissertation.Title_Persian)
+                .Select(t => t.Dissertation_Id).FirstOrDefaultAsync(cancellationToken);
+
+            if(Id_Dissertation<=0)
+            {
+                return BadRequest("پایان نامه دریافت نشد");
+            }
+
+            return Created(Url.Action(nameof(Upload_Dissertation), CONTROLLER_NAME, new { },Request.Scheme),Id_Dissertation);
+        }
+        #endregion
 
         // Step_3
 
+        [HttpPost("Upload_Dissertation")]
+        public async Task<IActionResult>Upload_Dissertation(CancellationToken cancellationToken
+            ,Model.DTO.INPUT.Pre_Registration.Upload_Dissertation_DTO Dissertation_File)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("فایل ها به درستی ارسال نشده است");
+            }
+            // File Info
+
+            return Ok();
+        }
 
         // Step_4
 
 
-        // Step_5
-
+        
 
 
 
