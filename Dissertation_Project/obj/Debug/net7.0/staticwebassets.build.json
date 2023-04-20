@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "3FywVS8CmAdCh6K+EAJWD1S1SZg0U/KJFQ77pNqDhBw=",
+  "Hash": "1zWWvNWfPOdlYSbndemgUxDpPsqIVWPwTYOu14GHNfQ=",
   "Source": "Dissertation_Project",
   "BasePath": "_content/Dissertation_Project",
   "Mode": "Default",
@@ -15,5 +15,23 @@
       "Pattern": "**"
     }
   ],
-  "Assets": []
+  "Assets": [
+    {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\1\\31\\346cda31-f476-4dfc-985c-f7214a2f2797.mp3",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "AllFiles/1402/1/31/346cda31-f476-4dfc-985c-f7214a2f2797.mp3",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\1\\31\\346cda31-f476-4dfc-985c-f7214a2f2797.mp3"
+    }
+  ]
 }

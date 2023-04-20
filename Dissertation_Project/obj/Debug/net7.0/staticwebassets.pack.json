@@ -1,0 +1,25 @@
+{
+  "Files": [
+    {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\1\\31\\346cda31-f476-4dfc-985c-f7214a2f2797.mp3",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\1\\31\\346cda31-f476-4dfc-985c-f7214a2f2797.mp3"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Dissertation_Project.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.Dissertation_Project.props",
+      "PackagePath": "build\\Dissertation_Project.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.Dissertation_Project.props",
+      "PackagePath": "buildMultiTargeting\\Dissertation_Project.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.Dissertation_Project.props",
+      "PackagePath": "buildTransitive\\Dissertation_Project.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

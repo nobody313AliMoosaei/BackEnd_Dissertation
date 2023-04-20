@@ -72,7 +72,7 @@ builder.Services.AddAuthentication(t =>
 });
 #endregion
 
-#region Dependency Injection
+#region IOC Container
 
 
 builder.Services.AddTransient<Dissertation_Project.Core.Utlities.JWT.IJWTBearer,
@@ -83,6 +83,10 @@ builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IEmail
 
 builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.ILogManager,
     Dissertation_Project.Model.Infra.Managers.LogManager>();
+
+builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IUpload_File,
+    Dissertation_Project.Model.Infra.Managers.Upload_File_Implement>();
+
 
 #endregion
 

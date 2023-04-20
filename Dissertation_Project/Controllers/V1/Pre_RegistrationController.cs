@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +18,15 @@ namespace Dissertation_Project.Controllers.V1
         #region IOC
         private DataLayer.DataBase.Context_Project _context;
         private UserManager<DataLayer.Entities.Users> _userManager;
+        private Model.Infra.Interfaces.IUpload_File _Upload_file;
 
         public Pre_RegistrationController(DataLayer.DataBase.Context_Project context
-            , UserManager<DataLayer.Entities.Users> usermanager)
+            , UserManager<DataLayer.Entities.Users> usermanager
+            , Model.Infra.Interfaces.IUpload_File upload_file)
         {
             _context = context;
             _userManager = usermanager;
+            _Upload_file = upload_file;
         }
         #endregion
 
@@ -146,7 +150,7 @@ namespace Dissertation_Project.Controllers.V1
         #region Dissertaion Information
 
         [HttpPost("Dissertaion_Info")]
-        public async Task<IActionResult> Dissertation_Info(CancellationToken cancellationToken,[FromBody]Model.DTO.INPUT.Pre_Registration.Dissertation_Info Dissertation)
+        public async Task<IActionResult> Dissertation_Info(CancellationToken cancellationToken, [FromBody] Model.DTO.INPUT.Pre_Registration.Dissertation_Info Dissertation)
         {
             if (!ModelState.IsValid)
             {
@@ -172,7 +176,7 @@ namespace Dissertation_Project.Controllers.V1
                 Allow_Edit = true,
                 Insert_DateTime = DateTime.Now,
                 Term_Number = Dissertation.Term_Number,
-                Student=user
+                Student = user
             };
 
             // Save Dissertation in database
@@ -183,38 +187,71 @@ namespace Dissertation_Project.Controllers.V1
                 .Where(t => t.Title_Persian == Dissertation.Title_Persian)
                 .Select(t => t.Dissertation_Id).FirstOrDefaultAsync(cancellationToken);
 
-            if(Id_Dissertation<=0)
+            if (Id_Dissertation <= 0)
             {
                 return BadRequest("پایان نامه دریافت نشد");
             }
 
-            return Created(Url.Action(nameof(Upload_Dissertation), CONTROLLER_NAME, new { },Request.Scheme),Id_Dissertation);
+            return Created(Url.Action(nameof(Upload_Dissertation), CONTROLLER_NAME, new { }, Request.Scheme), Id_Dissertation);
         }
         #endregion
 
         // Step_3
-
+        #region Upload Dissertation
+        //[AllowAnonymous]
         [HttpPost("Upload_Dissertation")]
-        public async Task<IActionResult>Upload_Dissertation(CancellationToken cancellationToken
-            ,Model.DTO.INPUT.Pre_Registration.Upload_Dissertation_DTO Dissertation_File)
+        public async Task<IActionResult> Upload_Dissertation(CancellationToken cancellationToken
+            , IFormFile Dissertation_File, IFormFile Pro_File, [FromQuery] ulong Dissertation_Id)
         {
-            if(!ModelState.IsValid)
+            try
             {
-                return BadRequest("فایل ها به درستی ارسال نشده است");
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("فایل ها به درستی ارسال نشده است");
+                }
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return BadRequest("عملیات توسط کاربر متوقف شده است");
+                }
+
+                // File Info
+
+                var Resualt_UploadFile_Dissertation = await _Upload_file.UploadFileAsync(Dissertation_File);
+                var Resualt_UploadFile_Pro = await _Upload_file.UploadFileAsync(Pro_File);
+
+                if (Resualt_UploadFile_Dissertation == null)
+                {
+                    return BadRequest("فایل پایان نامه ذخیره نشد");
+                }
+
+                if (Resualt_UploadFile_Pro == null)
+                {
+                    return BadRequest("فایل صورت جلسه ذخیره نشد");
+                }
+
+                await _context.Dissertations.AddAsync(new DataLayer.Entities.Dissertations()
+                {
+                    Dissertation_FileAddress = Resualt_UploadFile_Dissertation?.FileAddress,
+                    Dissertation_FileName = Resualt_UploadFile_Dissertation?.FileName,
+                    Proceedings_FileAddress = Resualt_UploadFile_Pro?.FileAddress,
+                    Proceedings_FileName = Resualt_UploadFile_Pro?.FileName,
+                });
+
+                var t = await _context.SaveChangesAsync();
+                if (t > 0)
+                {
+                    return Ok("فایل ها ذخیره شد");
+                }
+                return BadRequest("فایل ذخیره نشده");
             }
-            // File Info
-
-            return Ok();
+            catch
+            {
+                return BadRequest("در ذخیره سازی فایل مشکلی به وجود آمده است");
+            }
         }
-
-        // Step_4
-
-
-        
+        #endregion
 
 
-
-
-        // 
+        // Convert Three Step to One Step
     }
 }
