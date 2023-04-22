@@ -116,21 +116,10 @@ namespace Dissertation_Project.Controllers.V1
                         return BadRequest("نقش مدنظر برای کاربر اضافه نشده است");
                     }
 
-                    PersianCalendar persianCalendar = new PersianCalendar();
-                    BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
-                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
-                        {
-                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
-                            Date = $"{persianCalendar.GetYear(DateTime.Now)}/{persianCalendar.GetMonth(DateTime.Now)}/{persianCalendar.GetDayOfMonth(DateTime.Now)}",
-                            Level = "Information",
-                            Ip = HttpContext.Connection.RemoteIpAddress.ToString(),
-                            Url = this.HttpContext.Request.Headers["Origin"].ToString() + this.HttpContext.Request.Path.Value,
-                            Time = $"{DateTime.Now.ToLongTimeString()}",
-                            Method = "POST",
-                            System = this.HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
-                            Message = $"کاربر : {newuser.FirstName + newuser.LastName} ثبت نام کرده است"
-                        }));
-
+                    BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(
+                        t => t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Informational.ToString()
+                        , "POST", Url.Action(nameof(Register_User), Controller_Name, new { }, Request.Scheme)
+                        , $"کاربر {newuser.FirstName} {newuser.LastName} ثبت نام کرده است"));
                     return Ok(All_API_Links());
                 }
 
@@ -154,20 +143,11 @@ namespace Dissertation_Project.Controllers.V1
             catch (Exception ex)
             {
                 // Fatal Log
-                PersianCalendar persianCalendar = new PersianCalendar();
                 BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
-                {
-                    Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
-                    Date = $"{persianCalendar.GetYear(DateTime.Now)}/{persianCalendar.GetMonth(DateTime.Now)}/{persianCalendar.GetDayOfMonth(DateTime.Now)}",
-                    Level = "Fatal",
-                    Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
-                    Url = this.HttpContext.Request.Headers["Origin"].ToString() + this.HttpContext.Request.Path.Value,
-                    Time = $"{DateTime.Now.ToLongTimeString()}",
-                    Method = "POST",
-                    System = this.HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
-                    Message = $"Message : {ex.Message} | Controller : SignUp & Action : Register"
-                }));
+                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Emergency.ToString()
+                , "POST"
+                , Url.Action(nameof(Register_User), Controller_Name, new { }, Request.Scheme)
+                , $"Message Error : {ex.Message}"));
                 return BadRequest("Fatal : عملیات متوقف شد");
             }
         }
@@ -225,20 +205,11 @@ namespace Dissertation_Project.Controllers.V1
             catch (Exception ex)
             {
                 // Fatal Log
-                PersianCalendar persianCalendar = new PersianCalendar();
                 BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
-                {
-                    Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
-                    Date = $"{persianCalendar.GetYear(DateTime.Now)}/{persianCalendar.GetMonth(DateTime.Now)}/{persianCalendar.GetDayOfMonth(DateTime.Now)}",
-                    Level = "Fatal",
-                    Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
-                    Url = this.HttpContext.Request.Headers["Origin"].ToString() + this.HttpContext.Request.Path.Value,
-                    Time = $"{DateTime.Now.ToLongTimeString()}",
-                    Method = "GET",
-                    System = this.HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
-                    Message = $"Message : {ex.Message} | Controller : SignUp & Action ; ConfirmEmail"
-                }));
+                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Emergency.ToString()
+                , "POST"
+                , Url.Action(nameof(ConfirmEmail), Controller_Name, new { }, Request.Scheme)
+                , $"Message Error : {ex.Message}"));
                 return BadRequest("Fatal : عملیات متوقف شد");
             }
         }
@@ -317,20 +288,11 @@ namespace Dissertation_Project.Controllers.V1
             catch (Exception ex)
             {
                 // Fatal Log
-                PersianCalendar persianCalendar = new PersianCalendar();
                 BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
-                {
-                    Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
-                    Date = $"{persianCalendar.GetYear(DateTime.Now)}/{persianCalendar.GetMonth(DateTime.Now)}/{persianCalendar.GetDayOfMonth(DateTime.Now)}",
-                    Level = "Fatal",
-                    Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
-                    Url = this.HttpContext.Request.Headers["Origin"].ToString() + this.HttpContext.Request.Path.Value,
-                    Time = $"{DateTime.Now.ToLongTimeString()}",
-                    Method = "POST",
-                    System = this.HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
-                    Message = $"Message : {ex.Message} | Controller : SignUp & Action : Login"
-                }));
+                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Emergency.ToString()
+                , "POST"
+                , Url.Action(nameof(this.Login_User), Controller_Name, new { }, Request.Scheme)
+                , $"Message Error : {ex.Message}"));
                 return BadRequest("Fatal : عملیات متوقف شد");
             }
         }

@@ -87,6 +87,8 @@ builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.ILogMa
 builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IUpload_File,
     Dissertation_Project.Model.Infra.Managers.Upload_File_Implement>();
 
+builder.Services.AddTransient<IHttpContextAccessor,HttpContextAccessor>();
+
 
 #endregion
 
