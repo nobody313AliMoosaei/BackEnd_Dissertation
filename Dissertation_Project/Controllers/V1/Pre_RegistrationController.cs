@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Metadata;
+﻿using DataLayer.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -174,7 +173,6 @@ namespace Dissertation_Project.Controllers.V1
                 Title_Persian = Dissertation.Title_Persian,
                 Abstract = Dissertation.Abstract,
                 Allow_Edit = true,
-                Insert_DateTime = DateTime.Now,
                 Term_Number = Dissertation.Term_Number,
                 Student = user
             };
@@ -253,5 +251,124 @@ namespace Dissertation_Project.Controllers.V1
 
 
         // Convert Three Step to One Step
+        [HttpPost("AllData")]
+        public async Task<IActionResult> SendAllDataForConfirm(CancellationToken cancellationToken, IFormFile Dissertation_File
+            , IFormFile Pro_File
+           , [FromForm] Model.DTO.INPUT.Pre_Registration.AllData_DTO Data)
+        {
+            try { 
+            string User_Id = User.Claims.FirstOrDefault(t => t.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrWhiteSpace(User_Id))
+            {
+                return BadRequest("شناسه کاربر ارسال نشده است");
+            }
+
+            var user = await _context.Users
+                .Include(t => t.Teachers)
+                .FirstOrDefaultAsync(t => t.Id == ulong.Parse(User_Id));
+            if (user == null)
+            {
+                return BadRequest("کاربر پیدا نشده است");
+            }
+
+            // Set Information For User
+            user.FirstName = Data.FirstName;
+            user.LastName = Data.LastName;
+            user.College = Data.College;
+            var Teacher_1 = await _userManager.FindByIdAsync(Data.Teacher_1.ToString());
+            if (Teacher_1 == null)
+            {
+                return BadRequest("استاد راهنمایی با مشخصات ارسال شده وجود ندارد");
+            }
+            user.Teachers.Add(Teacher_1);
+
+            var Teacher_2 = await _userManager.FindByIdAsync(Data.Teacher_2.ToString());
+            if (Teacher_2 != null)
+            {
+                user.Teachers.Add(Teacher_2);
+            }
+            var Teacher_3 = await _userManager.FindByIdAsync(Data.Teacher_3.ToString());
+            if (Teacher_3 != null)
+            {
+                user.Teachers.Add(Teacher_3);
+            }
+
+                // Update User
+                //var Resualt_Update_User = await _context.Users.Where(t => t.Id == user.Id)
+                //    .ExecuteUpdateAsync(update =>
+                //    update.SetProperty(x => x.FirstName, user.FirstName)
+                //    .SetProperty(x => x.LastName, user.LastName)
+                //    .SetProperty(x => x.College, user.College)
+                //    .SetProperty(x => x.Teachers, user.Teachers), cancellationToken);
+
+                _context.Users.Update(user);
+
+            //if (Resualt_Update_User <= 0)
+            //{
+            //    return NoContent();
+            //}
+
+            // Create Dissertaion 
+            var Dissertation = new Dissertations()
+            {
+                Title_English = Data.Title_English,
+                Title_Persian = Data.Title_Persian,
+                Abstract = Data.Abstract,
+                Term_Number = Data.Term_Number,
+                Allow_Edit = true,
+                Student = user,
+                Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                Status_Dissertation = DataLayer.Tools.Status_Dissertation.During,
+            };
+            if (Data.KeyWords_Persian != null
+                && Data.KeyWords_Persian.Count > 0)
+            {
+                List<KeyWord> _list_Persian_KeyWord = new List<KeyWord>();
+                foreach (var item in Data.KeyWords_Persian)
+                {
+                    _list_Persian_KeyWord.Add(new KeyWord()
+                    {
+                        Word = item
+                    });
+                }
+                Dissertation.Persian_KeyWords = _list_Persian_KeyWord;
+            }
+            if (Data.KeyWords_English != null
+                && Data.KeyWords_English.Count > 0)
+            {
+                List<KeyWord> _list_KeyWord_English = new List<KeyWord>();
+                foreach (var item in Data.KeyWords_English)
+                {
+                    _list_KeyWord_English.Add(new KeyWord()
+                    {
+                        Word = item
+                    });
+                }
+                Dissertation.English_KeyWords = _list_KeyWord_English;
+            }
+
+            // upload Files
+            var Resualt_Upload_Dissertaion = await
+                _Upload_file.UploadFileAsync(Dissertation_File);
+
+            Dissertation.Dissertation_FileAddress = Resualt_Upload_Dissertaion.FileAddress;
+            Dissertation.Dissertation_FileName = Resualt_Upload_Dissertaion.FileName;
+
+            var Resualt_Upload_Proceeding = await
+                _Upload_file.UploadFileAsync(Pro_File);
+
+            Dissertation.Proceedings_FileAddress = Resualt_Upload_Proceeding.FileAddress;
+            Dissertation.Proceedings_FileName = Resualt_Upload_Proceeding.FileName;
+
+            await _context.Dissertations.AddAsync(Dissertation, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return Ok("عملیات با موفقیت انجام شد");
+            }
+            catch
+            {
+                return BadRequest("اجرای برنامه با مشکل مواجه شده است");
+            }
+        }
     }
 }

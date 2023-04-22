@@ -4,6 +4,7 @@ using DataLayer.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(Context_Project))]
-    partial class Context_ProjectModelSnapshot : ModelSnapshot
+    [Migration("20230421141330_Update_Dissertation")]
+    partial class Update_Dissertation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,15 +139,15 @@ namespace DataLayer.Migrations
                     b.Property<bool>("Allow_Edit")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Dissertation_FileAddress")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Dissertation_FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Insert_DateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Proceedings_FileAddress")
                         .HasColumnType("nvarchar(max)");
@@ -159,9 +162,6 @@ namespace DataLayer.Migrations
                         .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("Term_Number")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Time")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title_English")
@@ -191,7 +191,10 @@ namespace DataLayer.Migrations
                     b.Property<decimal?>("DissertationsDissertation_Id1")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<string>("Word")
+                    b.Property<string>("Word_English")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Word_Persion")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("KeyWord_Id");

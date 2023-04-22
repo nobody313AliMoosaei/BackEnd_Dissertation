@@ -5,6 +5,30 @@
       "PackagePath": "staticwebassets\\AllFiles\\1402\\1\\31\\346cda31-f476-4dfc-985c-f7214a2f2797.mp3"
     },
     {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\2\\18c6611f-a8e3-4ab6-a785-c8c83fccfd5f.docx",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\2\\18c6611f-a8e3-4ab6-a785-c8c83fccfd5f.docx"
+    },
+    {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\2\\3b9d094a-99ca-47ce-84f1-04d012ae5440.docx",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\2\\3b9d094a-99ca-47ce-84f1-04d012ae5440.docx"
+    },
+    {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\2\\4aea8418-1a86-4fb6-a0a8-ba34f98b8254.jpg",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\2\\4aea8418-1a86-4fb6-a0a8-ba34f98b8254.jpg"
+    },
+    {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\2\\594e411c-7d95-4b22-831f-c617513a6644.docx",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\2\\594e411c-7d95-4b22-831f-c617513a6644.docx"
+    },
+    {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\2\\a40db9f3-45ee-487d-afc9-42f604d76b6e.jpg",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\2\\a40db9f3-45ee-487d-afc9-42f604d76b6e.jpg"
+    },
+    {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\2\\ed4880d4-9f32-4b35-9bff-8e0a3fb9bcdd.jpg",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\2\\ed4880d4-9f32-4b35-9bff-8e0a3fb9bcdd.jpg"
+    },
+    {
       "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.Dissertation_Project.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },
