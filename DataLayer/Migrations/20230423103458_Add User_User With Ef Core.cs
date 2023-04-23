@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DataLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class First_Mig : Migration
+    public partial class AddUser_UserWithEfCore : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -61,11 +61,10 @@ namespace DataLayer.Migrations
                 {
                     Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     College = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NationalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UsersId = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
@@ -82,12 +81,6 @@ namespace DataLayer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Users_Users_UsersId",
-                        column: x => x.UsersId,
-                        principalSchema: "dbo",
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -223,8 +216,10 @@ namespace DataLayer.Migrations
                     Dissertation_FileAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Proceedings_FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Proceedings_FileAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Insert_DateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    StudentId = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                    Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Time = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StudentId = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
+                    Status_Dissertation = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -232,6 +227,27 @@ namespace DataLayer.Migrations
                     table.ForeignKey(
                         name: "FK_Dissertations_Users_StudentId",
                         column: x => x.StudentId,
+                        principalSchema: "dbo",
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "User_User_Relation",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Teacher_Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false),
+                    UsersId = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User_User_Relation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_User_User_Relation_Users_UsersId",
+                        column: x => x.UsersId,
                         principalSchema: "dbo",
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -283,6 +299,7 @@ namespace DataLayer.Migrations
                     IsConfirm = table.Column<bool>(type: "bit", nullable: false),
                     Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Time = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
                     DissertationsDissertation_Id = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
                 },
                 constraints: table =>
@@ -294,6 +311,12 @@ namespace DataLayer.Migrations
                         principalSchema: "dbo",
                         principalTable: "Dissertations",
                         principalColumn: "Dissertation_Id");
+                    table.ForeignKey(
+                        name: "FK_ConfirmationsDissertations_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "dbo",
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -303,9 +326,9 @@ namespace DataLayer.Migrations
                 {
                     KeyWord_Id = table.Column<decimal>(type: "decimal(20,0)", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Word_Persion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Word_English = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DissertationsDissertation_Id = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
+                    Word = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DissertationsDissertation_Id = table.Column<decimal>(type: "decimal(20,0)", nullable: true),
+                    DissertationsDissertation_Id1 = table.Column<decimal>(type: "decimal(20,0)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -313,6 +336,12 @@ namespace DataLayer.Migrations
                     table.ForeignKey(
                         name: "FK_KeyWords_Dissertations_DissertationsDissertation_Id",
                         column: x => x.DissertationsDissertation_Id,
+                        principalSchema: "dbo",
+                        principalTable: "Dissertations",
+                        principalColumn: "Dissertation_Id");
+                    table.ForeignKey(
+                        name: "FK_KeyWords_Dissertations_DissertationsDissertation_Id1",
+                        column: x => x.DissertationsDissertation_Id1,
                         principalSchema: "dbo",
                         principalTable: "Dissertations",
                         principalColumn: "Dissertation_Id");
@@ -412,6 +441,12 @@ namespace DataLayer.Migrations
                 column: "DissertationsDissertation_Id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ConfirmationsDissertations_UserId",
+                schema: "dbo",
+                table: "ConfirmationsDissertations",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Dissertations_StudentId",
                 schema: "dbo",
                 table: "Dissertations",
@@ -424,6 +459,12 @@ namespace DataLayer.Migrations
                 column: "DissertationsDissertation_Id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_KeyWords_DissertationsDissertation_Id1",
+                schema: "dbo",
+                table: "KeyWords",
+                column: "DissertationsDissertation_Id1");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 schema: "dbo",
                 table: "Roles",
@@ -432,16 +473,16 @@ namespace DataLayer.Migrations
                 filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_User_User_Relation_UsersId",
+                schema: "dbo",
+                table: "User_User_Relation",
+                column: "UsersId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 schema: "dbo",
                 table: "Users",
                 column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_UsersId",
-                schema: "dbo",
-                table: "Users",
-                column: "UsersId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -489,6 +530,10 @@ namespace DataLayer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Logs",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "User_User_Relation",
                 schema: "dbo");
 
             migrationBuilder.DropTable(

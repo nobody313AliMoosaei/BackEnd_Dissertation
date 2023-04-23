@@ -5,7 +5,7 @@
 namespace DataLayer.Migrations
 {
     /// <inheritdoc />
-    public partial class first_in_server : Migration
+    public partial class firstMigrationinServer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(Context_Project))]
-    [Migration("20230421141330_Update_Dissertation")]
-    partial class Update_Dissertation
+    [Migration("20230423144703_first Migration in Server")]
+    partial class firstMigrationinServer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -139,15 +139,15 @@ namespace DataLayer.Migrations
                     b.Property<bool>("Allow_Edit")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Date")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Dissertation_FileAddress")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Dissertation_FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Insert_DateTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Proceedings_FileAddress")
                         .HasColumnType("nvarchar(max)");
@@ -162,6 +162,9 @@ namespace DataLayer.Migrations
                         .HasColumnType("decimal(20,0)");
 
                     b.Property<string>("Term_Number")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Time")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title_English")
@@ -191,10 +194,7 @@ namespace DataLayer.Migrations
                     b.Property<decimal?>("DissertationsDissertation_Id1")
                         .HasColumnType("decimal(20,0)");
 
-                    b.Property<string>("Word_English")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Word_Persion")
+                    b.Property<string>("Word")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("KeyWord_Id");
@@ -329,6 +329,27 @@ namespace DataLayer.Migrations
                         });
                 });
 
+            modelBuilder.Entity("DataLayer.Entities.User_User_Relation", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(20,0)");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+
+                    b.Property<decimal>("Teacher_Id")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<decimal?>("UsersId")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("User_User_Relation", "dbo");
+                });
+
             modelBuilder.Entity("DataLayer.Entities.Users", b =>
                 {
                     b.Property<decimal>("Id")
@@ -391,9 +412,6 @@ namespace DataLayer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<decimal?>("UsersId")
-                        .HasColumnType("decimal(20,0)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -403,8 +421,6 @@ namespace DataLayer.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UsersId");
 
                     b.ToTable("Users", "dbo");
                 });
@@ -569,7 +585,7 @@ namespace DataLayer.Migrations
                         .HasForeignKey("DissertationsDissertation_Id1");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Users", b =>
+            modelBuilder.Entity("DataLayer.Entities.User_User_Relation", b =>
                 {
                     b.HasOne("DataLayer.Entities.Users", null)
                         .WithMany("Teachers")

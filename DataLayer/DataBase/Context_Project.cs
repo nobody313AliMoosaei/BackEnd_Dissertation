@@ -22,6 +22,7 @@ namespace DataLayer.DataBase
         public DbSet<KeyWord>? KeyWords { get; set; }
         public DbSet<Logs>? Logs { get; set; }
         public DbSet<ConfirmationsDissertations>? ConfirmationsDissertations { get; set; }
+        public DbSet<User_User_Relation> User_User_Relation { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -106,6 +107,8 @@ namespace DataLayer.DataBase
             // Logs
             builder.Entity<Logs>().HasKey(x => x.Id);
             builder.Entity<Logs>().Property(x => x.Message).IsRequired(true);
+
+           
         }
     }
 }

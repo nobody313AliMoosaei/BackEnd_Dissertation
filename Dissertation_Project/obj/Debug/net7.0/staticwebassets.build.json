@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "eGnjgR9e3M+4Lfx6XicK+yzRaIgmDy1+hChdWrYaMzY=",
+  "Hash": "aLavQBuINBmq+JTrdxBLvAh+cBt3jmZOfaD6YRbhl7s=",
   "Source": "Dissertation_Project",
   "BasePath": "_content/Dissertation_Project",
   "Mode": "Default",
@@ -134,6 +134,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\2\\2\\ed4880d4-9f32-4b35-9bff-8e0a3fb9bcdd.jpg"
+    },
+    {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\3\\1ebd0ce1-b484-40ea-9e65-56338e1c0c3e.pdf",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "AllFiles/1402/2/3/1ebd0ce1-b484-40ea-9e65-56338e1c0c3e.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\2\\3\\1ebd0ce1-b484-40ea-9e65-56338e1c0c3e.pdf"
+    },
+    {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\3\\51ba6500-b866-40b9-b8a4-6d881e2127b1.jpg",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "AllFiles/1402/2/3/51ba6500-b866-40b9-b8a4-6d881e2127b1.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\2\\3\\51ba6500-b866-40b9-b8a4-6d881e2127b1.jpg"
     }
   ]
 }

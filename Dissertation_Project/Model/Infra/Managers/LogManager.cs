@@ -8,12 +8,10 @@ namespace Dissertation_Project.Model.Infra.Managers
     public class LogManager : ILogManager
     {
         private DataLayer.DataBase.Context_Project _Context;
-        private IHttpContextAccessor _httpcontext;
 
-        public LogManager(Context_Project context, IHttpContextAccessor httpcontext)
+        public LogManager(Context_Project context)
         {
             _Context = context;
-            _httpcontext = httpcontext;
         }
 
         public async Task<bool> InsertLogInDatabase(InsertLogDTO InsertLog)
@@ -39,30 +37,6 @@ namespace Dissertation_Project.Model.Infra.Managers
             catch
             {
                 return false;
-            }
-        }
-
-        public async void InsertLogAsync(string Level, string ActionMethod, string Url,string Message)
-        {
-            try
-            {
-                DataLayer.Entities.Logs log = new DataLayer.Entities.Logs()
-                {
-                    Client= _httpcontext.HttpContext?.Request.Headers["sec-ch-ua"].ToString(),
-                    Date= Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
-                    Level = Level,
-                    Ip = _httpcontext.HttpContext?.Connection.RemoteIpAddress?.ToString(),
-                    Method = ActionMethod,
-                    Time = DateTime.Now.ToLongTimeString(),
-                    Url = Url,
-                    System = _httpcontext.HttpContext?.Request.Headers["sec-ch-ua-platform"].ToString(),
-                    Message = Message
-                };
-                await _Context.AddAsync(log);
-                await _Context.SaveChangesAsync();
-            }catch
-            {
-                
             }
         }
     }

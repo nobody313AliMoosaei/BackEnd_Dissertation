@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(Context_Project))]
-    [Migration("20230422003417_AddDateTimeTODissertation")]
-    partial class AddDateTimeTODissertation
+    [Migration("20230423103458_Add User_User With Ef Core")]
+    partial class AddUser_UserWithEfCore
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -329,6 +329,27 @@ namespace DataLayer.Migrations
                         });
                 });
 
+            modelBuilder.Entity("DataLayer.Entities.User_User_Relation", b =>
+                {
+                    b.Property<decimal>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(20,0)");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+
+                    b.Property<decimal>("Teacher_Id")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<decimal?>("UsersId")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("User_User_Relation", "dbo");
+                });
+
             modelBuilder.Entity("DataLayer.Entities.Users", b =>
                 {
                     b.Property<decimal>("Id")
@@ -391,9 +412,6 @@ namespace DataLayer.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<decimal?>("UsersId")
-                        .HasColumnType("decimal(20,0)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedEmail")
@@ -403,8 +421,6 @@ namespace DataLayer.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UsersId");
 
                     b.ToTable("Users", "dbo");
                 });
@@ -569,7 +585,7 @@ namespace DataLayer.Migrations
                         .HasForeignKey("DissertationsDissertation_Id1");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Users", b =>
+            modelBuilder.Entity("DataLayer.Entities.User_User_Relation", b =>
                 {
                     b.HasOne("DataLayer.Entities.Users", null)
                         .WithMany("Teachers")

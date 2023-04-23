@@ -74,7 +74,6 @@ builder.Services.AddAuthentication(t =>
 
 #region IOC Container
 
-
 builder.Services.AddTransient<Dissertation_Project.Core.Utlities.JWT.IJWTBearer,
     Dissertation_Project.Core.Utlities.JWT.JWTBearer>();
 
@@ -87,8 +86,8 @@ builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.ILogMa
 builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IUpload_File,
     Dissertation_Project.Model.Infra.Managers.Upload_File_Implement>();
 
-builder.Services.AddTransient<IHttpContextAccessor,HttpContextAccessor>();
-
+builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IGoogle_Recaptcha,
+    Dissertation_Project.Model.Infra.Managers.Google_Recaptcha>();
 
 #endregion
 

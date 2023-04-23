@@ -14,6 +14,11 @@ namespace DataLayer.Entities
 
 
         // -----------------     ---------------------------
-        public List<Users>? Teachers { get; set; }
+        public List<User_User_Relation>? Teachers { get; set; }
+
+        public Users()
+        {
+            Teachers= new List<User_User_Relation>();
+        }
     }
 }

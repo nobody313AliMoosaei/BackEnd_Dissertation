@@ -24,7 +24,7 @@ namespace Dissertation_Project.Controllers.V1
         private Core.Utlities.JWT.IJWTBearer _jwtBearer;
         private DataLayer.DataBase.Context_Project _Context;
         private Model.Infra.Interfaces.IEmailSender _emailSender;
-        //private AspNetCore.ReCaptcha.IReCaptchaService _reCaptchaService;
+        private Model.Infra.Interfaces.IGoogle_Recaptcha _Google_Recaptcha;
 
 
         public SignUpController(
@@ -33,7 +33,7 @@ namespace Dissertation_Project.Controllers.V1
             , Core.Utlities.JWT.IJWTBearer jWTBearer
             , DataLayer.DataBase.Context_Project context
             , Model.Infra.Interfaces.IEmailSender emailSender
-            //, IReCaptchaService reCaptchaService
+            , Model.Infra.Interfaces.IGoogle_Recaptcha google_Recaptcha
             )
         {
             _userManager = userManager;
@@ -41,7 +41,8 @@ namespace Dissertation_Project.Controllers.V1
             _jwtBearer = jWTBearer;
             _Context = context;
             _emailSender = emailSender;
-            //_reCaptchaService = reCaptchaService;
+            _Google_Recaptcha = google_Recaptcha;
+            _Google_Recaptcha = google_Recaptcha;
         }
 
         #endregion
@@ -76,7 +77,7 @@ namespace Dissertation_Project.Controllers.V1
                     //College = registeruser.College,
                     UserName = registeruser.UserName,
                     NationalCode = registeruser.NationalCode,
-                    Teachers = new List<Users>(),
+                    //Teachers = new List<Users>(),
                 };
 
 
@@ -116,10 +117,22 @@ namespace Dissertation_Project.Controllers.V1
                         return BadRequest("نقش مدنظر برای کاربر اضافه نشده است");
                     }
 
-                    BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(
-                        t => t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Informational.ToString()
-                        , "POST", Url.Action(nameof(Register_User), Controller_Name, new { }, Request.Scheme)
-                        , $"کاربر {newuser.FirstName} {newuser.LastName} ثبت نام کرده است"));
+                    #region Background For Log 
+                    BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
+                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
+                        {
+                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
+                            System = HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
+                            Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                            Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            Level = Core.Utlities.Level_Log.Level_log.Informational.ToString(),
+                            Method = "POST",
+                            Time = DateTime.Now.ToLongTimeString(),
+                            Url = Url.Action(nameof(Register_User), Controller_Name, new { }, Request.Scheme),
+                            Message = $"کاربر {newuser.FirstName} {newuser.LastName} ثبت نام کرده است"
+                        }));
+                    #endregion
+
                     return Ok(All_API_Links());
                 }
 
@@ -143,11 +156,19 @@ namespace Dissertation_Project.Controllers.V1
             catch (Exception ex)
             {
                 // Fatal Log
-                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Emergency.ToString()
-                , "POST"
-                , Url.Action(nameof(Register_User), Controller_Name, new { }, Request.Scheme)
-                , $"Message Error : {ex.Message}"));
+                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
+                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
+                        {
+                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
+                            System = HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
+                            Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                            Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            Level = Core.Utlities.Level_Log.Level_log.Emergency.ToString(),
+                            Method = "POST",
+                            Time = DateTime.Now.ToLongTimeString(),
+                            Url = Url.Action(nameof(Register_User), Controller_Name, new { }, Request.Scheme),
+                            Message = $"Error Message : {ex.Message}"
+                        }));
                 return BadRequest("Fatal : عملیات متوقف شد");
             }
         }
@@ -205,11 +226,19 @@ namespace Dissertation_Project.Controllers.V1
             catch (Exception ex)
             {
                 // Fatal Log
-                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Emergency.ToString()
-                , "POST"
-                , Url.Action(nameof(ConfirmEmail), Controller_Name, new { }, Request.Scheme)
-                , $"Message Error : {ex.Message}"));
+                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
+                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
+                        {
+                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
+                            System = HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
+                            Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                            Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            Level = Core.Utlities.Level_Log.Level_log.Emergency.ToString(),
+                            Method = "POST",
+                            Time = DateTime.Now.ToLongTimeString(),
+                            Url = Url.Action(nameof(ConfirmEmail), Controller_Name, new { }, Request.Scheme),
+                            Message = $"Error MEssage : {ex.Message}"
+                        }));
                 return BadRequest("Fatal : عملیات متوقف شد");
             }
         }
@@ -219,6 +248,23 @@ namespace Dissertation_Project.Controllers.V1
         public async Task<IActionResult> Login_User(CancellationToken cancellationToken, [FromBody] Model.DTO.INPUT.SignUp
             .LoginUserDTO LoginUser)
         {
+            #region google recaptcha
+            //g-Recaptcha-Response
+            string Token_google_recaptcha = this.HttpContext.Request.Form["g-Recaptcha-Response"];
+            if(string.IsNullOrEmpty(Token_google_recaptcha))
+            {
+                this.HttpContext.Response.Headers.Add("g-Google-Recaptcha:", "Is Null");
+            }
+            bool Verify_Google_recaptcha  = await _Google_Recaptcha.Verify(Token_google_recaptcha);
+            if(Verify_Google_recaptcha)
+            {
+                this.HttpContext.Response.Headers.Add("g-google-response", "Google Recaptcha Is Confirm");
+            }else
+            {
+                this.HttpContext.Response.Headers.Add("g-google-response", "Google Recaptcha Is Not Confirm");
+            }
+            #endregion
+
             if (cancellationToken.IsCancellationRequested)
             {
                 return BadRequest("فرایند از طرف کاربر متوقف شده است");
@@ -288,11 +334,19 @@ namespace Dissertation_Project.Controllers.V1
             catch (Exception ex)
             {
                 // Fatal Log
-                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Emergency.ToString()
-                , "POST"
-                , Url.Action(nameof(this.Login_User), Controller_Name, new { }, Request.Scheme)
-                , $"Message Error : {ex.Message}"));
+                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
+                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
+                        {
+                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
+                            System = HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
+                            Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                            Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            Level = Core.Utlities.Level_Log.Level_log.Emergency.ToString(),
+                            Method = "POST",
+                            Time = DateTime.Now.ToLongTimeString(),
+                            Url = Url.Action(nameof(Register_User), Controller_Name, new { }, Request.Scheme),
+                            Message = $"Error Message : {ex.Message}"
+                        }));
                 return BadRequest("Fatal : عملیات متوقف شد");
             }
         }

@@ -83,7 +83,13 @@ namespace Dissertation_Project.Controllers.V1
                 {
                     return BadRequest("استاد راهنمای اول دارای نقش استاد راهنما نمی باشد");
                 }
-
+                else
+                {
+                    user.Teachers.Add(new User_User_Relation()
+                    {
+                        Teacher_Id = Teacher_1.Id
+                    });
+                }
                 // Add Teacher_2
                 if (PersonalInfo.Teacher_2 > 0)
                 {
@@ -96,7 +102,10 @@ namespace Dissertation_Project.Controllers.V1
                         {
                             if (Is_Have_Role(Role_Teacher_2, DataLayer.Tools.RoleName_enum.GuideMaster.ToString()))
                             {
-                                user.Teachers.Add(Teacher_2);
+                                 user.Teachers?.Add(new User_User_Relation()
+                                 {
+                                     Teacher_Id = Teacher_2.Id
+                                 });
                             }
                         }
                     }
@@ -114,7 +123,7 @@ namespace Dissertation_Project.Controllers.V1
                         {
                             if (Is_Have_Role(Role_Teacher_3, DataLayer.Tools.RoleName_enum.GuideMaster.ToString()))
                             {
-                                user.Teachers.Add(Teacher_3);
+                                 user.Teachers?.Add(new User_User_Relation() { Teacher_Id = Teacher_3.Id });
                             }
                         }
                     }
@@ -274,7 +283,7 @@ namespace Dissertation_Project.Controllers.V1
                 {
                     return BadRequest("کاربر پیدا نشده است");
                 }
-                if(!string.IsNullOrWhiteSpace(user.FirstName)
+                if (!string.IsNullOrWhiteSpace(user.FirstName)
                     || !string.IsNullOrWhiteSpace(user.LastName))
                 {
                     return BadRequest("کاربر قبلا مشخصات خود را وارد کرده است");
@@ -284,22 +293,49 @@ namespace Dissertation_Project.Controllers.V1
                 user.FirstName = Data.FirstName;
                 user.LastName = Data.LastName;
                 user.College = Data.College;
-                var Teacher_1 = await _userManager.FindByIdAsync(Data.Teacher_1.ToString());
+
+                var Teacher_1 = await _context.Users.
+                    Where(t => t.Id == Data.Teacher_1)
+                    .Select(x => new
+                    {
+                        Teacher_id = x.Id
+                    }).FirstOrDefaultAsync();
+
                 if (Teacher_1 == null)
                 {
                     return BadRequest("استاد راهنمایی با مشخصات ارسال شده وجود ندارد");
                 }
-                user.Teachers.Add(Teacher_1);
+                user.Teachers.Add(new User_User_Relation()
+                {
+                    Teacher_Id = Teacher_1.Teacher_id
+                });
 
-                var Teacher_2 = await _userManager.FindByIdAsync(Data.Teacher_2.ToString());
+                var Teacher_2 = await _context.Users
+                    .Where(t => t.Id == Data.Teacher_2)
+                    .Select(t => new
+                    {
+                        Teacher_id = t.Id
+                    })
+                    .FirstOrDefaultAsync();
+
                 if (Teacher_2 != null)
                 {
-                    user.Teachers.Add(Teacher_2);
+                    user.Teachers.Add(new User_User_Relation()
+                    {
+                        Teacher_Id = Teacher_2.Teacher_id
+                    });
                 }
-                var Teacher_3 = await _userManager.FindByIdAsync(Data.Teacher_3.ToString());
+                var Teacher_3 = await _context.Users.Where(t => t.Id == Data.Teacher_3)
+                    .Select(x => new
+                    {
+                        Teacher_id = x.Id
+                    }).FirstOrDefaultAsync();
                 if (Teacher_3 != null)
                 {
-                    user.Teachers.Add(Teacher_3);
+                    user.Teachers.Add(new User_User_Relation()
+                    {
+                        Teacher_Id = Teacher_3.Teacher_id
+                    });
                 }
 
                 // Update User
@@ -313,26 +349,38 @@ namespace Dissertation_Project.Controllers.V1
                 _context.Users.Update(user);
 
                 // Log
-                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Informational.ToString()
-                , "POST"
-                , Url.Action(nameof(this.SendAllDataForConfirm), CONTROLLER_NAME, new { }, Request.Scheme)
-                , $"کاربر {user.FirstName} {user.LastName} بروزرسانی شد"));
+
+                #region Log
+                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
+                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
+                        {
+                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
+                            System = HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
+                            Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                            Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            Level = Core.Utlities.Level_Log.Level_log.Informational.ToString(),
+                            Method = "POST",
+                            Time = DateTime.Now.ToLongTimeString(),
+                            Url = Url.Action(nameof(SendAllDataForConfirm), CONTROLLER_NAME, new { }, Request.Scheme),
+                            Message = $"کاربر {user.FirstName} {user.LastName} بروزرسانی شد"
+                        }));
+                #endregion
 
                 //if (Resualt_Update_User <= 0)
                 //{
                 //    return NoContent();
                 //}
                 var Dissertation_Exist = await _context.Dissertations
-                    .Include(t=>t.Student)
-                    .Where(t=>t.Student.Id==user.Id)
-                    .Select(t => new {
-                    Id = t.Dissertation_Id,
-                    Persian_Title = t.Title_Persian,
-                    English_Title = t.Title_English
+                    .Include(t => t.Student)
+                    .Where(t => t.Student.Id == user.Id)
+                    .Select(t => new
+                    {
+                        Id = t.Dissertation_Id,
+                        Persian_Title = t.Title_Persian,
+                        English_Title = t.Title_English
                     })
                     .FirstOrDefaultAsync();
-                if(Dissertation_Exist!= null)
+                if (Dissertation_Exist != null)
                 {
                     return BadRequest($"پایان نامه با مشخصات : عنوان فارسی {Dissertation_Exist.Persian_Title} و عنوان انگلیسی : {Dissertation_Exist.English_Title} قبلا برای این کاربر ثبت شده است.");
                 }
@@ -390,21 +438,42 @@ namespace Dissertation_Project.Controllers.V1
 
                 await _context.Dissertations.AddAsync(Dissertation, cancellationToken);
                 await _context.SaveChangesAsync(cancellationToken);
-                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Informational.ToString()
-                , "POST"
-                , Url.Action(nameof(this.SendAllDataForConfirm), CONTROLLER_NAME, new { }, Request.Scheme)
-                , $"پایان نامه برای کاربر {user.FirstName} {user.LastName} به ثبت رسیده است"));
+
+                #region Background For Log
+                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
+                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
+                        {
+                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
+                            System = HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
+                            Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                            Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            Level = Core.Utlities.Level_Log.Level_log.Informational.ToString(),
+                            Method = "POST",
+                            Time = DateTime.Now.ToLongTimeString(),
+                            Url = Url.Action(nameof(SendAllDataForConfirm), CONTROLLER_NAME, new { }, Request.Scheme),
+                            Message = $"پایان نامه برای کاربر {user.FirstName} {user.LastName} به ثبت رسیده است"
+                        }));
+                #endregion
 
                 return Ok("عملیات با موفقیت انجام شد");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>(t =>
-                t.InsertLogAsync(Core.Utlities.Level_Log.Level_log.Emergency.ToString()
-                , "POST"
-                , Url.Action(nameof(this.SendAllDataForConfirm), CONTROLLER_NAME, new { }, Request.Scheme)
-                , $"Message : {ex.Message}"));
+                #region Background For Log
+                BackgroundJob.Enqueue<Model.Infra.Interfaces.ILogManager>
+                        (t => t.InsertLogInDatabase(new Model.DTO.INPUT.Temp.InsertLogDTO()
+                        {
+                            Client = this.HttpContext.Request.Headers["sec-ch-ua"].ToString(),
+                            System = HttpContext.Request.Headers["sec-ch-ua-platform"].ToString(),
+                            Date = Core.Utlities.Persian_Calender.Shamsi_Calender.GetDate_Shamsi(),
+                            Ip = this.HttpContext.Connection.RemoteIpAddress.ToString(),
+                            Level = Core.Utlities.Level_Log.Level_log.Emergency.ToString(),
+                            Method = "POST",
+                            Time = DateTime.Now.ToLongTimeString(),
+                            Url = Url.Action(nameof(SendAllDataForConfirm), CONTROLLER_NAME, new { }, Request.Scheme),
+                            Message = $"Error Message : {ex.Message}"
+                        }));
+                #endregion
 
                 return BadRequest("اجرای برنامه با مشکل مواجه شده است");
             }
