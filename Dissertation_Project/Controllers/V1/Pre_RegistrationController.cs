@@ -51,12 +51,14 @@ namespace Dissertation_Project.Controllers.V1
                 {
                     return BadRequest("استخراج شناسه کاربر انجام نشده است");
                 }
+
                 // Find User From Token
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
                 {
                     return BadRequest("کاربر یافت نشد");
                 }
+
                 // Find Role And Check
                 var RoleUser = await _userManager.GetRolesAsync(user);
                 if (RoleUser.Count <= 0)
@@ -260,7 +262,7 @@ namespace Dissertation_Project.Controllers.V1
         }
         #endregion
 
-
+        // Main Step
         #region Send All Data For Action
         // Convert Three Step to One Step
         [HttpPost("AllData")]
@@ -279,6 +281,7 @@ namespace Dissertation_Project.Controllers.V1
                 var user = await _context.Users
                     .Include(t => t.Teachers)
                     .FirstOrDefaultAsync(t => t.Id == ulong.Parse(User_Id));
+                
                 if (user == null)
                 {
                     return BadRequest("کاربر پیدا نشده است");
@@ -287,6 +290,11 @@ namespace Dissertation_Project.Controllers.V1
                     || !string.IsNullOrWhiteSpace(user.LastName))
                 {
                     return BadRequest("کاربر قبلا مشخصات خود را وارد کرده است");
+                }
+                if(!Is_Have_Role(await _userManager.GetRolesAsync(user)
+                    , DataLayer.Tools.RoleName_enum.Student.ToString()))
+                {
+                    return Unauthorized("کاربر دانشجو نیست");
                 }
 
                 // Set Information For User

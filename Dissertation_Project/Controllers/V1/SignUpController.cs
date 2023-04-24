@@ -250,7 +250,8 @@ namespace Dissertation_Project.Controllers.V1
         {
             #region google recaptcha
             //g-Recaptcha-Response
-            string Token_google_recaptcha = this.HttpContext.Request.Form["g-Recaptcha-Response"];
+            /*
+            string? Token_google_recaptcha = this.HttpContext.Request.Form["g-Recaptcha-Response"];
             if(string.IsNullOrEmpty(Token_google_recaptcha))
             {
                 this.HttpContext.Response.Headers.Add("g-Google-Recaptcha:", "Is Null");
@@ -263,6 +264,7 @@ namespace Dissertation_Project.Controllers.V1
             {
                 this.HttpContext.Response.Headers.Add("g-google-response", "Google Recaptcha Is Not Confirm");
             }
+            */
             #endregion
 
             if (cancellationToken.IsCancellationRequested)
