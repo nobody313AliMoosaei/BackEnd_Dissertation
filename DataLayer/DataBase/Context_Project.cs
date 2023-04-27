@@ -21,6 +21,7 @@ namespace DataLayer.DataBase
         public DbSet<Dissertations>? Dissertations { get; set; }
         public DbSet<KeyWord>? KeyWords { get; set; }
         public DbSet<Logs>? Logs { get; set; }
+        public DbSet<Entities.Confirmations> Confirmation { get; set; }
         public DbSet<ConfirmationsDissertations>? ConfirmationsDissertations { get; set; }
         public DbSet<User_User_Relation> User_User_Relation { get; set; }
 
@@ -108,7 +109,60 @@ namespace DataLayer.DataBase
             builder.Entity<Logs>().HasKey(x => x.Id);
             builder.Entity<Logs>().Property(x => x.Message).IsRequired(true);
 
-           
+            // Data For Confirmations
+            #region Data Confirmations
+            builder.Entity<Confirmations>().HasData(new Confirmations()
+            {
+                Id = 1,
+                Code_Dissertation_Confirmation = Tools.Dissertation_Confirmations.ConfirmationGuideMaster,
+                Name = Tools.Dissertation_Confirmations.ConfirmationGuideMaster.ToString(),
+                PersianName = "تاییدیه استاد راهنمای اول"
+            });
+            builder.Entity<Confirmations>().HasData(new Confirmations()
+            {
+                Id = 2,
+                Code_Dissertation_Confirmation = Tools.Dissertation_Confirmations.ConfirmationGuideMaster2,
+                Name = Tools.Dissertation_Confirmations.ConfirmationGuideMaster2.ToString(),
+                PersianName = "تاییدیه استاد راهنمای دوم"
+            });
+            builder.Entity<Confirmations>().HasData(new Confirmations()
+            {
+                Id = 3,
+                Code_Dissertation_Confirmation =
+                 Tools.Dissertation_Confirmations.ConfirmationGuideMaster3,
+                Name =
+                  Tools.Dissertation_Confirmations.ConfirmationGuideMaster3.ToString(),
+                PersianName = "تاییدیه استاد راهنمای سوم"
+            });
+            builder.Entity<Confirmations>().HasData(new Confirmations()
+            {
+                Id = 4,
+                Code_Dissertation_Confirmation =
+                Tools.Dissertation_Confirmations.ConfirmationEducationExpert,
+                Name =
+                 Tools.Dissertation_Confirmations.ConfirmationEducationExpert.ToString(),
+                PersianName = "تاییدیه کارشناس آموزش"
+            });
+            builder.Entity<Confirmations>().HasData(new Confirmations()
+            {
+                Id = 5,
+                Code_Dissertation_Confirmation =
+                Tools.Dissertation_Confirmations.ConfirmationPostgraduateEducationExpert,
+                Name = 
+                Tools.Dissertation_Confirmations.ConfirmationPostgraduateEducationExpert.ToString(),
+                PersianName ="تاییدیه کارشناس تحصیلات تکمیلی"
+            });
+            builder.Entity<Confirmations>().HasData(new Confirmations()
+            {
+                Id = 6,
+                Code_Dissertation_Confirmation=
+                Tools.Dissertation_Confirmations.ConfirmationDissertationExpert,
+                Name = 
+                Tools.Dissertation_Confirmations.ConfirmationDissertationExpert.ToString(),
+                PersianName = "تاییدیه کارشناس امور پایان نامه"
+            });
+            #endregion
+
         }
     }
 }

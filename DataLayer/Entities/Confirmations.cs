@@ -15,11 +15,9 @@ namespace DataLayer.Entities
         [Required(ErrorMessage ="وارد کردن نام اجباری است")]
         public string? Name { get; set; }
         
-        [Required(ErrorMessage = "پر کردن نرمالسازی نام اجباری است")]
-        public string? NormalizeName { get; set; }
-
-        public string? PersianName { get; set; }
+        [Required(ErrorMessage ="وارد کردن کد تاییدیه اجباری است")]
+        public DataLayer.Tools.Dissertation_Confirmations Code_Dissertation_Confirmation { get; set; }
         
-        public string? Description { get; set; }
+        public string? PersianName { get; set; }
     }
 }
