@@ -38,7 +38,6 @@ namespace Dissertation_Project.Controllers.V1
             }).ToList());
         }
 
-
         [HttpGet("GetOneTeacherById/{Teacher_id}")]
         public async Task<IActionResult> GetOnTeacherById([FromRoute] ulong Teacher_id)
         {
@@ -132,7 +131,7 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         // Delete Teachers
-        [HttpPost("Delete_Teachers")]
+        [HttpDelete("Delete_Teachers")]
         public async Task<IActionResult> DeleteTeacher(List<ulong> IDs)
         {
             if(IDs.Count>0)

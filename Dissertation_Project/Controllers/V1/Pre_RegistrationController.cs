@@ -265,7 +265,7 @@ namespace Dissertation_Project.Controllers.V1
         // Main Step
         #region Send All Data For Action
         // Convert Three Step to One Step
-        [HttpPost("AllData")]
+        [HttpPost]
         public async Task<IActionResult> SendAllDataForConfirm(CancellationToken cancellationToken, IFormFile Dissertation_File
             , IFormFile Pro_File
            , [FromForm] Model.DTO.INPUT.Pre_Registration.AllData_DTO Data)

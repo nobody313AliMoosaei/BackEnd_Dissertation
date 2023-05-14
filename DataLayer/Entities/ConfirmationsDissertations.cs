@@ -30,11 +30,11 @@ namespace DataLayer.Entities
 
             Time = DateTime.Now.ToLongTimeString();
 
-            Confirmation_List = new List<Confirmations>(); 
+            Confirmation = new Confirmations(); 
         }
 
         // ---------------------
-        public List<Confirmations>? Confirmation_List { get; set; }
+        public Confirmations? Confirmation { get; set; }
         public Users? User { get; set; }
 
     }

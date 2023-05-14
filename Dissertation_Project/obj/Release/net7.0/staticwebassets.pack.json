@@ -37,6 +37,14 @@
       "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\3\\51ba6500-b866-40b9-b8a4-6d881e2127b1.jpg"
     },
     {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\7\\7ad902ba-2c46-497d-b4cc-446ee6afba55.docx",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\7\\7ad902ba-2c46-497d-b4cc-446ee6afba55.docx"
+    },
+    {
+      "Id": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\2\\7\\ba754524-22fa-4d22-b33f-a99c0be83775.jpg",
+      "PackagePath": "staticwebassets\\AllFiles\\1402\\2\\7\\ba754524-22fa-4d22-b33f-a99c0be83775.jpg"
+    },
+    {
       "Id": "obj\\Release\\net7.0\\staticwebassets\\msbuild.Dissertation_Project.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

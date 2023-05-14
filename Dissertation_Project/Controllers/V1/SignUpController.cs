@@ -315,6 +315,7 @@ namespace Dissertation_Project.Controllers.V1
                         userinfo = new Model.DTO.OUTPUT.SignUp.UserInfo_LoginDTO()
                         {
                             UserName = user.UserName,
+                            Role = RoleUser[0],
                             Token = Token
                         };
 
@@ -325,13 +326,14 @@ namespace Dissertation_Project.Controllers.V1
                     {
                         FullName = user.FirstName + " " + user.FirstName,
                         UserName = user.UserName,
+                        Role = RoleUser[0],
                         Token = Token
                     };
 
                     return Ok(userinfo);
                 }
 
-                return BadRequest("کاربری یافت نشد");
+                return Content("کاربری یافت نشد");
             }
             catch (Exception ex)
             {

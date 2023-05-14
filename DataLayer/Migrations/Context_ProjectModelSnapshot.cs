@@ -69,9 +69,6 @@ namespace DataLayer.Migrations
                     b.Property<int>("Code_Dissertation_Confirmation")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ConfirmationsDissertationsId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -80,8 +77,6 @@ namespace DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ConfirmationsDissertationsId");
 
                     b.ToTable("Confirmation", "dbo");
 
@@ -138,6 +133,9 @@ namespace DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("ConfirmationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Date")
                         .HasColumnType("nvarchar(max)");
 
@@ -154,6 +152,8 @@ namespace DataLayer.Migrations
                         .HasColumnType("decimal(20,0)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ConfirmationId");
 
                     b.HasIndex("DissertationsDissertation_Id");
 
@@ -582,15 +582,12 @@ namespace DataLayer.Migrations
                     b.Navigation("Uesr");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Confirmations", b =>
-                {
-                    b.HasOne("DataLayer.Entities.ConfirmationsDissertations", null)
-                        .WithMany("Confirmation_List")
-                        .HasForeignKey("ConfirmationsDissertationsId");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.ConfirmationsDissertations", b =>
                 {
+                    b.HasOne("DataLayer.Entities.Confirmations", "Confirmation")
+                        .WithMany()
+                        .HasForeignKey("ConfirmationId");
+
                     b.HasOne("DataLayer.Entities.Dissertations", null)
                         .WithMany("ConfirmationsDissertations")
                         .HasForeignKey("DissertationsDissertation_Id");
@@ -598,6 +595,8 @@ namespace DataLayer.Migrations
                     b.HasOne("DataLayer.Entities.Users", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.Navigation("Confirmation");
 
                     b.Navigation("User");
                 });
@@ -683,11 +682,6 @@ namespace DataLayer.Migrations
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
                     b.Navigation("Comments_Replay");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.ConfirmationsDissertations", b =>
-                {
-                    b.Navigation("Confirmation_List");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Dissertations", b =>
