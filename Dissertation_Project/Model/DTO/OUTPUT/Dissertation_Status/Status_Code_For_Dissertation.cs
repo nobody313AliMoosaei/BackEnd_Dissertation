@@ -6,5 +6,6 @@ namespace Dissertation_Project.Model.DTO.OUTPUT.Dissertation_Status
     {
         public  int StatusCode { get; set; }
         public string? Discription { get; set; }
+        public bool? IsConfirm { get; set; } = false;
     }
 }

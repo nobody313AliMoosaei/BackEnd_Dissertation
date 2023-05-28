@@ -23,6 +23,29 @@ namespace DataLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("DataLayer.Entities.Comment_User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal?>("CommentsComment_Id")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<decimal?>("User_Id")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentsComment_Id");
+
+                    b.HasIndex("User_Id");
+
+                    b.ToTable("CommentsUser", "dbo");
+                });
+
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
                     b.Property<decimal>("Comment_Id")
@@ -44,8 +67,11 @@ namespace DataLayer.Migrations
                     b.Property<DateTime>("Insert_DateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("UesrId")
+                    b.Property<decimal?>("SenderId")
                         .HasColumnType("decimal(20,0)");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Comment_Id");
 
@@ -53,7 +79,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("DissertationsDissertation_Id");
 
-                    b.HasIndex("UesrId");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("Comments", "dbo");
                 });
@@ -565,21 +591,34 @@ namespace DataLayer.Migrations
                     b.ToTable("AspNetUserTokens", "dbo");
                 });
 
+            modelBuilder.Entity("DataLayer.Entities.Comment_User", b =>
+                {
+                    b.HasOne("DataLayer.Entities.Comments", null)
+                        .WithMany("Receivers")
+                        .HasForeignKey("CommentsComment_Id");
+
+                    b.HasOne("DataLayer.Entities.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("User_Id");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
                     b.HasOne("DataLayer.Entities.Comments", null)
-                        .WithMany("Comments_Replay")
+                        .WithMany("Replay_Comment")
                         .HasForeignKey("CommentsComment_Id");
 
                     b.HasOne("DataLayer.Entities.Dissertations", null)
                         .WithMany("Comments")
                         .HasForeignKey("DissertationsDissertation_Id");
 
-                    b.HasOne("DataLayer.Entities.Users", "Uesr")
+                    b.HasOne("DataLayer.Entities.Users", "Sender")
                         .WithMany()
-                        .HasForeignKey("UesrId");
+                        .HasForeignKey("SenderId");
 
-                    b.Navigation("Uesr");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.ConfirmationsDissertations", b =>
@@ -681,7 +720,9 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
-                    b.Navigation("Comments_Replay");
+                    b.Navigation("Receivers");
+
+                    b.Navigation("Replay_Comment");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Dissertations", b =>

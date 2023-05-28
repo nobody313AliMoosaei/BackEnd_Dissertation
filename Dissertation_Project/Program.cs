@@ -124,6 +124,7 @@ builder.Services.AddCors(option =>
         .AllowAnyHeader();
     });
 });
+
 #endregion
 
 #region reCAPTCHA

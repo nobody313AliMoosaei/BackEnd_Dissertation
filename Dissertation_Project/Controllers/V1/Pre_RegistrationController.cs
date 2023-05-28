@@ -487,5 +487,50 @@ namespace Dissertation_Project.Controllers.V1
             }
         }
         #endregion
+
+        // Check For Pre Registration
+        #region Check User For Pre Registration
+        /// <summary>
+        /// 
+        /// NoContent : Status Code 204 => عدم وجود پایان نامه برای کاربر - یعنی کاربر می تواند از پیش ثبت نام استفاده کند
+        /// Ok : Status Code 200 => یعنی برای کاربر پایان نامه وجود دارد - کاربر نمی تواند از پیش ثبت نام استفاده کند
+        /// 
+        /// </summary>
+        /// <returns>آیا کاربر می تواند از پیش ثبت نام استفاده کند یا خیر ؟ </returns>
+        [Authorize(Roles ="Student")]
+        [HttpGet]
+        public async Task<IActionResult>CheckPreRegistration()
+        {
+
+           // Check For Get ID
+            var User_Id = User.Claims.FirstOrDefault(t => t.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (User_Id == null
+                || string.IsNullOrEmpty(User_Id)
+                || string.IsNullOrWhiteSpace(User_Id))
+            {
+                return Unauthorized("کاربر لاگین نکرده است");
+            }
+
+            // Find  User
+            var Dissertaion = await _context.Dissertations.Include(t=>t.Student)
+                .Where(t=>t.Student.Id == ulong.Parse(User_Id))
+                .Select(t=> new
+                {
+                    Id_Dissertaion = t.Dissertation_Id
+                }).ToListAsync();
+            if(Dissertaion == null)
+            {
+                return NoContent();
+            }else if(Dissertaion.Count==0)
+            {
+                return NoContent();
+            }else
+            {
+                return Ok();
+            }
+
+        }
+
+        #endregion
     }
 }

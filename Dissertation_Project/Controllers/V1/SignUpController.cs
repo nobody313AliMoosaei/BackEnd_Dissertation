@@ -324,7 +324,7 @@ namespace Dissertation_Project.Controllers.V1
 
                     userinfo = new Model.DTO.OUTPUT.SignUp.UserInfo_LoginDTO()
                     {
-                        FullName = user.FirstName + " " + user.FirstName,
+                        FullName = user.FirstName + " " + user.LastName,
                         UserName = user.UserName,
                         Role = RoleUser[0],
                         Token = Token

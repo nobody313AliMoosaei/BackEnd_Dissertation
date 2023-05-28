@@ -44,7 +44,8 @@ namespace Dissertation_Project.Controllers.V1
                 return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation()
                 {
                     StatusCode = -1,
-                    Discription = "برای این کاربر پایان نامه‌ای آپلود نکرده است."
+                    Discription = "برای این کاربر پایان نامه‌ای آپلود نکرده است.",
+                    IsConfirm = null
                 });
             }
 
@@ -54,7 +55,8 @@ namespace Dissertation_Project.Controllers.V1
                 return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                 {
                     StatusCode = 0,
-                    Discription = "این پایان نامه هنوز هیچ تاییدیه‌ای را دریافت نکرده است"
+                    Discription = "این پایان نامه هنوز هیچ تاییدیه‌ای را دریافت نکرده است",
+                    IsConfirm= null
                 });
             }
             else
@@ -64,98 +66,119 @@ namespace Dissertation_Project.Controllers.V1
                  پس می توانیم چک کنیم که چه تاییدیه هایی این پایان نامه دارد و استاتوس کد مد نظر را برگردانیم
                  */
                 float Counter = 0;
+                bool?[] Is_Confirms = new bool?[7];
+
                 foreach (var item in Dissertation.ConfirmationsDissertations.ToList())
                 {
-                    if (item.Confirmation.Code_Dissertation_Confirmation == DataLayer.Tools.Dissertation_Confirmations.ConfirmationGuideMaster
-                        && item.IsConfirm)
+                    if (item.Confirmation.Code_Dissertation_Confirmation ==
+                        DataLayer.Tools.Dissertation_Confirmations.ConfirmationGuideMaster)
                     {
                         Counter = 1;
+                        Is_Confirms[1] = item.IsConfirm;
                     }
                     else if (item.Confirmation.Code_Dissertation_Confirmation
-                        == DataLayer.Tools.Dissertation_Confirmations.ConfirmationGuideMaster2
-                        && item.IsConfirm)
+                        == DataLayer.Tools.Dissertation_Confirmations.ConfirmationGuideMaster2)
                     {
                         Counter = 1.2f;
+                        Is_Confirms[2] = item.IsConfirm;
                     }
-                    else if (item.Confirmation.Code_Dissertation_Confirmation
-                        == DataLayer.Tools.Dissertation_Confirmations.ConfirmationGuideMaster3
-                        && item.IsConfirm)
+                    else if (item.Confirmation.Code_Dissertation_Confirmation ==
+                        DataLayer.Tools.Dissertation_Confirmations.ConfirmationGuideMaster3)
                     {
                         Counter = 1.3f;
+                        Is_Confirms[3] = item.IsConfirm;
                     }
                     else if (item.Confirmation.Code_Dissertation_Confirmation ==
-                        DataLayer.Tools.Dissertation_Confirmations.ConfirmationEducationExpert
-                        && item.IsConfirm)
+                        DataLayer.Tools.Dissertation_Confirmations.ConfirmationEducationExpert)
                     {
                         Counter = 2;
+                        Is_Confirms[4] = item.IsConfirm;
                     }
                     else if (item.Confirmation.Code_Dissertation_Confirmation
-                        == DataLayer.Tools.Dissertation_Confirmations.ConfirmationPostgraduateEducationExpert
-                        && item.IsConfirm)
+                        == DataLayer.Tools.Dissertation_Confirmations.ConfirmationPostgraduateEducationExpert)
                     {
                         Counter = 3;
+                        Is_Confirms[5] = item.IsConfirm;
                     }
                     else if (item.Confirmation.Code_Dissertation_Confirmation ==
-                        DataLayer.Tools.Dissertation_Confirmations.ConfirmationDissertationExpert
-                        && item.IsConfirm)
+                        DataLayer.Tools.Dissertation_Confirmations.ConfirmationDissertationExpert)
                     {
                         Counter = 4;
+                        Is_Confirms[6] = item.IsConfirm;
                     }
                     else
+                    {
                         Counter = 0;
+                        Is_Confirms[0]= null;
+                    }
                 }
+                // End Foreach
+
+
                 if (Counter == 0)
                 {
                     return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                     {
                         StatusCode = 0,
-                        Discription = "این پایان نامه هنوز هیچ تاییدیه‌ای را دریافت نکرده است"
+                        Discription = "این پایان نامه هنوز هیچ تاییدیه‌ای را دریافت نکرده است",
+                        IsConfirm = Is_Confirms[0]
                     });
-                }else if(Counter==1)
+                }
+                else if (Counter == 1)
                 {
                     return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                     {
                         StatusCode = 1,
-                        Discription = "این پایان نامه تاییدیه استاد راهنما را دارد"
+                        Discription = "این پایان نامه تاییدیه استاد راهنما را دارد",
+                        IsConfirm = Is_Confirms[1]
                     });
-                }else if(Counter==1.2)
+                }
+                else if (Counter == 1.2)
                 {
                     return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                     {
                         StatusCode = 2,
-                        Discription = "این پایان نامه تاییدیه استاد راهنمای اول و دوم را دارد"
+                        Discription = "این پایان نامه تاییدیه استاد راهنمای اول و دوم را دارد",
+                        IsConfirm = Is_Confirms[2]
                     });
                 }
-                else if(Counter==1.3)
+                else if (Counter == 1.3)
                 {
                     return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                     {
                         StatusCode = 3,
-                        Discription = "این پایان نامه تاییدیه استاد راهنمای اول، دوم و سوم را دارد"
+                        Discription = "این پایان نامه تاییدیه استاد راهنمای اول، دوم و سوم را دارد",
+                        IsConfirm = Is_Confirms[3]
                     });
                 }
-                else if(Counter==2)
+                else if (Counter == 2)
                 {
                     return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                     {
                         StatusCode = 4,
-                        Discription = "این پایان نامه تاییدیه کارشناس آموزش را دارد"
+                        Discription = "این پایان نامه تاییدیه کارشناس آموزش را دارد",
+                        IsConfirm = Is_Confirms[4]
                     });
-                }else if(Counter==3)
+                }
+                else if (Counter == 3)
                 {
                     return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                     {
                         StatusCode = 5,
-                        Discription = "این پایان نامه تاییدیه کارشناس تحصیلات تکمیلی را دارد"
+                        Discription = "این پایان نامه تاییدیه کارشناس تحصیلات تکمیلی را دارد",
+                        IsConfirm = Is_Confirms[5]
                     });
-                }else if(Counter==4)
+                }
+                else if (Counter == 4)
                 {
                     return Ok(new Model.DTO.OUTPUT.Dissertation_Status.StatusCodeDissertation
                     {
                         StatusCode = 6,
-                        Discription = "این پایان نامه تاییدیه کارشناس امور پایان نامه ها را دارد"
+                        Discription = "این پایان نامه تاییدیه کارشناس امور پایان نامه ها را دارد",
+                        IsConfirm = Is_Confirms[6]
                     });
-                }else
+                }
+                else
                 {
                     return Content("خطا در شمارش تاییدیه ها");
                 }

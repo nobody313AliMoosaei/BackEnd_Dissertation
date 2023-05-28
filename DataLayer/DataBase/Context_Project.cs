@@ -24,6 +24,9 @@ namespace DataLayer.DataBase
         public DbSet<Entities.Confirmations> Confirmation { get; set; }
         public DbSet<ConfirmationsDissertations>? ConfirmationsDissertations { get; set; }
         public DbSet<User_User_Relation> User_User_Relation { get; set; }
+        public DbSet<Comment_User> CommentsUser { get; set; }
+
+        //public DbSet<CommentSelfRelation> CommentSelfRelations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

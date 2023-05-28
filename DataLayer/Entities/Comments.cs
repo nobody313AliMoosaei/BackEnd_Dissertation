@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+
 
 namespace DataLayer.Entities
 {
@@ -19,10 +15,18 @@ namespace DataLayer.Entities
         public DateTime Insert_DateTime { get; set; }
 
 
-        // ----------------------     -------------------------
+        // ----------------------  Navigations   -------------------------
+        
         public Users? Sender { get; set; }
-        public Users? Receiver { get; set; }
-        public List<Comments>? Replays_Comments { get; set; }
+        
+        public IList<Comment_User>? Receivers { get; set; }
 
+        public IList<Comments>? Replay_Comment { get; set; }
+
+        public Comments()
+        {
+            Receivers = new List<Comment_User>();
+            Replay_Comment= new List<Comments>();
+        }
     }
 }
