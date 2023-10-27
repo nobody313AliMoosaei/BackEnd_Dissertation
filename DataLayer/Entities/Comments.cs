@@ -5,28 +5,24 @@ namespace DataLayer.Entities
 {
     public class Comments
     {
-        [Key]
-        public ulong Comment_Id { get; set; }
-
-        public string? Title { get; set; }
-
-        public string? Description { get; set; }
-
-        public DateTime Insert_DateTime { get; set; }
-
-
-        // ----------------------  Navigations   -------------------------
-        
-        public Users? Sender { get; set; }
-        
-        public IList<Comment_User>? Receivers { get; set; }
-
-        public IList<Comments>? Replay_Comment { get; set; }
 
         public Comments()
         {
-            Receivers = new List<Comment_User>();
-            Replay_Comment= new List<Comments>();
+            ReplayCommentRefNavigations = new HashSet<Replay>();
+            ReplayReplayNavigations = new HashSet<Replay>();
         }
+        [Key]
+        public long CommentId { get; set; }
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+        public DateTime? InsertDateTime { get; set; }
+        public long? UserRef { get; set; }
+        public long? DissertationRef { get; set; }
+
+        public virtual Dissertations? DissertationRefNavigation { get; set; }
+        public virtual Users? UserRefNavigation { get; set; }
+        public virtual ICollection<Replay> ReplayCommentRefNavigations { get; set; }
+        public virtual ICollection<Replay> ReplayReplayNavigations { get; set; }
     }
+
 }

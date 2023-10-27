@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dissertation_Project", "Dissertation_Project\Dissertation_Project.csproj", "{21E42FB5-516E-46A4-B409-5B2E6E8C45E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dissertation_Project", "Dissertation_Project\Dissertation_Project.csproj", "{21E42FB5-516E-46A4-B409-5B2E6E8C45E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{08108EF6-39DB-44BF-8C97-732CF1BF7360}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataLayer", "DataLayer\DataLayer.csproj", "{08108EF6-39DB-44BF-8C97-732CF1BF7360}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLayer", "BusinessLayer\BusinessLayer.csproj", "{154DD9E3-6378-4178-A279-CE39BC963DD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{08108EF6-39DB-44BF-8C97-732CF1BF7360}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08108EF6-39DB-44BF-8C97-732CF1BF7360}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08108EF6-39DB-44BF-8C97-732CF1BF7360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{154DD9E3-6378-4178-A279-CE39BC963DD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{154DD9E3-6378-4178-A279-CE39BC963DD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{154DD9E3-6378-4178-A279-CE39BC963DD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{154DD9E3-6378-4178-A279-CE39BC963DD7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

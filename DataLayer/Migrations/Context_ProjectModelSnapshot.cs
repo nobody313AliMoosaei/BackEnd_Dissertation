@@ -17,303 +17,156 @@ namespace DataLayer.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("dbo")
                 .HasAnnotation("ProductVersion", "7.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DataLayer.Entities.Comment_User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal?>("CommentsComment_Id")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.Property<decimal?>("User_Id")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentsComment_Id");
-
-                    b.HasIndex("User_Id");
-
-                    b.ToTable("CommentsUser", "dbo");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
-                    b.Property<decimal>("Comment_Id")
+                    b.Property<long>("CommentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Comment_Id"));
-
-                    b.Property<decimal?>("CommentsComment_Id")
-                        .HasColumnType("decimal(20,0)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CommentId"));
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("DissertationsDissertation_Id")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long?>("DissertationRef")
+                        .HasColumnType("bigint");
 
-                    b.Property<DateTime>("Insert_DateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("SenderId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<DateTime?>("InsertDateTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Insert_DateTime");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Comment_Id");
+                    b.Property<long?>("UserRef")
+                        .HasColumnType("bigint");
 
-                    b.HasIndex("CommentsComment_Id");
+                    b.HasKey("CommentId");
 
-                    b.HasIndex("DissertationsDissertation_Id");
+                    b.HasIndex("DissertationRef");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("UserRef");
 
-                    b.ToTable("Comments", "dbo");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.Confirmations", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Code_Dissertation_Confirmation")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PersianName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Confirmation", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Code_Dissertation_Confirmation = 1,
-                            Name = "ConfirmationGuideMaster",
-                            PersianName = "تاییدیه استاد راهنمای اول"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Code_Dissertation_Confirmation = 2,
-                            Name = "ConfirmationGuideMaster2",
-                            PersianName = "تاییدیه استاد راهنمای دوم"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Code_Dissertation_Confirmation = 3,
-                            Name = "ConfirmationGuideMaster3",
-                            PersianName = "تاییدیه استاد راهنمای سوم"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Code_Dissertation_Confirmation = 4,
-                            Name = "ConfirmationEducationExpert",
-                            PersianName = "تاییدیه کارشناس آموزش"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Code_Dissertation_Confirmation = 5,
-                            Name = "ConfirmationPostgraduateEducationExpert",
-                            PersianName = "تاییدیه کارشناس تحصیلات تکمیلی"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Code_Dissertation_Confirmation = 6,
-                            Name = "ConfirmationDissertationExpert",
-                            PersianName = "تاییدیه کارشناس امور پایان نامه"
-                        });
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.ConfirmationsDissertations", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ConfirmationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("DissertationsDissertation_Id")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.Property<bool>("IsConfirm")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Time")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("UserId")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConfirmationId");
-
-                    b.HasIndex("DissertationsDissertation_Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ConfirmationsDissertations", "dbo");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Dissertations", b =>
                 {
-                    b.Property<decimal>("Dissertation_Id")
+                    b.Property<long>("DissertationId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("bigint")
+                        .HasColumnName("Dissertation_Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Dissertation_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("DissertationId"));
 
                     b.Property<string>("Abstract")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Allow_Edit")
-                        .HasColumnType("bit");
+                    b.Property<bool?>("AllowEdit")
+                        .HasColumnType("bit")
+                        .HasColumnName("Allow_Edit");
 
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("DateTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Dissertation_FileAddress")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("DissertationFileAddress")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Dissertation_FileAddress");
 
-                    b.Property<string>("Dissertation_FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("DissertationFileName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Dissertation_FileName");
 
-                    b.Property<string>("Proceedings_FileAddress")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ProceedingsFileAddress")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Proceedings_FileAddress");
 
-                    b.Property<string>("Proceedings_FileName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("ProceedingsFileName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Proceedings_FileName");
 
-                    b.Property<int>("Status_Dissertation")
-                        .HasColumnType("int");
+                    b.Property<int?>("StatusDissertation")
+                        .HasColumnType("int")
+                        .HasColumnName("Status_Dissertation");
 
-                    b.Property<decimal?>("StudentId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long?>("StudentId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("Term_Number")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("TermNumber")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Term_Number");
 
-                    b.Property<string>("Time")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("TitleEnglish")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Title_English");
 
-                    b.Property<string>("Title_English")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<string>("TitlePersian")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Title_Persian");
 
-                    b.Property<string>("Title_Persian")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Dissertation_Id");
+                    b.HasKey("DissertationId");
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Dissertations", "dbo");
+                    b.ToTable("Dissertations");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.KeyWord", b =>
                 {
-                    b.Property<decimal>("KeyWord_Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("KeyWord_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<decimal?>("DissertationsDissertation_Id")
-                        .HasColumnType("decimal(20,0)");
-
-                    b.Property<decimal?>("DissertationsDissertation_Id1")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long?>("DissertationRef")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Word")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("KeyWord_Id");
+                    b.HasKey("Id");
 
-                    b.HasIndex("DissertationsDissertation_Id");
+                    b.HasIndex("DissertationRef");
 
-                    b.HasIndex("DissertationsDissertation_Id1");
-
-                    b.ToTable("KeyWords", "dbo");
+                    b.ToTable("KeyWord", (string)null);
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Logs", b =>
+            modelBuilder.Entity("DataLayer.Entities.Replay", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("Client")
-                        .HasColumnType("nvarchar(max)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long?>("CommentRef")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("Ip")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Level")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Method")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("System")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Time")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long?>("ReplayId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Logs", "dbo");
+                    b.HasIndex("CommentRef");
+
+                    b.HasIndex("ReplayId");
+
+                    b.ToTable("Replay", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Roles", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -324,7 +177,6 @@ namespace DataLayer.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Name_Persian")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedName")
@@ -338,88 +190,42 @@ namespace DataLayer.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles", "dbo");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 2m,
-                            Name = "Administrator",
-                            Name_Persian = "مالک",
-                            NormalizedName = "ADMINISTRATOR"
-                        },
-                        new
-                        {
-                            Id = 3m,
-                            Name = "Student",
-                            Name_Persian = "دانشجو",
-                            NormalizedName = "STUDENT"
-                        },
-                        new
-                        {
-                            Id = 4m,
-                            Name = "GuideMaster",
-                            Name_Persian = "استاد راهنما",
-                            NormalizedName = "GUIDEMASTER"
-                        },
-                        new
-                        {
-                            Id = 5m,
-                            Name = "Adviser",
-                            Name_Persian = "مشاور",
-                            NormalizedName = "ADVISER"
-                        },
-                        new
-                        {
-                            Id = 6m,
-                            Name = "EducationExpert",
-                            Name_Persian = "کارشناس آموزش",
-                            NormalizedName = "EDUCATIONEXPERT"
-                        },
-                        new
-                        {
-                            Id = 7m,
-                            Name = "PostgraduateEducationExpert",
-                            Name_Persian = "کارشناس تحصیلات تکمیلی",
-                            NormalizedName = "POSTGRADUATEEDUCATIONEXPERT"
-                        },
-                        new
-                        {
-                            Id = 8m,
-                            Name = "DissertationExpert",
-                            Name_Persian = "کارشناس امور پایان نامه",
-                            NormalizedName = "DISSERTATIONEXPERT"
-                        });
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.User_User_Relation", b =>
+            modelBuilder.Entity("DataLayer.Entities.Teachers", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<decimal>("Teacher_Id")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long?>("StudentId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("StudentID");
 
-                    b.Property<decimal?>("UsersId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long?>("TeacherId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("TeacherID");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsersId");
+                    b.HasIndex("StudentId");
 
-                    b.ToTable("User_User_Relation", "dbo");
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Users", b =>
                 {
-                    b.Property<decimal>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("decimal(20,0)");
+                        .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<decimal>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
@@ -432,7 +238,6 @@ namespace DataLayer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -465,6 +270,12 @@ namespace DataLayer.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -485,10 +296,10 @@ namespace DataLayer.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users", "dbo");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -502,17 +313,17 @@ namespace DataLayer.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims", "dbo");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -526,17 +337,17 @@ namespace DataLayer.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims", "dbo");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -547,35 +358,35 @@ namespace DataLayer.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins", "dbo");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
                 {
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
-                    b.Property<decimal>("RoleId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long>("RoleId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles", "dbo");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
-                    b.Property<decimal>("UserId")
-                        .HasColumnType("decimal(20,0)");
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(450)");
@@ -588,86 +399,81 @@ namespace DataLayer.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens", "dbo");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.Comment_User", b =>
-                {
-                    b.HasOne("DataLayer.Entities.Comments", null)
-                        .WithMany("Receivers")
-                        .HasForeignKey("CommentsComment_Id");
-
-                    b.HasOne("DataLayer.Entities.Users", "User")
-                        .WithMany()
-                        .HasForeignKey("User_Id");
-
-                    b.Navigation("User");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
-                    b.HasOne("DataLayer.Entities.Comments", null)
-                        .WithMany("Replay_Comment")
-                        .HasForeignKey("CommentsComment_Id");
-
-                    b.HasOne("DataLayer.Entities.Dissertations", null)
+                    b.HasOne("DataLayer.Entities.Dissertations", "DissertationRefNavigation")
                         .WithMany("Comments")
-                        .HasForeignKey("DissertationsDissertation_Id");
+                        .HasForeignKey("DissertationRef")
+                        .HasConstraintName("FK__Comments__Disser__3B75D760");
 
-                    b.HasOne("DataLayer.Entities.Users", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId");
+                    b.HasOne("DataLayer.Entities.Users", "UserRefNavigation")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserRef")
+                        .HasConstraintName("FK__Comments__UserRe__3A81B327");
 
-                    b.Navigation("Sender");
-                });
+                    b.Navigation("DissertationRefNavigation");
 
-            modelBuilder.Entity("DataLayer.Entities.ConfirmationsDissertations", b =>
-                {
-                    b.HasOne("DataLayer.Entities.Confirmations", "Confirmation")
-                        .WithMany()
-                        .HasForeignKey("ConfirmationId");
-
-                    b.HasOne("DataLayer.Entities.Dissertations", null)
-                        .WithMany("ConfirmationsDissertations")
-                        .HasForeignKey("DissertationsDissertation_Id");
-
-                    b.HasOne("DataLayer.Entities.Users", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Confirmation");
-
-                    b.Navigation("User");
+                    b.Navigation("UserRefNavigation");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Dissertations", b =>
                 {
                     b.HasOne("DataLayer.Entities.Users", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId");
+                        .WithMany("Dissertations")
+                        .HasForeignKey("StudentId")
+                        .HasConstraintName("FK__Dissertat__Stude__34C8D9D1");
 
                     b.Navigation("Student");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.KeyWord", b =>
                 {
-                    b.HasOne("DataLayer.Entities.Dissertations", null)
-                        .WithMany("English_KeyWords")
-                        .HasForeignKey("DissertationsDissertation_Id");
+                    b.HasOne("DataLayer.Entities.Dissertations", "DissertationRefNavigation")
+                        .WithMany("KeyWords")
+                        .HasForeignKey("DissertationRef")
+                        .HasConstraintName("FK__KeyWord__Dissert__37A5467C");
 
-                    b.HasOne("DataLayer.Entities.Dissertations", null)
-                        .WithMany("Persian_KeyWords")
-                        .HasForeignKey("DissertationsDissertation_Id1");
+                    b.Navigation("DissertationRefNavigation");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.User_User_Relation", b =>
+            modelBuilder.Entity("DataLayer.Entities.Replay", b =>
                 {
-                    b.HasOne("DataLayer.Entities.Users", null)
-                        .WithMany("Teachers")
-                        .HasForeignKey("UsersId");
+                    b.HasOne("DataLayer.Entities.Comments", "CommentRefNavigation")
+                        .WithMany("ReplayCommentRefNavigations")
+                        .HasForeignKey("CommentRef")
+                        .HasConstraintName("FK__Replay__CommentR__3E52440B");
+
+                    b.HasOne("DataLayer.Entities.Comments", "ReplayNavigation")
+                        .WithMany("ReplayReplayNavigations")
+                        .HasForeignKey("ReplayId")
+                        .HasConstraintName("FK__Replay__ReplayId__3F466844");
+
+                    b.Navigation("CommentRefNavigation");
+
+                    b.Navigation("ReplayNavigation");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<ulong>", b =>
+            modelBuilder.Entity("DataLayer.Entities.Teachers", b =>
+                {
+                    b.HasOne("DataLayer.Entities.Users", "Student")
+                        .WithMany("TeacherStudents")
+                        .HasForeignKey("StudentId")
+                        .HasConstraintName("FK__UserTB_Us__Stude__276EDEB3");
+
+                    b.HasOne("DataLayer.Entities.Users", "TeacherNavigation")
+                        .WithMany("TeacherTeacherNavigations")
+                        .HasForeignKey("TeacherId")
+                        .HasConstraintName("FK__UserTB_Us__Teach__267ABA7A");
+
+                    b.Navigation("Student");
+
+                    b.Navigation("TeacherNavigation");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
                     b.HasOne("DataLayer.Entities.Roles", null)
                         .WithMany()
@@ -676,7 +482,7 @@ namespace DataLayer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
                 {
                     b.HasOne("DataLayer.Entities.Users", null)
                         .WithMany()
@@ -685,7 +491,7 @@ namespace DataLayer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
                 {
                     b.HasOne("DataLayer.Entities.Users", null)
                         .WithMany()
@@ -694,7 +500,7 @@ namespace DataLayer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<long>", b =>
                 {
                     b.HasOne("DataLayer.Entities.Roles", null)
                         .WithMany()
@@ -709,7 +515,7 @@ namespace DataLayer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<ulong>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
                 {
                     b.HasOne("DataLayer.Entities.Users", null)
                         .WithMany()
@@ -720,25 +526,27 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
-                    b.Navigation("Receivers");
+                    b.Navigation("ReplayCommentRefNavigations");
 
-                    b.Navigation("Replay_Comment");
+                    b.Navigation("ReplayReplayNavigations");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Dissertations", b =>
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("ConfirmationsDissertations");
-
-                    b.Navigation("English_KeyWords");
-
-                    b.Navigation("Persian_KeyWords");
+                    b.Navigation("KeyWords");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Users", b =>
                 {
-                    b.Navigation("Teachers");
+                    b.Navigation("Comments");
+
+                    b.Navigation("Dissertations");
+
+                    b.Navigation("TeacherStudents");
+
+                    b.Navigation("TeacherTeacherNavigations");
                 });
 #pragma warning restore 612, 618
         }

@@ -2,8 +2,16 @@
 
 namespace DataLayer.Entities
 {
-    public class Users:IdentityUser<ulong>
+    public class Users:IdentityUser<long>
     {
+        public Users()
+        {
+            Comments = new HashSet<Comments>();
+            Dissertations = new HashSet<Dissertations>();
+            TeacherStudents = new HashSet<Teachers>();
+            TeacherTeacherNavigations = new HashSet<Teachers>();
+        }
+
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
@@ -14,11 +22,9 @@ namespace DataLayer.Entities
 
 
         // -----------------     ---------------------------
-        public List<User_User_Relation>? Teachers { get; set; }
-
-        public Users()
-        {
-            Teachers= new List<User_User_Relation>();
-        }
+        public virtual ICollection<Comments> Comments { get; set; }
+        public virtual ICollection<Dissertations> Dissertations { get; set; }
+        public virtual ICollection<Teachers> TeacherStudents { get; set; }
+        public virtual ICollection<Teachers> TeacherTeacherNavigations { get; set; }
     }
 }

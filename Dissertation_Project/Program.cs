@@ -14,7 +14,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpContextAccessor();
 
+#region Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(option =>
+{
+    option.IdleTimeout = TimeSpan.FromHours(1);
+});
+#endregion
 
 #region DataBase Confing
 builder.Services.AddDbContext<DataLayer.DataBase.Context_Project>(option =>
@@ -73,21 +81,17 @@ builder.Services.AddAuthentication(t =>
 
 #region IOC Container
 
-builder.Services.AddTransient<Dissertation_Project.Core.Utlities.JWT.IJWTBearer,
-    Dissertation_Project.Core.Utlities.JWT.JWTBearer>();
+builder.Services.AddTransient<BusinessLayer.Services.Email.IEmailSender, BusinessLayer.Services.Email.EmailSender>();
 
-builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IEmailSender,
-    Dissertation_Project.Model.Infra.Managers.EmailSender>();
+builder.Services.AddTransient<BusinessLayer.Services.JWT.IJWTTokenManager, BusinessLayer.Services.JWT.JWTTokenManager>();
 
-builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.ILogManager,
-    Dissertation_Project.Model.Infra.Managers.LogManager>();
+builder.Services.AddTransient<BusinessLayer.Services.Log.ILogManager, BusinessLayer.Services.Log.LogManager>();
 
-builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IUpload_File,
-    Dissertation_Project.Model.Infra.Managers.Upload_File_Implement>();
+builder.Services.AddTransient<BusinessLayer.Services.Log.IHistoryManager, BusinessLayer.Services.Log.HistoryManager>();
 
-builder.Services.AddTransient<Dissertation_Project.Model.Infra.Interfaces.IGoogle_Recaptcha,
-    Dissertation_Project.Model.Infra.Managers.Google_Recaptcha>();
+builder.Services.AddTransient<BusinessLayer.Services.Session.ISessionManager, BusinessLayer.Services.Session.SessionManager>();
 
+builder.Services.AddScoped<BusinessLayer.Services.SignUp.SignUpBL>();
 #endregion
 
 #region HangFire

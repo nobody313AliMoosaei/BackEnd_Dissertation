@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities
 {
-    public class KeyWord
+    public partial class KeyWord
     {
-        [Key]
-        public ulong KeyWord_Id { get; set; }
+        public long Id { get; set; }
         public string? Word { get; set; }
+        public long? DissertationRef { get; set; }
+
+        public virtual Dissertations? DissertationRefNavigation { get; set; }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Entities
 {
-    public class Roles:IdentityRole<ulong>
+    public class Roles:IdentityRole<long>
     {
         public string? Name_Persian { get; set; }
     }
