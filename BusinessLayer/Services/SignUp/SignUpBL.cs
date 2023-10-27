@@ -63,11 +63,6 @@ namespace BusinessLayer.Services.SignUp
                 var Resualt = await _userManager.CreateAsync(newuser, _newUser.NationalCode);
                 if (Resualt != null && Resualt.Succeeded)
                 {
-                    string Token_Confirm_User = await _userManager.GenerateEmailConfirmationTokenAsync(newuser);
-                    if (Token_Confirm_User == null || Token_Confirm_User.IsNullOrEmpty())
-                    {
-                        sb.AppendLine("توانایی فعال سازی ایمیل برای کاربران غیر فعال شده است" + Environment.NewLine);
-                    }
                     // اضافه کردن نقش پیش فرض برای کاربر
                     if (!await Add_Defualt_Role(newuser))
                     {
@@ -83,6 +78,7 @@ namespace BusinessLayer.Services.SignUp
                         $"کاربر {UsrName} ثبت نام کرده است");
                     #endregion
                     err.IsValid = true;
+                    err.Message = "کاربر با موفقيت ثبت نام کرده است";
 
                 }
                 else
@@ -131,7 +127,17 @@ namespace BusinessLayer.Services.SignUp
                 var user = await _userManager.FindByNameAsync(LoginInfo.UserName);
 
                 if (user == null)
-                    sb.AppendLine("کاربر یافت نشد" + Environment.NewLine);
+                {
+                    user = await _context.Users.Where(o => o.UserName == LoginInfo.UserName || o.Email == LoginInfo.UserName).FirstOrDefaultAsync();
+                    if (user == null)
+                    {
+                        sb.AppendLine("کاربر یافت نشد" + Environment.NewLine);
+                        model = new LoginUserInfoDTO();
+                        model.Errors.Message = sb.ToString();
+                        return model;
+                    }
+                }
+                    
 
                 var RoleUser = await _userManager.GetRolesAsync(user);
 

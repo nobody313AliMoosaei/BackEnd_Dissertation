@@ -9,6 +9,6 @@ namespace DataLayer.Entities
 {
     public class Roles:IdentityRole<long>
     {
-        public string? Name_Persian { get; set; }
+        public string? PersianName { get; set; }
     }
 }

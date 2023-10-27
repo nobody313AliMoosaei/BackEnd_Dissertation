@@ -21,15 +21,16 @@ namespace DataLayer.DataBase
         public virtual DbSet<Comments> Comments { get; set; } = null!;
         public virtual DbSet<Dissertations> Dissertations { get; set; } = null!;
         public virtual DbSet<KeyWord> KeyWords { get; set; } = null!;
+        public virtual DbSet<Logs> Logs { get; set; } = null!;
         public virtual DbSet<Replay> Replays { get; set; } = null!;
         public virtual DbSet<Teachers> Teachers { get; set; } = null!;
-
+        
 
         //public DbSet<CommentSelfRelation> CommentSelfRelations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Comments>(entity =>
-            {                
+            {
                 entity.Property(e => e.InsertDateTime).HasColumnName("Insert_DateTime");
 
                 entity.HasOne(d => d.DissertationRefNavigation)
@@ -123,7 +124,68 @@ namespace DataLayer.DataBase
                     .HasConstraintName("FK__UserTB_Us__Teach__267ABA7A");
             });
 
+            #region Set Roles
+            modelBuilder.Entity<Roles>(entity =>
+            {
+                entity.HasData(new List<Roles>()
+                {
+                    new Roles
+                    {
+                        Id= 1,
+                        Name = Tools.RoleName_enum.Administrator.ToString(),
+                        NormalizedName = Tools.RoleName_enum.Administrator.ToString().ToUpper(),
+                        PersianName= "مالک"
+                    },
+                    new Roles
+                    {
+                        Id= 2,
+                        Name = Tools.RoleName_enum.Student.ToString(),
+                        NormalizedName = Tools.RoleName_enum.Student.ToString().ToUpper(),
+                        PersianName = "دانشجو"
+                    },
+                    new Roles
+                    {
+                       Id= 3,
+                       Name = Tools.RoleName_enum.GuideMaster.ToString(),
+                       NormalizedName = Tools.RoleName_enum.GuideMaster.ToString().ToUpper(),
+                       PersianName = "استاد راهنما"
+                    },
+                    new Roles
+                    {
+                        Id= 4,
+                        Name = Tools.RoleName_enum.Adviser.ToString(),
+                        NormalizedName = Tools.RoleName_enum.Adviser.ToString().ToUpper(),
+                        PersianName = "مشاور"
+                    },
+                    new Roles
+                    {
+                        Id= 5,
+                        Name = Tools.RoleName_enum.EducationExpert.ToString(),
+                        NormalizedName = Tools.RoleName_enum.EducationExpert.ToString().ToUpper(),
+                        PersianName = "کارشناس آموزش"
+                    },
+                    new Roles
+                    {
+                        Id= 6,
+                        Name = Tools.RoleName_enum.PostgraduateEducationExpert.ToString(),
+                        NormalizedName = Tools.RoleName_enum.PostgraduateEducationExpert.ToString().ToUpper(),
+                        PersianName = "کارشناس تحصیلات تکمیلی"
+                    },
+                    new Roles
+                    {
+                        Id= 7,
+                        Name = Tools.RoleName_enum.DissertationExpert.ToString(),
+                        NormalizedName = Tools.RoleName_enum.DissertationExpert.ToString().ToUpper(),
+                        PersianName = "کارشناس امور پایان نامه"
+                    },
+                });
+            });
 
+            #endregion
+
+            #region Set Admin
+
+            #endregion
             base.OnModelCreating(modelBuilder);
         }
 
