@@ -22,7 +22,7 @@ namespace DataLayer.Entities
         public string? ProceedingsFileName { get; set; }
         public string? ProceedingsFileAddress { get; set; }
         public DateTime? DateTime { get; set; }
-        public long? StudentId { get; set; }
+        public long? StudentId { get; set; } = 0;
         public int? StatusDissertation { get; set; }
 
         public virtual Users? Student { get; set; }

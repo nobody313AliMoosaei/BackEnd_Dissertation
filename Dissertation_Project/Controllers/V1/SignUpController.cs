@@ -18,7 +18,7 @@ namespace Dissertation_Project.Controllers.V1
 
 
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(CancellationToken cencellToken, [FromBody] BusinessLayer.Models.INPUT.SignUp.RegisterUserDTO model)
+        public async Task<IActionResult> RegisterUser([FromBody] BusinessLayer.Models.INPUT.SignUp.RegisterUserDTO model)
         {
             try
             {

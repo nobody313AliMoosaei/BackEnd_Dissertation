@@ -16,7 +16,7 @@ namespace BusinessLayer.Utilities
 
         public static int Val32(this string? value)
         {
-            if (value == null)
+            if (string.IsNullOrEmpty(value))
                 return 0;
 
             int num;
@@ -25,7 +25,7 @@ namespace BusinessLayer.Utilities
         }
         public static long Val64(this string? value)
         {
-            if (value == null)
+            if (string.IsNullOrEmpty(value))
                 return 0;
 
             long num;
@@ -34,7 +34,7 @@ namespace BusinessLayer.Utilities
         }
         public static double Val72(this string? value)
         {
-            if (value == null)
+            if (string.IsNullOrEmpty(value))
                 return 0;
             double num;
             double.TryParse(value, out num);
@@ -77,7 +77,7 @@ namespace BusinessLayer.Utilities
                 return DateTime.Now;
             }
         }
-
+       
         public enum Level_log
         {
             Emergency = 1,

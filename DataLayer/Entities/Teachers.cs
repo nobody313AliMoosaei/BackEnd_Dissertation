@@ -12,7 +12,7 @@ namespace DataLayer.Entities
         public long? TeacherId { get; set; }
         public long? StudentId { get; set; }
 
-        public virtual Users? Student { get; set; }
+        public virtual Users? StudentNavigation { get; set; }
         public virtual Users? TeacherNavigation { get; set; }
     }
 }

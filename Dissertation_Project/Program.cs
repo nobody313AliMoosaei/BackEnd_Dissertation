@@ -92,6 +92,10 @@ builder.Services.AddTransient<BusinessLayer.Services.Log.IHistoryManager, Busine
 builder.Services.AddTransient<BusinessLayer.Services.Session.ISessionManager, BusinessLayer.Services.Session.SessionManager>();
 
 builder.Services.AddScoped<BusinessLayer.Services.SignUp.SignUpBL>();
+
+builder.Services.AddTransient<BusinessLayer.Services.UploadFile.IUploadFile, BusinessLayer.Services.UploadFile.UploadFile>();
+
+builder.Services.AddScoped<BusinessLayer.Services.Dissertation.DissertationBL>();
 #endregion
 
 #region HangFire

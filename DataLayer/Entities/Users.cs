@@ -8,8 +8,7 @@ namespace DataLayer.Entities
         {
             Comments = new HashSet<Comments>();
             Dissertations = new HashSet<Dissertations>();
-            TeacherStudents = new HashSet<Teachers>();
-            TeacherTeacherNavigations = new HashSet<Teachers>();
+            Teachers = new HashSet<Teachers>();
         }
 
         public string? FirstName { get; set; }
@@ -24,7 +23,6 @@ namespace DataLayer.Entities
         // -----------------     ---------------------------
         public virtual ICollection<Comments> Comments { get; set; }
         public virtual ICollection<Dissertations> Dissertations { get; set; }
-        public virtual ICollection<Teachers> TeacherStudents { get; set; }
-        public virtual ICollection<Teachers> TeacherTeacherNavigations { get; set; }
+        public virtual ICollection<Teachers> Teachers { get; set; }
     }
 }

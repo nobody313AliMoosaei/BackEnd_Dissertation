@@ -113,15 +113,10 @@ namespace DataLayer.DataBase
 
                 entity.Property(e => e.TeacherId).HasColumnName("TeacherID");
 
-                entity.HasOne(d => d.Student)
-                    .WithMany(p => p.TeacherStudents)
+                entity.HasOne(d => d.StudentNavigation)
+                    .WithMany(p => p.Teachers)
                     .HasForeignKey(d => d.StudentId)
                     .HasConstraintName("FK__UserTB_Us__Stude__276EDEB3");
-
-                entity.HasOne(d => d.TeacherNavigation)
-                    .WithMany(p => p.TeacherTeacherNavigations)
-                    .HasForeignKey(d => d.TeacherId)
-                    .HasConstraintName("FK__UserTB_Us__Teach__267ABA7A");
             });
 
             #region Set Roles
