@@ -5,10 +5,12 @@ using DataLayer.DataBase;
 using DataLayer.Entities;
 using DataLayer.Tools;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,14 +22,16 @@ namespace BusinessLayer.Services.Dissertation
         private BusinessLayer.Services.UploadFile.IUploadFile _uploadFile;
         private IHttpContextAccessor _contectAccessor;
         private BusinessLayer.Services.Log.IHistoryManager _historyManager;
+        private UserManager<Users> _userManager;
 
         public DissertationBL(Context_Project contex, UploadFile.IUploadFile uploadFile, IHttpContextAccessor contectAccessor
-            , Log.IHistoryManager historyManager)
+            , Log.IHistoryManager historyManager, UserManager<Users> usermanager)
         {
             _context = contex;
             _uploadFile = uploadFile;
             _contectAccessor = contectAccessor;
             _historyManager = historyManager;
+            _userManager = usermanager;
         }
 
         public async Task<ErrorsVM> CheckPreRegister(long UserID = 0)
@@ -390,10 +394,10 @@ namespace BusinessLayer.Services.Dissertation
                         Dissertation.TermNumber = UDissertation.TermNumber;
 
                     Dissertation.DateTime = DateTime.Now.ToPersianDateTime();
-                    if(UDissertation.KeyWords!= null && UDissertation.KeyWords.Count > 0)
+                    if (UDissertation.KeyWords != null && UDissertation.KeyWords.Count > 0)
                     {
                         Dissertation.KeyWords = new List<KeyWord>();
-                        foreach(var itm in UDissertation.KeyWords)
+                        foreach (var itm in UDissertation.KeyWords)
                         {
                             Dissertation.KeyWords.Add(new KeyWord
                             {
@@ -417,5 +421,84 @@ namespace BusinessLayer.Services.Dissertation
             }
             return res;
         }
+
+        public async Task<ErrorsVM?> ChangeStatusDissertation(long Dissertation_Id, long User_Id, Dissertation_Status XStatusDissertation)
+        {
+            var Err = new ErrorsVM();
+            try
+            {
+                // همخوانی تاییدیه با نقش
+                var res = await ConfirmXStatus_UserRole(User_Id, XStatusDissertation);
+                if (res != null && res.IsValid)
+                {
+                    var Dissertation = await _context.Dissertations.Where(o => o.DissertationId == Dissertation_Id).FirstOrDefaultAsync();
+                    if (Dissertation != null)
+                    {
+                        Dissertation.StatusDissertation = (int)XStatusDissertation;
+                        _context.Dissertations.Update(Dissertation);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                        Err.Message = "پایان نامه‌ای وجود ندارد";
+                }
+                else
+                    Err = res;
+            }
+            catch (Exception ex)
+            {
+                Err.Title = "خطا در اجرای برنامه";
+                Err.Message = ex.InnerException == null ? ex.Message : $"Message: {ex.Message}{Environment.NewLine} InnerMessage:{ex.InnerException.Message}";
+            }
+            return Err;
+        }
+        public async Task<ErrorsVM?> ConfirmXStatus_UserRole(long User_Id, Dissertation_Status XStatus)
+        {
+            var res = new ErrorsVM();
+            try
+            {
+                if (User_Id != 0)
+                {
+                    var user = await _context.Users.Where(o => o.Id == User_Id).FirstOrDefaultAsync();
+                    if (user == null)
+                        res.Message = "کاربر موجود نیست";
+                    else
+                    {
+                        var Roles = await _userManager.GetRolesAsync(user);
+                        if (Roles != null && Roles.Count > 0)
+                        {
+                            if ((XStatus == Dissertation_Status.ConfirmationGuideMaster || XStatus == Dissertation_Status.ConfirmationGuideMaster2 || XStatus == Dissertation_Status.ConfirmationGuideMaster3)
+                                && (Roles.Any(o => o.ToLower() == DataLayer.Tools.RoleName_enum.Administrator.ToString().ToLower()) || Roles.Any(o => o.ToLower() == RoleName_enum.GuideMaster.ToString().ToLower())))
+                                res.IsValid = true;
+                            else if (XStatus == Dissertation_Status.ConfirmationEducationExpert
+                                && (Roles.Any(o => o.ToLower() == DataLayer.Tools.RoleName_enum.Administrator.ToString().ToLower()) || Roles.Any(o => o.ToLower() == RoleName_enum.EducationExpert.ToString().ToLower())))
+                                res.IsValid = true;
+                            else if (XStatus == Dissertation_Status.ConfirmationPostgraduateEducationExpert
+                                && (Roles.Any(o => o.ToLower() == DataLayer.Tools.RoleName_enum.Administrator.ToString().ToLower()) || Roles.Any(o => o.ToLower() == RoleName_enum.PostgraduateEducationExpert.ToString().ToLower())))
+                                res.IsValid = true;
+                            else if (XStatus == Dissertation_Status.ConfirmationDissertationExpert
+                                && (Roles.Any(o => o.ToLower() == DataLayer.Tools.RoleName_enum.Administrator.ToString().ToLower()) || Roles.Any(o => o.ToLower() == RoleName_enum.DissertationExpert.ToString().ToLower())))
+                                res.IsValid = true;
+                            else if (XStatus == Dissertation_Status.ExpirDissertation)
+                                res.IsValid = true;
+                            else
+                                res.Message = "کاربر در نقش مناسب برای تغییر وضعیت نیست";
+                        }
+                        else
+                            res.Message = "کاربر در سیستم فاقد نقش مناسب است";
+                    }
+                }
+                else
+                {
+                    res.Message = "کاربر موجود نیست";
+                }
+            }
+            catch (Exception ex)
+            {
+                res.Title = "خطا در اجرای برنامه";
+                res.Message = ex.InnerException == null ? ex.Message : $"InnerMessage: {ex.InnerException.Message}{Environment.NewLine}Message: {ex.Message}";
+            }
+            return res;
+        }
+
     }
 }

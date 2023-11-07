@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>BusinessLayer</id>
+    <version>1.0.0</version>
+    <authors>BusinessLayer</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework="net7.0">
+        <dependency id="DataLayer" version="1.0.0" exclude="Build,Analyzers" />
+        <dependency id="Hangfire" version="1.8.6" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Session" version="2.2.0" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\BusinessLayer\bin\Debug\net7.0\BusinessLayer.dll" target="lib\net7.0\BusinessLayer.dll" />
+  </files>
+</package>

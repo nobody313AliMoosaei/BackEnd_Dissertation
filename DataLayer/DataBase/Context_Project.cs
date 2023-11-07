@@ -24,11 +24,30 @@ namespace DataLayer.DataBase
         public virtual DbSet<Logs> Logs { get; set; } = null!;
         public virtual DbSet<Replay> Replays { get; set; } = null!;
         public virtual DbSet<Teachers> Teachers { get; set; } = null!;
-        
+        public virtual DbSet<Baslookup> Baslookups { get; set; }
+
 
         //public DbSet<CommentSelfRelation> CommentSelfRelations { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+                entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+                entity.Property(e => e.Email).HasMaxLength(256);
+                entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+                entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+                entity.Property(e => e.UserName).HasMaxLength(256);
+
+                entity.HasOne(d => d.CollegeRefNavigation).WithMany(p => p.Users)
+                    .HasForeignKey(d => d.CollegeRef)
+                    .HasConstraintName("FK_aspnetUsers_BasLookup");
+            });
+            
             modelBuilder.Entity<Comments>(entity =>
             {
                 entity.Property(e => e.InsertDateTime).HasColumnName("Insert_DateTime");
@@ -119,6 +138,15 @@ namespace DataLayer.DataBase
                     .HasConstraintName("FK__UserTB_Us__Stude__276EDEB3");
             });
 
+            modelBuilder.Entity<Baslookup>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__BASLooku__3214EC07A4E6B86E");
+                entity.ToTable("BASLookup");
+                entity.Property(e => e.Description).HasMaxLength(1000);
+                entity.Property(e => e.Title).HasMaxLength(500);
+                entity.Property(e => e.Type).HasMaxLength(500);
+            });
+
             #region Set Roles
             modelBuilder.Entity<Roles>(entity =>
             {
@@ -181,6 +209,93 @@ namespace DataLayer.DataBase
             #region Set Admin
 
             #endregion
+
+            #region Set Colleges Of University In Database
+            modelBuilder.Entity<Baslookup>(entity =>
+            {
+                entity.HasData(new List<Baslookup>
+            {
+                new Baslookup
+                {
+                    Id = 1,
+                    Code= 1,
+                    Type="CollegesUni",
+                    Title="مهندسي کامپيوتر"
+                },
+                new Baslookup
+                {
+                    Id = 2,
+                    Code= 2,
+                    Type="CollegesUni",
+                    Title="مهندسي برق"
+                },
+                new Baslookup
+                {
+                    Id = 3,
+                    Code= 3,
+                    Type="CollegesUni",
+                    Title="مهندسي مکانيک"
+                },
+                new Baslookup
+                {
+                    Id = 4,
+                    Code= 4,
+                    Type="CollegesUni",
+                    Title="مهندسي عمران"
+                },
+                new Baslookup
+                {
+                    Id = 5,
+                    Code= 5,
+                    Type="CollegesUni",
+                    Title="مهندسي معماري و شهرسازی"
+                },
+                new Baslookup
+                {
+                    Id = 6,
+                    Code= 6,
+                    Type="CollegesUni",
+                    Title="مهندسي مواد و علوم ميان رشته‌ای"
+                },
+                new Baslookup
+                {
+                    Id = 7,
+                    Code= 7,
+                    Type="CollegesUni",
+                    Title="حوضه علوم اسلامي"
+                },
+                new Baslookup
+                {
+                    Id = 8,
+                    Code= 8,
+                    Type="CollegesUni",
+                    Title="مرکز آموزش الکترونيکي"
+                },
+                new Baslookup
+                {
+                    Id = 9,
+                    Code= 9,
+                    Type="CollegesUni",
+                    Title="علوم پايه"
+                },
+                new Baslookup
+                {
+                    Id = 10,
+                    Code= 10,
+                    Type="CollegesUni",
+                    Title="علوم ورزشي"
+                },
+                new Baslookup
+                {
+                    Id = 11,
+                    Code= 11,
+                    Type="CollegesUni",
+                    Title="علوم انساني"
+                },
+            });
+            });
+            #endregion
+
             base.OnModelCreating(modelBuilder);
         }
 

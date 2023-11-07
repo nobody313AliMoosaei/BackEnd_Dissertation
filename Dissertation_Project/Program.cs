@@ -160,6 +160,8 @@ app.UseHangfireDashboard(pathMatch: "/HangfireDashboard");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseSession();
+
 app.MapControllers();
 
 app.Run();

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Abstractions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -87,10 +88,15 @@ namespace BusinessLayer.Services.SignUp
                     {
                         foreach (var itm in Resualt.Errors.ToList())
                         {
-                            sb.AppendLine(itm.Description + Environment.NewLine);
+                            if (itm.Code == "DuplicateUserName")
+                                sb.AppendLine("کاربر تکراری مي‌باشد");
+                            else
+                                sb.AppendLine($"Title : {itm.Code} Message : {itm.Description}");
                         }
                     }
                 }
+                if (sb.Length > 0)
+                    err.Message = sb.ToString();
             }
             catch (Exception ex)
             {
@@ -137,7 +143,7 @@ namespace BusinessLayer.Services.SignUp
                         return model;
                     }
                 }
-                    
+
 
                 var RoleUser = await _userManager.GetRolesAsync(user);
 
@@ -279,12 +285,14 @@ namespace BusinessLayer.Services.SignUp
                 res.IsValid = true;
                 res.Message = "کاربر از حساب کاربري خارج شد";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 res.Title = "خطا در اجراي برنامه";
                 res.Message = ex.Message;
             }
             return res;
         }
+
+
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DataLayer.Entities
 {
-    public class Users:IdentityUser<long>
+    public class Users : IdentityUser<long>
     {
         public Users()
         {
@@ -14,15 +14,19 @@ namespace DataLayer.Entities
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
-        
+
         public string? College { get; set; }
 
         public string? NationalCode { get; set; }
 
+        public bool Active { get; set; } = true;
+
+        public long? CollegeRef { get; set; }
 
         // -----------------     ---------------------------
         public virtual ICollection<Comments> Comments { get; set; }
         public virtual ICollection<Dissertations> Dissertations { get; set; }
         public virtual ICollection<Teachers> Teachers { get; set; }
+        public virtual Baslookup? CollegeRefNavigation { get; set; }
     }
 }
