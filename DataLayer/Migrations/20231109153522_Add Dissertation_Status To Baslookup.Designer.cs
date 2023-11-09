@@ -4,6 +4,7 @@ using DataLayer.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(Context_Project))]
-    partial class Context_ProjectModelSnapshot : ModelSnapshot
+    [Migration("20231109153522_Add Dissertation_Status To Baslookup")]
+    partial class AddDissertation_StatusToBaslookup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -566,22 +569,6 @@ namespace DataLayer.Migrations
                         .HasFilter("([NormalizedUserName] IS NOT NULL)");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 2L,
-                            AccessFailedCount = 0,
-                            Active = true,
-                            ConcurrencyStamp = "55261ef8-3887-43a2-869c-76c5fd2e0590",
-                            EmailConfirmed = false,
-                            FirstName = "ادمين",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEJQ2xMKQO6ll2P6o4UFrAShcHRrvglxmUrUIip9vHL+pHnxXKHtE4zAQtViz3NuqQ==",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>

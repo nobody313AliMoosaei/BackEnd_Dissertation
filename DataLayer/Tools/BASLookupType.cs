@@ -8,6 +8,7 @@ namespace DataLayer.Tools
 {
     public enum BASLookupType
     {
-        CollegesUni
+        CollegesUni,
+        DissertationStatus
     }
 }

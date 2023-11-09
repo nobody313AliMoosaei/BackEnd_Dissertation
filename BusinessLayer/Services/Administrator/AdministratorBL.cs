@@ -10,11 +10,9 @@ namespace BusinessLayer.Services.Administrator
     {
         private DataLayer.DataBase.Context_Project _context;
 
-
         public AdministratorBL(DataLayer.DataBase.Context_Project context)
         {
             _context= context;
         }
-
     }
 }

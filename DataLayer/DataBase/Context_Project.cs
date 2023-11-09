@@ -207,6 +207,24 @@ namespace DataLayer.DataBase
             #endregion
 
             #region Set Admin
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasData(new Entities.Users
+                {
+                    Id = 2,
+                    FirstName = "ادمين",
+                    UserName = "admin",
+                    PasswordHash = "AQAAAAIAAYagAAAAEEJQ2xMKQO6ll2P6o4UFrAShcHRrvglxmUrUIip9vHL+pHnxXKHtE4zAQtViz3NuqQ==", // Moosaei!1379
+                });
+            });
+            modelBuilder.Entity<IdentityUserRole<long>>(entity =>
+            {
+                new IdentityUserRole<long>
+                {
+                    UserId = 2,
+                    RoleId = 1
+                };
+            });
 
             #endregion
 
@@ -293,6 +311,72 @@ namespace DataLayer.DataBase
                     Title="علوم انساني"
                 },
             });
+            });
+            #endregion
+
+            #region Set Dissertation Status
+            modelBuilder.Entity<Baslookup>(entity =>
+            {
+                entity.HasData(new List<Baslookup>
+                {
+                    new Baslookup
+                    {
+                        Id = 12,
+                        Code= 0,
+                        Type = "DissertationStatus",
+                        Title = "Register",
+                        Description="ثبت اوليه پایان نامه"
+                    },new Baslookup
+                    {
+                        Id = 13,
+                        Code= 1,
+                        Type = "DissertationStatus",
+                        Title = "ConfirmationGuideMaster",
+                        Description="تاییدیه استاد راهنمای اول"
+                    },new Baslookup
+                    {
+                        Id = 14,
+                        Code= 2,
+                        Type = "DissertationStatus",
+                        Title = "ConfirmationGuideMaster2",
+                        Description="تاییدیه استاد راهنمای دوم"
+                    },new Baslookup
+                    {
+                        Id = 15,
+                        Code= 3,
+                        Type = "DissertationStatus",
+                        Title = "ConfirmationGuideMaster3",
+                        Description="تاییدیه استاد راهنمای سوم"
+                    },new Baslookup
+                    {
+                        Id = 16,
+                        Code= 4,
+                        Type = "DissertationStatus",
+                        Title = "ConfirmationEducationExpert",
+                        Description="تاییدیه کارشناس آموزش"
+                    },new Baslookup
+                    {
+                        Id = 17,
+                        Code= 5,
+                        Type = "DissertationStatus",
+                        Title = "ConfirmationPostgraduateEducationExpert",
+                        Description="تاییدیه کارشناس تحصیلات تکمیلی"
+                    },new Baslookup
+                    {
+                        Id = 18,
+                        Code= 6,
+                        Type = "DissertationStatus",
+                        Title = "ConfirmationDissertationExpert",
+                        Description="تاییدیه کارشناس امور پایان نامه"
+                    },new Baslookup
+                    {
+                        Id = 19,
+                        Code= -3333,
+                        Type = "DissertationStatus",
+                        Title = "ExpirDissertation",
+                        Description="رد پایان نامه"
+                    },
+                });
             });
             #endregion
 

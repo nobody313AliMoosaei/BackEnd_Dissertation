@@ -147,7 +147,7 @@ namespace BusinessLayer.Services.SignUp
 
                 var RoleUser = await _userManager.GetRolesAsync(user);
 
-                if (RoleUser == null || RoleUser.Count <= 0)
+                if (RoleUser == null || RoleUser.Count == 0)
                     sb.AppendLine("کاربر نقشی ندارد" + Environment.NewLine);
 
                 var Resualt = await _signInManager.
