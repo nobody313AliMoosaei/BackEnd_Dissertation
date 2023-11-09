@@ -8,7 +8,7 @@ namespace DataLayer.Entities
 {
     public partial class Baslookup
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         public int? Code { get; set; }
 

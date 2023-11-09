@@ -6,13 +6,8 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Models.OUTPUT.Teacher
 {
-    public class TeacherModelDTO
+    public class TeacherOutModelDTO:Models.INPUT.Teacher.TeacherInModelDTO
     {
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? NationalCode { get; set; }
-        public string? UserName { get; set; }
-        public string? College { get; set; }
-        public int MyProperty { get; set; }
+        public long Id { get; set; }
     }
 }

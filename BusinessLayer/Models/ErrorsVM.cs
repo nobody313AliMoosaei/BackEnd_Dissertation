@@ -12,6 +12,6 @@ namespace BusinessLayer.Models
         public string? Message { get; set; }
         public long Key { get; set; }
         public bool IsValid { get; set; } = false;
-        public string? Temp { get; set; }
+        public List<string?> ErrorList { get; set; } = new List<string?>();
     }
 }
