@@ -18,6 +18,9 @@ namespace DataLayer.Entities
 
         public string? Description { get; set; }
 
+        public string? Aux { get; set; }
+
+        public string? Aux2 { get; set; }
 
         public virtual ICollection<Users> Users { get; } = new List<Users>();
     }

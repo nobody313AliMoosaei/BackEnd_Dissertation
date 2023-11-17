@@ -61,7 +61,7 @@ namespace BusinessLayer.Services.SignUp
                 };
 
                 // ساخت کاربر
-                var Resualt = await _userManager.CreateAsync(newuser, _newUser.NationalCode);
+                var Resualt = await _userManager.CreateAsync(newuser, _newUser.NationalCode ?? "123456");
                 if (Resualt != null && Resualt.Succeeded)
                 {
                     // اضافه کردن نقش پیش فرض برای کاربر

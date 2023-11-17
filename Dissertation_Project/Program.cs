@@ -100,6 +100,11 @@ builder.Services.AddScoped<BusinessLayer.Services.Dissertation.DissertationBL>()
 builder.Services.AddScoped<BusinessLayer.Services.Administrator.AdministratorBL>();
 
 builder.Services.AddTransient<BusinessLayer.Services.Teacher.ITeacherManager, BusinessLayer.Services.Teacher.TeacherManager>();
+
+builder.Services.AddTransient<BusinessLayer.Services.GeneralService.IGeneralService, BusinessLayer.Services.GeneralService.GeneralService>();
+
+
+
 #endregion
 
 #region HangFire

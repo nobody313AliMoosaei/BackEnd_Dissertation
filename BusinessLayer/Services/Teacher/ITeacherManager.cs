@@ -15,6 +15,8 @@ namespace BusinessLayer.Services.Teacher
         Task<List<Models.OUTPUT.Teacher.TeacherOutModelDTO>> GetAllTeachers();
         // Get Teachers Of one College
         Task<List<Models.OUTPUT.Teacher.TeacherOutModelDTO>> GetTeachersCollege(long CollegeRef);
+
+        Task<Models.OUTPUT.Teacher.TeacherOutModelDTO> GetTeacher(long TeacherId);
         // Update Teacher
         Task<ErrorsVM> UpdateTeacher(long TeacherID, Models.INPUT.Teacher.TeacherInModelDTO teacher);
         // Delete Teacher

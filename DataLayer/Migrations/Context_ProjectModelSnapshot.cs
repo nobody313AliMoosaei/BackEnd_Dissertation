@@ -30,6 +30,12 @@ namespace DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Aux")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Aux2")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("Code")
                         .HasColumnType("int");
 
@@ -132,64 +138,64 @@ namespace DataLayer.Migrations
                         {
                             Id = 12L,
                             Code = 0,
-                            Description = "ثبت اوليه پایان نامه",
-                            Title = "Register",
+                            Description = "Register",
+                            Title = "ثبت اوليه پایان نامه",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 13L,
                             Code = 1,
-                            Description = "تاییدیه استاد راهنمای اول",
-                            Title = "ConfirmationGuideMaster",
+                            Description = "ConfirmationGuideMaster",
+                            Title = "تاییدیه استاد راهنمای اول",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 14L,
                             Code = 2,
-                            Description = "تاییدیه استاد راهنمای دوم",
-                            Title = "ConfirmationGuideMaster2",
+                            Description = "ConfirmationGuideMaster2",
+                            Title = "تاییدیه استاد راهنمای دوم",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 15L,
                             Code = 3,
-                            Description = "تاییدیه استاد راهنمای سوم",
-                            Title = "ConfirmationGuideMaster3",
+                            Description = "ConfirmationGuideMaster3",
+                            Title = "تاییدیه استاد راهنمای سوم",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 16L,
                             Code = 4,
-                            Description = "تاییدیه کارشناس آموزش",
-                            Title = "ConfirmationEducationExpert",
+                            Description = "ConfirmationEducationExpert",
+                            Title = "تاییدیه کارشناس آموزش",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 17L,
                             Code = 5,
-                            Description = "تاییدیه کارشناس تحصیلات تکمیلی",
-                            Title = "ConfirmationPostgraduateEducationExpert",
+                            Description = "ConfirmationPostgraduateEducationExpert",
+                            Title = "تاییدیه کارشناس تحصیلات تکمیلی",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 18L,
                             Code = 6,
-                            Description = "تاییدیه کارشناس امور پایان نامه",
-                            Title = "ConfirmationDissertationExpert",
+                            Description = "ConfirmationDissertationExpert",
+                            Title = "تاییدیه کارشناس امور پایان نامه",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 19L,
                             Code = -3333,
-                            Description = "رد پایان نامه",
-                            Title = "ExpirDissertation",
+                            Description = "ExpirDissertation",
+                            Title = "رد پایان نامه",
                             Type = "DissertationStatus"
                         });
                 });
@@ -566,22 +572,6 @@ namespace DataLayer.Migrations
                         .HasFilter("([NormalizedUserName] IS NOT NULL)");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 2L,
-                            AccessFailedCount = 0,
-                            Active = true,
-                            ConcurrencyStamp = "55261ef8-3887-43a2-869c-76c5fd2e0590",
-                            EmailConfirmed = false,
-                            FirstName = "ادمين",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEJQ2xMKQO6ll2P6o4UFrAShcHRrvglxmUrUIip9vHL+pHnxXKHtE4zAQtViz3NuqQ==",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>

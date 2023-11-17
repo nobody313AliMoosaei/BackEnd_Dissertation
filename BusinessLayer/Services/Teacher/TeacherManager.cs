@@ -95,11 +95,16 @@ namespace BusinessLayer.Services.Teacher
                     var teacher = await _context.Users.Where(o => o.Id == TeacherId && o.Active == true).FirstOrDefaultAsync();
                     if (teacher != null)
                     {
-                        teacher.Active = false;
-                        _context.Users.Update(teacher);
-                        await _context.SaveChangesAsync();
-                        Error.IsValid = true;
-                        Error.Message = "استاد راهنما حذف شد";
+                        if (!await IsTeacher(teacher))
+                            Error.Message = "کاربر استاد راهنما نمی‌باشد";
+                        else
+                        {
+                            teacher.Active = false;
+                            _context.Users.Update(teacher);
+                            await _context.SaveChangesAsync();
+                            Error.IsValid = true;
+                            Error.Message = "استاد راهنما حذف شد";
+                        }
                     }
                     else
                         Error.ErrorList.Add("استاد راهنمايي يافت نشد");
@@ -136,8 +141,8 @@ namespace BusinessLayer.Services.Teacher
                          LastName = o.LastName,
                          UserName = o.UserName,
                          NationalCode = o.NationalCode,
-                         CollegRef = o.CollegeRef.Value,
-                         College = o.CollegeRefNavigation.Title
+                         CollegRef = o.CollegeRef.HasValue ? o.CollegeRef.Value : 0,
+                         College = o.CollegeRefNavigation != null ? o.CollegeRefNavigation.Title : ""
                      }).ToList();
             }
             catch
@@ -145,6 +150,21 @@ namespace BusinessLayer.Services.Teacher
 
             }
             return lstTeacher;
+        }
+
+        public async Task<TeacherOutModelDTO> GetTeacher(long TeacherId)
+        {
+            try
+            {
+                if (TeacherId == 0)
+                    return null;
+
+                return (await this.GetAllTeachers()).Where(o => o.Id == TeacherId).FirstOrDefault();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public async Task<List<TeacherOutModelDTO>> GetTeachersCollege(long CollegeRef)
@@ -237,6 +257,21 @@ namespace BusinessLayer.Services.Teacher
             {
             }
             return false;
+        }
+
+        private async Task<bool> IsTeacher(DataLayer.Entities.Users? _user)
+        {
+            try
+            {
+                if (_user == null)
+                    return false;
+
+                return await _userManager.IsInRoleAsync(_user, DataLayer.Tools.RoleName_enum.GuideMaster.ToString());
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
