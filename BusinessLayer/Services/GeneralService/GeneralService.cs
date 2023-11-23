@@ -271,15 +271,7 @@ namespace BusinessLayer.Services.GeneralService
 
                 var Dissertation = await _context.Dissertations.Where(o => o.DissertationId == DissertationId
                  && o.StatusDissertation >= (int)DataLayer.Tools.Dissertation_Status.Register)
-
                     .Include(o => o.Comments)
-                    .ThenInclude(o => o.ReplayCommentRefNavigations)
-                    .ThenInclude(o => o.CommentRefNavigation)
-
-                    .Include(o => o.Comments)
-                    .ThenInclude(o => o.ReplayCommentRefNavigations)
-                    .ThenInclude(o => o.ReplayNavigation)
-
                     .FirstOrDefaultAsync();
                 if (Dissertation == null)
                 {
@@ -299,17 +291,24 @@ namespace BusinessLayer.Services.GeneralService
                     }
                     else // Replay
                     {
-                        Dissertation.Comments.Where(o => o.CommentId == CommentId).FirstOrDefault()
-                            .ReplayCommentRefNavigations.Add(new Replay
+                        Dissertation.Comments.Where(o => o.Id == CommentId).FirstOrDefault()?
+                            .InverseInversCommentRefNavigation.Add(new Comments
                             {
-
+                                Title= Title,
+                                Description= Dsr,
                             });
                     }
+                    _context.Dissertations.Update(Dissertation);
+                    await _context.SaveChangesAsync();
+                    Err.Message = "کامنت ثبت شد";
+                    Err.IsValid = true;
                 }
             }
             catch (Exception ex)
             {
-
+                Err.ErrorList.Add(ex.Message);
+                if (ex.InnerException != null)
+                    Err.ErrorList.Add(ex.InnerException.Message);
             }
             return Err;
         }

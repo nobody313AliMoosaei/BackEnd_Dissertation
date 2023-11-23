@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    //[Authorize(Roles ="Admin")]
+    [Authorize(Roles = "Admin")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]

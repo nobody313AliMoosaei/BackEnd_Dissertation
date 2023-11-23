@@ -4,6 +4,7 @@ using DataLayer.DataBase;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(Context_Project))]
-    partial class Context_ProjectModelSnapshot : ModelSnapshot
+    [Migration("20231123022439_ChangeCommentsTB")]
+    partial class ChangeCommentsTB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -556,23 +559,6 @@ namespace DataLayer.Migrations
                         .HasFilter("([NormalizedUserName] IS NOT NULL)");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            AccessFailedCount = 0,
-                            Active = true,
-                            ConcurrencyStamp = "70a52898-8da8-4928-a01a-0bf263f3ed06",
-                            EmailConfirmed = false,
-                            FirstName = "Ali",
-                            LastName = "Moosaei",
-                            LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAECj4NT8lrikZFClrFPC8twPx+S1/oWchdVTHyKWMeCWBxYBGM6RQguQbnafnYrn+Lg==",
-                            PhoneNumberConfirmed = false,
-                            TwoFactorEnabled = false,
-                            UserName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
@@ -657,13 +643,6 @@ namespace DataLayer.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1L,
-                            RoleId = 1L
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>

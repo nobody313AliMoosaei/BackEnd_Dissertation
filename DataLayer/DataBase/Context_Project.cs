@@ -22,7 +22,6 @@ namespace DataLayer.DataBase
         public virtual DbSet<Dissertations> Dissertations { get; set; } = null!;
         public virtual DbSet<KeyWord> KeyWords { get; set; } = null!;
         public virtual DbSet<Logs> Logs { get; set; } = null!;
-        public virtual DbSet<Replay> Replays { get; set; } = null!;
         public virtual DbSet<Teachers> Teachers { get; set; } = null!;
         public virtual DbSet<Baslookup> Baslookups { get; set; }
 
@@ -47,51 +46,48 @@ namespace DataLayer.DataBase
                     .HasForeignKey(d => d.CollegeRef)
                     .HasConstraintName("FK_aspnetUsers_BasLookup");
             });
-            
+
             modelBuilder.Entity<Comments>(entity =>
             {
-                entity.Property(e => e.InsertDateTime).HasColumnName("Insert_DateTime");
+                entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC077B918307");
 
-                entity.HasOne(d => d.DissertationRefNavigation)
-                    .WithMany(p => p.Comments)
+                entity.Property(e => e.Description).HasMaxLength(1);
+                entity.Property(e => e.Title).HasMaxLength(150);
+
+                entity.HasOne(d => d.DissertationRefNavigation).WithMany(p => p.Comments)
                     .HasForeignKey(d => d.DissertationRef)
-                    .HasConstraintName("FK__Comments__Disser__3B75D760");
+                    .HasConstraintName("FK__Comments__Disser__7E37BEF6");
 
-                entity.HasOne(d => d.UserRefNavigation)
-                    .WithMany(p => p.Comments)
+                entity.HasOne(d => d.InversCommentRefNavigation).WithMany(p => p.InverseInversCommentRefNavigation)
+                    .HasForeignKey(d => d.InversCommentRef)
+                    .HasConstraintName("FK__Comments__Invers__7F2BE32F");
+
+                entity.HasOne(d => d.UserRefNavigation).WithMany(p => p.Comments)
                     .HasForeignKey(d => d.UserRef)
-                    .HasConstraintName("FK__Comments__UserRe__3A81B327");
+                    .HasConstraintName("FK__Comments__UserRe__7D439ABD");
             });
 
             modelBuilder.Entity<Dissertations>(entity =>
             {
-                entity.HasKey(e => e.DissertationId);
+                entity.HasKey(o => o.DissertationId);
+                entity.HasIndex(e => e.StudentId, "IX_Dissertations_StudentId");
 
                 entity.Property(e => e.DissertationId).HasColumnName("Dissertation_Id");
-
                 entity.Property(e => e.AllowEdit).HasColumnName("Allow_Edit");
-
                 entity.Property(e => e.DissertationFileAddress).HasColumnName("Dissertation_FileAddress");
-
                 entity.Property(e => e.DissertationFileName).HasColumnName("Dissertation_FileName");
-
                 entity.Property(e => e.ProceedingsFileAddress).HasColumnName("Proceedings_FileAddress");
-
                 entity.Property(e => e.ProceedingsFileName).HasColumnName("Proceedings_FileName");
-
                 entity.Property(e => e.StatusDissertation).HasColumnName("Status_Dissertation");
-
                 entity.Property(e => e.TermNumber).HasColumnName("Term_Number");
-
                 entity.Property(e => e.TitleEnglish).HasColumnName("Title_English");
-
                 entity.Property(e => e.TitlePersian).HasColumnName("Title_Persian");
 
-                entity.HasOne(d => d.Student)
-                    .WithMany(p => p.Dissertations)
+                entity.HasOne(d => d.Student).WithMany(p => p.Dissertations)
                     .HasForeignKey(d => d.StudentId)
                     .HasConstraintName("FK__Dissertat__Stude__34C8D9D1");
             });
+
 
             modelBuilder.Entity<KeyWord>(entity =>
             {
@@ -103,23 +99,6 @@ namespace DataLayer.DataBase
                     .WithMany(p => p.KeyWords)
                     .HasForeignKey(d => d.DissertationRef)
                     .HasConstraintName("FK__KeyWord__Dissert__37A5467C");
-            });
-
-            modelBuilder.Entity<Replay>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-
-                entity.ToTable("Replay");
-
-                entity.HasOne(d => d.CommentRefNavigation)
-                    .WithMany(p => p.ReplayCommentRefNavigations)
-                    .HasForeignKey(d => d.CommentRef)
-                    .HasConstraintName("FK__Replay__CommentR__3E52440B");
-
-                entity.HasOne(d => d.ReplayNavigation)
-                    .WithMany(p => p.ReplayReplayNavigations)
-                    .HasForeignKey(d => d.ReplayId)
-                    .HasConstraintName("FK__Replay__ReplayId__3F466844");
             });
 
             modelBuilder.Entity<Teachers>(entity =>
@@ -354,6 +333,31 @@ namespace DataLayer.DataBase
                         Description= "ExpirDissertation",
                         Title="رد پایان نامه"
                     },
+                });
+            });
+            #endregion
+
+            #region SetAdmin
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.HasData(new Entities.Users
+                {
+                    Id = 1,
+                    UserName = "Admin",
+                    Active = true,
+                    FirstName = "Ali",
+                    LastName = "Moosaei",
+                    SecurityStamp= "K7JCQNNN4ULGGODXGAHOHXHF2MHWMYZU",
+                    PasswordHash = "AQAAAAIAAYagAAAAECj4NT8lrikZFClrFPC8twPx+S1/oWchdVTHyKWMeCWBxYBGM6RQguQbnafnYrn+Lg==" // administrator
+                });
+            });
+
+            modelBuilder.Entity<IdentityUserRole<long>>(entity =>
+            {
+                entity.HasData(new IdentityUserRole<long>
+                {
+                    UserId = 1,
+                    RoleId = 1
                 });
             });
             #endregion

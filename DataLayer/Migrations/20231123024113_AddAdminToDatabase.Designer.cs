@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(Context_Project))]
-    [Migration("20231109154956_Add Admin")]
-    partial class AddAdmin
+    [Migration("20231123024113_AddAdminToDatabase")]
+    partial class AddAdminToDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,12 @@ namespace DataLayer.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Aux")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Aux2")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Code")
                         .HasColumnType("int");
@@ -135,95 +141,102 @@ namespace DataLayer.Migrations
                         {
                             Id = 12L,
                             Code = 0,
-                            Description = "ثبت اوليه پایان نامه",
-                            Title = "Register",
+                            Description = "Register",
+                            Title = "ثبت اوليه پایان نامه",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 13L,
                             Code = 1,
-                            Description = "تاییدیه استاد راهنمای اول",
-                            Title = "ConfirmationGuideMaster",
+                            Description = "ConfirmationGuideMaster",
+                            Title = "تاییدیه استاد راهنمای اول",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 14L,
                             Code = 2,
-                            Description = "تاییدیه استاد راهنمای دوم",
-                            Title = "ConfirmationGuideMaster2",
+                            Description = "ConfirmationGuideMaster2",
+                            Title = "تاییدیه استاد راهنمای دوم",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 15L,
                             Code = 3,
-                            Description = "تاییدیه استاد راهنمای سوم",
-                            Title = "ConfirmationGuideMaster3",
+                            Description = "ConfirmationGuideMaster3",
+                            Title = "تاییدیه استاد راهنمای سوم",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 16L,
                             Code = 4,
-                            Description = "تاییدیه کارشناس آموزش",
-                            Title = "ConfirmationEducationExpert",
+                            Description = "ConfirmationEducationExpert",
+                            Title = "تاییدیه کارشناس آموزش",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 17L,
                             Code = 5,
-                            Description = "تاییدیه کارشناس تحصیلات تکمیلی",
-                            Title = "ConfirmationPostgraduateEducationExpert",
+                            Description = "ConfirmationPostgraduateEducationExpert",
+                            Title = "تاییدیه کارشناس تحصیلات تکمیلی",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 18L,
                             Code = 6,
-                            Description = "تاییدیه کارشناس امور پایان نامه",
-                            Title = "ConfirmationDissertationExpert",
+                            Description = "ConfirmationDissertationExpert",
+                            Title = "تاییدیه کارشناس امور پایان نامه",
                             Type = "DissertationStatus"
                         },
                         new
                         {
                             Id = 19L,
                             Code = -3333,
-                            Description = "رد پایان نامه",
-                            Title = "ExpirDissertation",
+                            Description = "ExpirDissertation",
+                            Title = "رد پایان نامه",
                             Type = "DissertationStatus"
                         });
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
-                    b.Property<long>("CommentId")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("CommentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1)
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<long?>("DissertationRef")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("InsertDateTime")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("Insert_DateTime");
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("InversCommentRef")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<long?>("UserRef")
                         .HasColumnType("bigint");
 
-                    b.HasKey("CommentId");
+                    b.HasKey("Id")
+                        .HasName("PK__Comments__3214EC077B918307");
 
                     b.HasIndex("DissertationRef");
+
+                    b.HasIndex("InversCommentRef");
 
                     b.HasIndex("UserRef");
 
@@ -286,7 +299,7 @@ namespace DataLayer.Migrations
 
                     b.HasKey("DissertationId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex(new[] { "StudentId" }, "IX_Dissertations_StudentId");
 
                     b.ToTable("Dissertations");
                 });
@@ -338,29 +351,6 @@ namespace DataLayer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Logs");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.Replay", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long?>("CommentRef")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("ReplayId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CommentRef");
-
-                    b.HasIndex("ReplayId");
-
-                    b.ToTable("Replay", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Roles", b =>
@@ -573,17 +563,18 @@ namespace DataLayer.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 2L,
+                            Id = 3L,
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "55261ef8-3887-43a2-869c-76c5fd2e0590",
+                            ConcurrencyStamp = "0ec158d8-cb36-49f0-b87b-2e230135cbb8",
                             EmailConfirmed = false,
-                            FirstName = "ادمين",
+                            FirstName = "Ali",
+                            LastName = "Moosaei",
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAIAAYagAAAAEEJQ2xMKQO6ll2P6o4UFrAShcHRrvglxmUrUIip9vHL+pHnxXKHtE4zAQtViz3NuqQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECj4NT8lrikZFClrFPC8twPx+S1/oWchdVTHyKWMeCWBxYBGM6RQguQbnafnYrn+Lg==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "Admin"
                         });
                 });
 
@@ -669,6 +660,13 @@ namespace DataLayer.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 3L,
+                            RoleId = 1L
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
@@ -695,14 +693,21 @@ namespace DataLayer.Migrations
                     b.HasOne("DataLayer.Entities.Dissertations", "DissertationRefNavigation")
                         .WithMany("Comments")
                         .HasForeignKey("DissertationRef")
-                        .HasConstraintName("FK__Comments__Disser__3B75D760");
+                        .HasConstraintName("FK__Comments__Disser__7E37BEF6");
+
+                    b.HasOne("DataLayer.Entities.Comments", "InversCommentRefNavigation")
+                        .WithMany("InverseInversCommentRefNavigation")
+                        .HasForeignKey("InversCommentRef")
+                        .HasConstraintName("FK__Comments__Invers__7F2BE32F");
 
                     b.HasOne("DataLayer.Entities.Users", "UserRefNavigation")
                         .WithMany("Comments")
                         .HasForeignKey("UserRef")
-                        .HasConstraintName("FK__Comments__UserRe__3A81B327");
+                        .HasConstraintName("FK__Comments__UserRe__7D439ABD");
 
                     b.Navigation("DissertationRefNavigation");
+
+                    b.Navigation("InversCommentRefNavigation");
 
                     b.Navigation("UserRefNavigation");
                 });
@@ -725,23 +730,6 @@ namespace DataLayer.Migrations
                         .HasConstraintName("FK__KeyWord__Dissert__37A5467C");
 
                     b.Navigation("DissertationRefNavigation");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.Replay", b =>
-                {
-                    b.HasOne("DataLayer.Entities.Comments", "CommentRefNavigation")
-                        .WithMany("ReplayCommentRefNavigations")
-                        .HasForeignKey("CommentRef")
-                        .HasConstraintName("FK__Replay__CommentR__3E52440B");
-
-                    b.HasOne("DataLayer.Entities.Comments", "ReplayNavigation")
-                        .WithMany("ReplayReplayNavigations")
-                        .HasForeignKey("ReplayId")
-                        .HasConstraintName("FK__Replay__ReplayId__3F466844");
-
-                    b.Navigation("CommentRefNavigation");
-
-                    b.Navigation("ReplayNavigation");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Teachers", b =>
@@ -828,9 +816,7 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Comments", b =>
                 {
-                    b.Navigation("ReplayCommentRefNavigations");
-
-                    b.Navigation("ReplayReplayNavigations");
+                    b.Navigation("InverseInversCommentRefNavigation");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Dissertations", b =>

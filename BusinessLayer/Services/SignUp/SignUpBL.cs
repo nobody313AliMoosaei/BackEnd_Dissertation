@@ -164,7 +164,8 @@ namespace BusinessLayer.Services.SignUp
 
                     model = new LoginUserInfoDTO
                     {
-                        FullName = (user.FirstName ?? "" + " " + user.LastName ?? "").Trim(),
+                        FullName = ((user.FirstName.IsNullOrEmpty() ? "" : user.FirstName)
+                        + " " + (user.LastName.IsNullOrEmpty() ? "" : user.LastName)).Trim(),
                         UserName = user.UserName,
                         Role = RoleUser.FirstOrDefault(),
                         Token = Token
