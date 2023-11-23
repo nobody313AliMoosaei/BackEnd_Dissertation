@@ -43,10 +43,10 @@ namespace BusinessLayer.Services.Administrator
                     {
                         DissertationId = o.DissertationId,
                         Abstract = o.Abstract,
-                        DateStr = o.DateTime.Value.ToString(),
+                        DateStr = o.RegisterDateTime.Value.ToString(),
                         TitlePersian = o.TitlePersian,
                         TitleEnglish = o.TitleEnglish,
-                        TimeStr = o.DateTime.Value.ToShortTimeString(),
+                        TimeStr = o.RegisterDateTime.Value.ToShortTimeString(),
                         TermNumber = o.TermNumber,
                         StudentId = o.StudentId,
                         StatusDissertation = o.StatusDissertation,
@@ -509,14 +509,14 @@ namespace BusinessLayer.Services.Administrator
                         .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
                         {
                             Abstract = o.Abstract,
-                            DateStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToString() : "",
+                            DateStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToPersianDateTime().ToString() : "",
                             DissertationId = o.DissertationId,
                             DissertationFileAddress = o.DissertationFileAddress,
                             ProceedingsFileAddress = o.ProceedingsFileAddress,
                             StudentId = o.StudentId,
                             StatusDissertation = o.StatusDissertation,
                             TermNumber = o.TermNumber,
-                            TimeStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToLongTimeString():"",
+                            TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToPersianDateTime().ToLongTimeString():"",
                             TitleEnglish = o.TitleEnglish,
                             TitlePersian = o.TitlePersian,
                             DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault() == null ? ""
@@ -530,14 +530,14 @@ namespace BusinessLayer.Services.Administrator
                         .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
                         {
                             Abstract = o.Abstract,
-                            DateStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToString() : "",
+                            DateStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToPersianDateTime().ToString() : "",
                             DissertationId = o.DissertationId,
                             DissertationFileAddress = o.DissertationFileAddress,
                             ProceedingsFileAddress = o.ProceedingsFileAddress,
                             StudentId = o.StudentId,
                             StatusDissertation = o.StatusDissertation,
                             TermNumber = o.TermNumber,
-                            TimeStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToLongTimeString() : "",
+                            TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToPersianDateTime().ToLongTimeString() : "",
                             TitleEnglish = o.TitleEnglish,
                             TitlePersian = o.TitlePersian,
                             DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault() == null ? ""

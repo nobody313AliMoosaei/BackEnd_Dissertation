@@ -256,9 +256,6 @@ namespace DataLayer.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("Allow_Edit");
 
-                    b.Property<DateTime?>("DateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("DissertationFileAddress")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Dissertation_FileAddress");
@@ -267,6 +264,9 @@ namespace DataLayer.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Dissertation_FileName");
 
+                    b.Property<DateTime?>("EditDateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ProceedingsFileAddress")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Proceedings_FileAddress");
@@ -274,6 +274,9 @@ namespace DataLayer.Migrations
                     b.Property<string>("ProceedingsFileName")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Proceedings_FileName");
+
+                    b.Property<DateTime?>("RegisterDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<int?>("StatusDissertation")
                         .HasColumnType("int")
@@ -293,6 +296,9 @@ namespace DataLayer.Migrations
                     b.Property<string>("TitlePersian")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Title_Persian");
+
+                    b.Property<int>("UpdateCnt")
+                        .HasColumnType("int");
 
                     b.HasKey("DissertationId");
 
@@ -563,13 +569,14 @@ namespace DataLayer.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "70a52898-8da8-4928-a01a-0bf263f3ed06",
+                            ConcurrencyStamp = "ba95b2d7-be51-4dfc-a50d-833540df2672",
                             EmailConfirmed = false,
                             FirstName = "Ali",
                             LastName = "Moosaei",
                             LockoutEnabled = false,
                             PasswordHash = "AQAAAAIAAYagAAAAECj4NT8lrikZFClrFPC8twPx+S1/oWchdVTHyKWMeCWBxYBGM6RQguQbnafnYrn+Lg==",
                             PhoneNumberConfirmed = false,
+                            SecurityStamp = "K7JCQNNN4ULGGODXGAHOHXHF2MHWMYZU",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });

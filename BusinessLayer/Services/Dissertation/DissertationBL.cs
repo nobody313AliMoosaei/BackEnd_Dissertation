@@ -145,7 +145,8 @@ namespace BusinessLayer.Services.Dissertation
                     TitlePersian = data.Title_Persian,
                     TitleEnglish = data.Title_English,
                     TermNumber = data.Term_Number,
-                    Abstract = data.Abstract
+                    Abstract = data.Abstract,
+                    RegisterDateTime = DateTime.Now.ToPersianDateTime()
                 };
                 if (data.KeyWords != null && data.KeyWords.Count > 0)
                 {
@@ -245,10 +246,10 @@ namespace BusinessLayer.Services.Dissertation
                 model.TermNumber = dissertation.TermNumber;
                 model.StatusDissertation = dissertation.StatusDissertation;
                 model.DissertationId = dissertation.DissertationId;
-                if (dissertation.DateTime != null && dissertation.DateTime.HasValue)
+                if (dissertation.RegisterDateTime != null && dissertation.RegisterDateTime.HasValue)
                 {
-                    model.DateStr = $"{dissertation.DateTime.Value.Year}/{dissertation.DateTime.Value.Month}/{dissertation.DateTime.Value.Day}";
-                    model.TimeStr = $"{dissertation.DateTime.Value.Hour}:{dissertation.DateTime.Value.Minute}:{dissertation.DateTime.Value.Second}";
+                    model.DateStr = $"{dissertation.RegisterDateTime.Value.Year}/{dissertation.RegisterDateTime.Value.Month}/{dissertation.RegisterDateTime.Value.Day}";
+                    model.TimeStr = $"{dissertation.RegisterDateTime.Value.Hour}:{dissertation.RegisterDateTime.Value.Minute}:{dissertation.RegisterDateTime.Value.Second}";
                 }
                 model.DisplayStatusDissertation = DisplayStatusDissertation(dissertation.StatusDissertation);
                 return model;
@@ -393,7 +394,7 @@ namespace BusinessLayer.Services.Dissertation
                     if (UDissertation.TermNumber.IsNullOrEmpty())
                         Dissertation.TermNumber = UDissertation.TermNumber;
 
-                    Dissertation.DateTime = DateTime.Now.ToPersianDateTime();
+                    Dissertation.RegisterDateTime = DateTime.Now.ToPersianDateTime();
                     if (UDissertation.KeyWords != null && UDissertation.KeyWords.Count > 0)
                     {
                         Dissertation.KeyWords = new List<KeyWord>();

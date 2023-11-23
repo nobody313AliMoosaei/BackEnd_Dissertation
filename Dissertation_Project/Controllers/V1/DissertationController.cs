@@ -26,7 +26,7 @@ namespace Dissertation_Project.Controllers.V1
         {
             try
             {
-                if (ModelState.IsValid)
+                if (!ModelState.IsValid)
                     return BadRequest("اطلاعات ارسال شده ناقص مي‌باشد");
 
                 var userId = User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -61,6 +61,13 @@ namespace Dissertation_Project.Controllers.V1
             {
                 return BadRequest("خطا در اجراي برنامه");
             }
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateDissertation(long Dis_Id, IFormFile DissertationFile, IFormFile ProFile,
+            [FromForm] BusinessLayer.Models.INPUT.Dissertation.PreRegisterDataDTO PreRegisterData)
+        {
+            return Ok();
         }
 
 

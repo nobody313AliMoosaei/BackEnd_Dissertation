@@ -37,6 +37,7 @@ namespace BusinessLayer.Services.GeneralService
 
         // Add Teacher To User 
 
+
         // GetAll Roles
         Task<List<Models.OUTPUT.Administrator.StatusModelDTO>> GetAllRoles();
 

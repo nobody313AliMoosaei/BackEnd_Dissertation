@@ -21,7 +21,9 @@ namespace DataLayer.Entities
         public string? DissertationFileAddress { get; set; }
         public string? ProceedingsFileName { get; set; }
         public string? ProceedingsFileAddress { get; set; }
-        public DateTime? DateTime { get; set; }
+        public DateTime? RegisterDateTime { get; set; }
+        public DateTime? EditDateTime { get; set; }
+        public int UpdateCnt { get; set; } = 0;
         public long? StudentId { get; set; } = 0;
         public int? StatusDissertation { get; set; }
 

@@ -135,10 +135,17 @@ namespace BusinessLayer.Services.Teacher
             {
                 // برای گرفتن CollegeRefNavigation باید کاربرها با نقش مدنظر را پیدا کرده و CollegeRefNavigation را Include کنیم
 
-                var ttt = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString()));
-                var Users =_context.Users.AsQueryable();
-                var Roles =_context.UserRoles.AsQueryable();
-                var Result = Users.Join(Roles, x => x.Id, y => y.UserId, (x, y) =>x);
+                var userssssss = await _context.Users.AsQueryable()
+                    .Join(_context.Baslookups, x => x.CollegeRef, y => y.Id, (x, y) => new TeacherOutModelDTO
+                    {
+                        Id = x.Id,
+                        College = y.Title,
+                        CollegRef = x.CollegeRef.HasValue ? x.CollegeRef.Value : 0,
+                        FirstName = x.FirstName,
+                        LastName = x.LastName,
+                        NationalCode = x.NationalCode,
+                        UserName = x.UserName
+                    }).ToListAsync();
 
 
                 lstTeacher = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString()))
