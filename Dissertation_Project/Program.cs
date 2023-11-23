@@ -20,7 +20,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(option =>
 {
-    option.IdleTimeout = TimeSpan.FromHours(1);
+    option.IdleTimeout = TimeSpan.FromDays(1);
 });
 #endregion
 
@@ -49,7 +49,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = false;
 
     // User Config
-    options.User.RequireUniqueEmail = true;
+    options.User.RequireUniqueEmail = false;
+
+    // SignIn
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+
 });
 builder.Services.ConfigureApplicationCookie(options =>
 {

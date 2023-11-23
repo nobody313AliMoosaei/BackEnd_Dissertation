@@ -210,8 +210,8 @@ namespace BusinessLayer.Services.SignUp
                     string title = "";
                     string body = "";
                     // عنوان رایانامه
-                    title += $"سامانه پایان نامه دانشگاه شهید رجایی تهران" + Environment.NewLine;
                     title += $"فراموشی رمز عبور : ";
+                    title += $"(سامانه پایان نامه دانشگاه شهید رجایی تهران)";
 
                     // بدنه رایانامه
                     string token = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -219,7 +219,7 @@ namespace BusinessLayer.Services.SignUp
                     string Callback_Url = $"{Rout}?User_Id={user.Id}&Token={token}";
 
                     body += $"برای تغییر رمز عبور روی لینک پایین کلیک کنید : ";
-                    body += $"<a> href={Callback_Url}>تغییر رمز عبور</a>";
+                    body += $"<a href={Callback_Url}>تغییر رمز عبور</a>";
 
                     bool Resualt_Send_Email = await _emailSender.SendEmailAsync(user.Email, title.ToString(), body.ToString());
                     if (Resualt_Send_Email)

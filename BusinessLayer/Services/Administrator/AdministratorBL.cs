@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Models;
 using BusinessLayer.Models.INPUT.SignUp;
+using BusinessLayer.Models.OUTPUT.Administrator;
 using BusinessLayer.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -70,9 +71,14 @@ namespace BusinessLayer.Services.Administrator
         }
 
         // تغییر وضعیت پایان نامه
-        public async Task<ErrorsVM> ChangeDissertationStatus(long dissertationId, DataLayer.Tools.Dissertation_Status XDisStatus)
+        public async Task<ErrorsVM> ChangeDissertationStatus(long dissertationId, string XDisStatus)
         {
             return await _generalService.ChangeDissertationStatus(dissertationId, XDisStatus);
+        }
+
+        public async Task<List<StatusModelDTO>> GetStatusByType(string StatusType)
+        {
+            return await _generalService.GetStatus(StatusType);
         }
 
         // مشاهده تمام کاربران
@@ -479,7 +485,7 @@ namespace BusinessLayer.Services.Administrator
                     Err.IsValid = true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
@@ -488,6 +494,63 @@ namespace BusinessLayer.Services.Administrator
             return Err;
         }
 
+        // مشاهده پایان نامه های در جریان و رد شده
+        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetDissertationsByStatus( int StatusId = 1)
+        {
+            var model = new List<Models.OUTPUT.Dissertation.DissertationModelOutPut>();
+            try
+            {
+                var DisplayStautsDissertation = await _generalService.GetStatus(DataLayer.Tools.BASLookupType.DissertationStatus.ToString());
 
+                if (StatusId == 1) // پایان نامه های فعال
+                {
+                    model = await _context.Dissertations
+                        .Where(o => o.StatusDissertation >= (int)DataLayer.Tools.Dissertation_Status.Register)
+                        .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
+                        {
+                            Abstract = o.Abstract,
+                            DateStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToString() : "",
+                            DissertationId = o.DissertationId,
+                            DissertationFileAddress = o.DissertationFileAddress,
+                            ProceedingsFileAddress = o.ProceedingsFileAddress,
+                            StudentId = o.StudentId,
+                            StatusDissertation = o.StatusDissertation,
+                            TermNumber = o.TermNumber,
+                            TimeStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToLongTimeString():"",
+                            TitleEnglish = o.TitleEnglish,
+                            TitlePersian = o.TitlePersian,
+                            DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault() == null ? ""
+                            : DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault().Title
+                        }).ToListAsync();
+                }
+                else // پایان نامه های غیر فعال
+                {
+                    model = await _context.Dissertations
+                        .Where(o => o.StatusDissertation == (int)DataLayer.Tools.Dissertation_Status.ExpirDissertation)
+                        .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
+                        {
+                            Abstract = o.Abstract,
+                            DateStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToString() : "",
+                            DissertationId = o.DissertationId,
+                            DissertationFileAddress = o.DissertationFileAddress,
+                            ProceedingsFileAddress = o.ProceedingsFileAddress,
+                            StudentId = o.StudentId,
+                            StatusDissertation = o.StatusDissertation,
+                            TermNumber = o.TermNumber,
+                            TimeStr = o.DateTime.HasValue ? o.DateTime.Value.ToPersianDateTime().ToLongTimeString() : "",
+                            TitleEnglish = o.TitleEnglish,
+                            TitlePersian = o.TitlePersian,
+                            DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault() == null ? ""
+                            : DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault().Title
+                        }).ToListAsync();
+                }
+            }
+            catch
+            {
+
+            }
+            return model;
+        }
+    
     }
 }

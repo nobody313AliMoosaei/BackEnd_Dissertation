@@ -40,7 +40,8 @@ namespace BusinessLayer.Services.Teacher
                     if (newTeacher.NationalCode.IsNullOrEmpty())
                         Error.ErrorList.Add("وارد کردن کدملي استاد راهنما الزامي است");
 
-                    var CollegeOfTeacher = await _context.Baslookups.Where(o => o.Id == newTeacher.CollegRef).FirstOrDefaultAsync();
+                    var CollegeOfTeacher = await _context.Baslookups.Where(o => o.Type.ToLower() == DataLayer.Tools.BASLookupType.CollegesUni.ToString().ToLower()
+                                                                                && o.Id == newTeacher.CollegRef).FirstOrDefaultAsync();
                     if (CollegeOfTeacher != null)
                     {
                         var _newUser = new DataLayer.Entities.Users
@@ -132,6 +133,14 @@ namespace BusinessLayer.Services.Teacher
             var lstTeacher = new List<TeacherOutModelDTO>();
             try
             {
+                // برای گرفتن CollegeRefNavigation باید کاربرها با نقش مدنظر را پیدا کرده و CollegeRefNavigation را Include کنیم
+
+                var ttt = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString()));
+                var Users =_context.Users.AsQueryable();
+                var Roles =_context.UserRoles.AsQueryable();
+                var Result = Users.Join(Roles, x => x.Id, y => y.UserId, (x, y) =>x);
+
+
                 lstTeacher = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString()))
                      .Where(o => o.Active == true)
                      .Select(o => new TeacherOutModelDTO

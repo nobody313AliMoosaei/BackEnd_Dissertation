@@ -1,0 +1,5 @@
+Scaffold-DbContext "Server=ALIMOOSAEI\SQL_SERVER2019; Initial Catalog=Exam_Bekrino; TrustServerCertificate=True; MultiSubnetFailover=True; Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models000 -ContextDir Models000/Context000 -Force
+
+
+
+

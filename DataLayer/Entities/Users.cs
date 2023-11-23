@@ -23,6 +23,8 @@ namespace DataLayer.Entities
 
         public long? CollegeRef { get; set; }
 
+        public override string? Email { get; set; } = null;
+
         // -----------------     ---------------------------
         public virtual ICollection<Comments> Comments { get; set; }
         public virtual ICollection<Dissertations> Dissertations { get; set; }

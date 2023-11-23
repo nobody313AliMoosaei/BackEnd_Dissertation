@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Models;
+using BusinessLayer.Models.OUTPUT.Administrator;
 using BusinessLayer.Models.OUTPUT.Teacher;
 using BusinessLayer.Services.UploadFile;
 using Microsoft.AspNetCore.Http;
@@ -12,9 +13,6 @@ namespace BusinessLayer.Services.GeneralService
 {
     public interface IGeneralService
     {
-        // Display Dissertation status
-        Task<string?> DisplayDissertationstatus(int code);
-        Task<List<DataLayer.Entities.Baslookup>?> GetAllDissertationStatus();
         // Display CollegeUni
         Task<string?> DisplayCollegeUni(int code);
         Task<List<DataLayer.Entities.Baslookup>?> GetAllCollegeUni();
@@ -25,7 +23,7 @@ namespace BusinessLayer.Services.GeneralService
         Task<ErrorsVM> LogOut();
         
         // Change Status Dissertation
-        Task<ErrorsVM> ChangeDissertationStatus(long DissertationID, DataLayer.Tools.Dissertation_Status DissertationStatus);
+        Task<ErrorsVM> ChangeDissertationStatus(long DissertationID, string DissertationStatus);
         
         // Upload File
         Task<ResultUploadFile> UploadFile(IFormFile MainFile);
@@ -35,10 +33,21 @@ namespace BusinessLayer.Services.GeneralService
         Task<List<TeacherOutModelDTO>> GetCollegeTeacher(long CollegeId);
         
         // send Comment
-        Task<ErrorsVM> SendComment(long UserId, long DissertationId, long CommentId = 0);
+        Task<ErrorsVM> SendComment(long UserId, long DissertationId, string Title, string Dsr, long CommentId = 0);
 
         // Add Teacher To User 
 
+        // GetAll Roles
+        Task<List<Models.OUTPUT.Administrator.StatusModelDTO>> GetAllRoles();
 
+        // GetAll DissertationStatus
+        Task<string?> DisplayDissertationstatus(int code);
+        Task<List<StatusModelDTO>?> GetAllDissertationStatus();
+        Task<List<StatusModelDTO>> GetStatus(string StatusType);
+        
+        // GetAll CollegesUni
+        Task<List<Models.OUTPUT.Administrator.StatusModelDTO>> GetAllCollegesUni();
+        
+        //
     }
 }

@@ -14,16 +14,18 @@ namespace BusinessLayer.Services.Email
         {
             try
             {
+                string From = "tickettinggroup@yahoo.com";
                 SmtpClient client = new SmtpClient("smtp.mail.yahoo.com", 25);
-                //client.Port = 587;
-                //client.Host = "smtp.mail.yahoo.com";
+                client.Port = 587;
+                client.Host = "smtp.mail.yahoo.com";
                 client.EnableSsl = true;
-                client.Timeout = 1000000;
+                //client.Timeout = 1000000;
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
 
-                client.Credentials = new NetworkCredential("tickettinggroup@yahoo.com", "bhedkhjtszmogxsp");
-                MailMessage message = new MailMessage("tickettinggroup@yahoo.com", To, Title, Body);
+                client.Credentials = new NetworkCredential(From, "bhedkhjtszmogxsp");
+                var message = new MailMessage(From, To, Title, Body);
+                
                 message.IsBodyHtml = true;
                 message.BodyEncoding = UTF8Encoding.UTF8;
                 message.DeliveryNotificationOptions = DeliveryNotificationOptions.OnSuccess;

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ByV4lN8XB6XOcFsPLbPxjD66HZPYv1oNnefzBhmm5UE=",
+  "Hash": "7iEV1sM0rXPqWncvUw28ze3kTcieX1lr6j0qFQBtt8I=",
   "Source": "Dissertation_Project",
   "BasePath": "_content/Dissertation_Project",
   "Mode": "Default",
@@ -202,6 +202,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\2\\7\\ba754524-22fa-4d22-b33f-a99c0be83775.jpg"
+    },
+    {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\b4b0cebf-6091-4a13-9ce4-dc42605f690f.txt",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "AllFiles/1402/b4b0cebf-6091-4a13-9ce4-dc42605f690f.txt",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\b4b0cebf-6091-4a13-9ce4-dc42605f690f.txt"
     }
   ]
 }

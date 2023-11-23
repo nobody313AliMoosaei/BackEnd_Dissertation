@@ -64,7 +64,13 @@ namespace Dissertation_Project.Controllers.V1
             }
         }
 
-        [HttpPost("ChangePassword")]
+        [HttpGet(nameof(ChangePassword))]
+        public async Task<IActionResult> ChangePassword(string User_Id,string Token)
+        {
+            return Ok();
+        }
+
+        [HttpPost("ChangePasswordUser")]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePassword_UserDTO model)
         {
             try

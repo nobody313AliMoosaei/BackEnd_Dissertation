@@ -166,9 +166,9 @@ namespace BusinessLayer.Services.Dissertation
                     NewDissertation.DissertationFileName = DissertationFile.FileName;
                     NewDissertation.DissertationFileAddress = DissertationFile.FileAddress;
                 }
-                if (Pro_File != null)
+                if (ProFile != null)
                 {
-                    NewDissertation.ProceedingsFileName = Pro_File.FileName;
+                    NewDissertation.ProceedingsFileName = ProFile.FileName;
                     NewDissertation.ProceedingsFileAddress = ProFile.FileAddress;
                 }
                 NewDissertation.StatusDissertation = (int)DataLayer.Tools.Dissertation_Status.Register;
@@ -451,6 +451,7 @@ namespace BusinessLayer.Services.Dissertation
             }
             return Err;
         }
+       
         public async Task<ErrorsVM?> ConfirmXStatus_UserRole(long User_Id, Dissertation_Status XStatus)
         {
             var res = new ErrorsVM();
