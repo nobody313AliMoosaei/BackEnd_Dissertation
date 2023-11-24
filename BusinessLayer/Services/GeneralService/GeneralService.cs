@@ -164,9 +164,9 @@ namespace BusinessLayer.Services.GeneralService
             return model;
         }
 
-        public async Task<List<TeacherOutModelDTO>> GetAllTeacher()
+        public async Task<List<TeacherOutModelDTO>> GetAllTeacher(string Value="")
         {
-            return await _teacherManager.GetAllTeachers();
+            return await _teacherManager.GetAllTeachers(Value);
         }
 
         public async Task<List<TeacherOutModelDTO>> GetCollegeTeacher(long CollegeId)

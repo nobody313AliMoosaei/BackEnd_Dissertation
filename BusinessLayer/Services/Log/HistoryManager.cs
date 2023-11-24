@@ -22,7 +22,7 @@ namespace BusinessLayer.Services.Log
                             Client = Client,
                             Date = DateTime,
                             Ip = IP,
-                            Level = IP,
+                            Level = Level,
                             Url = Url,
                             Message = Message
                         }));

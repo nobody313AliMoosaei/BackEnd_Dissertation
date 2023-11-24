@@ -2,6 +2,7 @@
 using BusinessLayer.Models.INPUT.SignUp;
 using BusinessLayer.Models.OUTPUT.Administrator;
 using BusinessLayer.Utilities;
+using DataLayer.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -20,14 +21,18 @@ namespace BusinessLayer.Services.Administrator
         private Teacher.ITeacherManager _teacherManager;
         private GeneralService.IGeneralService _generalService;
         private UserManager<DataLayer.Entities.Users> _userManager;
+        private BusinessLayer.Services.Log.IHistoryManager _HistoryService;
+        private IHttpContextAccessor _contextAccessor;
 
         public AdministratorBL(DataLayer.DataBase.Context_Project context, Teacher.ITeacherManager teacherManager, GeneralService.IGeneralService generalService
-            , UserManager<DataLayer.Entities.Users> usermanager)
+            , UserManager<DataLayer.Entities.Users> usermanager, Log.IHistoryManager historyService, IHttpContextAccessor contextAccessor)
         {
             _context = context;
             _teacherManager = teacherManager;
             _generalService = generalService;
             _userManager = usermanager;
+            _HistoryService = historyService;
+            _contextAccessor = contextAccessor;
         }
 
         // مشاهده تمام پایان نامه ها با وضعیت
@@ -82,23 +87,41 @@ namespace BusinessLayer.Services.Administrator
         }
 
         // مشاهده تمام کاربران
-        public async Task<List<Models.OUTPUT.Administrator.UserModelDTO>> GetAllUsers()
+        public async Task<List<Models.OUTPUT.Administrator.UserModelDTO>> GetAllUsers(string Value = "")
         {
             var model = new List<Models.OUTPUT.Administrator.UserModelDTO>();
             try
             {
-                model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
-                    .Where(o => o != null && o.Active == true)
-                    .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
-                    {
-                        UserId = o.Id,
-                        FirsName = o.FirstName,
-                        LastName = o.LastName,
-                        PhoneNumber = o.PhoneNumber,
-                        NationalCode = o.NationalCode,
-                        CollegeName = o.College,
-                        CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
-                    }).ToList();
+                if (Value.IsNullOrEmpty())
+                    model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
+                        .Where(o => o != null && o.Active == true)
+                        .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
+                        {
+                            UserId = o.Id,
+                            FirsName = o.FirstName,
+                            LastName = o.LastName,
+                            PhoneNumber = o.PhoneNumber,
+                            NationalCode = o.NationalCode,
+                            CollegeName = o.College,
+                            CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
+                        }).ToList();
+                else
+                    model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
+                            .Where(o => o != null && o.Active == true && (o.FirstName == Value || o.LastName == Value
+                                    || o.UserName == Value || o.Email == Value || o.NationalCode == Value
+                                    || (o.FirstName + o.LastName).Replace(" ", "") == Value.Replace(" ", "")))
+                            .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
+                            {
+                                UserId = o.Id,
+                                FirsName = o.FirstName,
+                                LastName = o.LastName,
+                                PhoneNumber = o.PhoneNumber,
+                                NationalCode = o.NationalCode,
+                                CollegeName = o.College,
+                                CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
+                            }).ToList();
+
+
                 if (model.Count > 0)
                 {
                     var allTeacher = await _context.Teachers.ToListAsync();
@@ -212,12 +235,33 @@ namespace BusinessLayer.Services.Administrator
                 }
                 Err.Message = "کاربر با موفقیت بروز شد";
                 Err.IsValid = true;
+
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Administrator/UpdateUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"کاربر با نام کاربری {NewUser.UserName} بروز شد");
+                #endregion
+
+
+
             }
             catch (Exception ex)
             {
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     Err.ErrorList.Add(ex.InnerException.Message);
+
+
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Administrator/UpdateUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Message Error : {ex.Message}");
+                #endregion
+
             }
             return Err;
         }
@@ -240,12 +284,32 @@ namespace BusinessLayer.Services.Administrator
                 }
                 else
                     Err.Message = "کاربری وجود ندارد";
+
+
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Administrator/DeActiveUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"کاربر با شناسه {user.Id} غیر فعال شد");
+                #endregion
+
+
             }
             catch (Exception ex)
             {
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     Err.ErrorList.Add(ex.InnerException.Message);
+
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Administrator/DeActiveUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Message Error : {ex.Message}");
+                #endregion
+
             }
             return Err;
         }
@@ -256,9 +320,11 @@ namespace BusinessLayer.Services.Administrator
             Dictionary<string, string> Roles = new Dictionary<string, string>();
             try
             {
-                (await _context.Roles.Where(o => !o.PersianName.IsNullOrEmpty() && !o.Name.IsNullOrEmpty()).ToListAsync()).ForEach(o =>
+                (await _context.Roles.ToListAsync())
+                    .ForEach(o =>
                     {
-                        Roles.Add(o.Name ?? "", o.PersianName ?? "");
+                        if (o.PersianName.IsNullOrEmpty() == false && o.Name.IsNullOrEmpty() == false)
+                            Roles.Add(o.Name ?? "", o.PersianName ?? "");
                     });
             }
             catch
@@ -279,14 +345,26 @@ namespace BusinessLayer.Services.Administrator
                     var user = await _context.Users.Where(o => o.Id == UserId).FirstOrDefaultAsync();
                     if (user != null)
                     {
-                        var result = await _userManager.AddToRoleAsync(user, NewRole);
-                        if (result.Succeeded)
+
+                        _context.UserRoles.Add(new IdentityUserRole<long>
                         {
-                            Err.Message = "نقش اضافه شد";
-                            Err.IsValid = true;
-                        }
-                        else
-                            Err.Message = "نقش اضافه نشد";
+                            RoleId = NewRole.Val64(),
+                            UserId = user.Id
+                        });
+                        await _context.SaveChangesAsync();
+                        Err.Message = "نقش اضافه شد";
+                        Err.IsValid = true;
+
+
+                        #region Set Log
+                        await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                                this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                                "Administrator/AddNewRoleToUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                                _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                                $"به کاربر {user.Id} نقش {NewRole} افزوده شد");
+                        #endregion
+
+
                     }
                     else
                         Err.Message = "کاربر پیدا نشد";
@@ -298,6 +376,14 @@ namespace BusinessLayer.Services.Administrator
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     Err.ErrorList.Add(ex.InnerException.Message);
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Administrator/AddNewRoleToUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Message Error : {ex.Message}");
+                #endregion
+
             }
             return Err;
         }
@@ -356,6 +442,16 @@ namespace BusinessLayer.Services.Administrator
 
                         Err.Message = "کاربر ایجاد شد";
                         Err.IsValid = true;
+
+                        #region Set Log
+                        await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                                this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                                "Administrator/AddNewUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                                _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                                $"کاربر با نام کاربری {user.UserName} ایجاد شد");
+                        #endregion
+
+
                     }
                     else
                         Err.ErrorList.Add("کاربر یافت نشد");
@@ -374,6 +470,14 @@ namespace BusinessLayer.Services.Administrator
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     Err.ErrorList.Add(ex.InnerException.Message);
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Administrator/AddNewUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Error Message : {ex.Message}");
+                #endregion
+
             }
             return Err;
         }
@@ -389,7 +493,7 @@ namespace BusinessLayer.Services.Administrator
                     return model;
                 }
 
-                var user = await _context.Users.Where(o => (o.Email.IsNullOrEmpty() ? "" : o.Email.ToLower()) == Value.ToLower()
+                var user = await _context.Users.Where(o => (o.Email.ToLower()) == Value.ToLower()
                 || o.NationalCode == Value || o.UserName == Value)
                     .Include(o => o.CollegeRefNavigation)
                     .Include(o => o.Teachers)
@@ -484,6 +588,16 @@ namespace BusinessLayer.Services.Administrator
                     await _context.SaveChangesAsync();
                     Err.Message = "پایان نامه بارگذاری شد";
                     Err.IsValid = true;
+
+                    #region Set Log
+                    await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                            this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                            "Administrator/UploadDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                            _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                            $"پایان نامه برای کاربر {UserId} آپلود شد");
+                    #endregion
+
+
                 }
             }
             catch (Exception ex)
@@ -491,6 +605,14 @@ namespace BusinessLayer.Services.Administrator
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     Err.ErrorList.Add(ex.InnerException.Message);
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Administrator/UploadDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Error Message : {ex.Message}");
+                #endregion
+
             }
             return Err;
         }

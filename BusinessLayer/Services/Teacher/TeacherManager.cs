@@ -131,12 +131,33 @@ namespace BusinessLayer.Services.Teacher
             return Error;
         }
 
-        public async Task<List<TeacherOutModelDTO>> GetAllTeachers()
+        public async Task<List<TeacherOutModelDTO>> GetAllTeachers(string Value = "")
         {
             var lstTeacher = new List<TeacherOutModelDTO>();
             try
             {
-                lstTeacher = await _context.Users.AsQueryable()
+                if (Value.IsNullOrEmpty())
+                    lstTeacher = await _context.Users.AsQueryable()
+                        .Join(_context.UserRoles, x => x.Id, y => y.UserId, (x, y) => new { user = x, Role = y })
+                        .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster)
+                        .Select(o => o.user)
+                        .Join(_context.Baslookups, x => x.CollegeRef, y => y.Id, (x, y) => new TeacherOutModelDTO
+                        {
+                            Id = x.Id,
+                            College = y.Title,
+                            CollegRef = x.CollegeRef.HasValue ? x.CollegeRef.Value : 0,
+                            FirstName = x.FirstName,
+                            LastName = x.LastName,
+                            NationalCode = x.NationalCode,
+                            UserName = x.UserName
+                        })
+                        .ToListAsync();
+                else
+                {
+                    Value = Value.Trim();
+                    lstTeacher = await _context.Users.Where(o => o.FirstName == Value || o.LastName == Value
+                                    || o.Email == Value || o.NationalCode == Value || o.UserName == Value
+                                    || (o.FirstName+o.LastName).Replace(" ","") == Value.Replace(" ",""))
                     .Join(_context.UserRoles, x => x.Id, y => y.UserId, (x, y) => new { user = x, Role = y })
                     .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster)
                     .Select(o => o.user)
@@ -151,6 +172,7 @@ namespace BusinessLayer.Services.Teacher
                         UserName = x.UserName
                     })
                     .ToListAsync();
+                }
             }
             catch
             {

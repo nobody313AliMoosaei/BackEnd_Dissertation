@@ -29,7 +29,7 @@ namespace BusinessLayer.Services.GeneralService
         Task<ResultUploadFile> UploadFile(IFormFile MainFile);
         
         // Get Teachers
-        Task<List<TeacherOutModelDTO>> GetAllTeacher();
+        Task<List<TeacherOutModelDTO>> GetAllTeacher(string Value = "");
         Task<List<TeacherOutModelDTO>> GetCollegeTeacher(long CollegeId);
         
         // send Comment

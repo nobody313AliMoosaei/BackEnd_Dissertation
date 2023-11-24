@@ -12,7 +12,7 @@ namespace BusinessLayer.Services.Teacher
         Task<ErrorsVM> AddNewTeacher(Models.INPUT.Teacher.TeacherInModelDTO newTeacher);
 
         // GetAllTeacher
-        Task<List<Models.OUTPUT.Teacher.TeacherOutModelDTO>> GetAllTeachers();
+        Task<List<Models.OUTPUT.Teacher.TeacherOutModelDTO>> GetAllTeachers(string Value = "");
         // Get Teachers Of one College
         Task<List<Models.OUTPUT.Teacher.TeacherOutModelDTO>> GetTeachersCollege(long CollegeRef);
 

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    //[Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Administrator")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -14,10 +14,12 @@ namespace Dissertation_Project.Controllers.V1
     {
         private BusinessLayer.Services.Administrator.AdministratorBL _adminBL;
         private BusinessLayer.Services.Teacher.ITeacherManager _teacherManager;
-        public AdministratorController(BusinessLayer.Services.Administrator.AdministratorBL adminbl, BusinessLayer.Services.Teacher.ITeacherManager teacherManager)
+        private BusinessLayer.Services.GeneralService.IGeneralService _generalService;
+        public AdministratorController(BusinessLayer.Services.Administrator.AdministratorBL adminbl, BusinessLayer.Services.Teacher.ITeacherManager teacherManager, BusinessLayer.Services.GeneralService.IGeneralService generalService)
         {
             _adminBL = adminbl;
             _teacherManager = teacherManager;
+            _generalService = generalService;
         }
 
         [HttpGet("GetAllDissertation")]
@@ -27,15 +29,15 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("ChangeDissertationStatus")]
-        public async Task<IActionResult> ChangeDissertationStatus(long DissertationId,string Status)
+        public async Task<IActionResult> ChangeDissertationStatus(long DissertationId, string Status)
         {
-            return Ok(await _adminBL.ChangeDissertationStatus(DissertationId,Status));
+            return Ok(await _adminBL.ChangeDissertationStatus(DissertationId, Status));
         }
 
         [HttpGet("GetAllUser")]
-        public async Task<IActionResult> GetAllUser()
+        public async Task<IActionResult> GetAllUser(string Value = "")
         {
-            return Ok(await _adminBL.GetAllUsers());
+            return Ok(await _adminBL.GetAllUsers(Value));
         }
 
         [HttpGet("GetDissertationStatus")]
@@ -63,31 +65,32 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("AddNewRoleToUser")]
-        public async Task<IActionResult> AddNewRoleToUser(long UserId,string NewRole)
+        public async Task<IActionResult> AddNewRoleToUser(long UserId, string NewRole)
         {
             return Ok(await _adminBL.AddNewRoleToUser(UserId, NewRole));
         }
 
         [HttpGet("GetAllTeachers")]
-        public async Task<IActionResult> GetAllTeacher()
+        public async Task<IActionResult> GetAllTeacher(string Value="")
         {
-            return Ok(await _teacherManager.GetAllTeachers());
+            return Ok(await _teacherManager.GetAllTeachers(Value));
         }
 
         [HttpGet("GetAllRoles")]
         public async Task<IActionResult> GetAllRoles()
         {
-            return Ok(await _adminBL.GetAllRoles());
+            return Ok(await _generalService.GetAllRoles());
+            
         }
 
         [HttpPut("UpdateTeacher")]
-        public async Task<IActionResult> UpdateTeacher(long TeacherId,TeacherInModelDTO TeacherModel)
+        public async Task<IActionResult> UpdateTeacher(long TeacherId, TeacherInModelDTO TeacherModel)
         {
             return Ok(await _teacherManager.UpdateTeacher(TeacherId, TeacherModel));
         }
 
         [HttpPost("AddNewUser")]
-        public async Task<IActionResult>AddNewUser(EditUserDTO NewUser,string Role)
+        public async Task<IActionResult> AddNewUser(EditUserDTO NewUser, string Role)
         {
             return Ok(await _adminBL.AddNewUser(NewUser, Role));
         }
@@ -99,7 +102,7 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("UploadDissertation")]
-        public async Task<IActionResult>UploadDissertationForUser(long UserId, IFormFile Dis_File,IFormFile Pre_File, [FromForm] NewDissertationDTO DissertationModel)
+        public async Task<IActionResult> UploadDissertationForUser(long UserId, IFormFile Dis_File, IFormFile Pre_File, [FromForm] NewDissertationDTO DissertationModel)
         {
             return Ok(await _adminBL.UploadDissertationForUser(UserId, DissertationModel, Dis_File, Pre_File));
         }

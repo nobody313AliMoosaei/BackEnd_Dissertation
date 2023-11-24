@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Models;
 using BusinessLayer.Models.INPUT.Dissertation;
+using BusinessLayer.Services.GeneralService;
 using BusinessLayer.Utilities;
 using DataLayer.DataBase;
 using DataLayer.Entities;
@@ -20,18 +21,20 @@ namespace BusinessLayer.Services.Dissertation
     {
         private Context_Project _context;
         private BusinessLayer.Services.UploadFile.IUploadFile _uploadFile;
-        private IHttpContextAccessor _contectAccessor;
-        private BusinessLayer.Services.Log.IHistoryManager _historyManager;
         private UserManager<Users> _userManager;
+        private IGeneralService _generalService;
+        private BusinessLayer.Services.Log.IHistoryManager _historyManager;
+        private IHttpContextAccessor _contectAccessor;
 
         public DissertationBL(Context_Project contex, UploadFile.IUploadFile uploadFile, IHttpContextAccessor contectAccessor
-            , Log.IHistoryManager historyManager, UserManager<Users> usermanager)
+            , Log.IHistoryManager historyManager, UserManager<Users> usermanager, IGeneralService generalService)
         {
             _context = contex;
             _uploadFile = uploadFile;
             _contectAccessor = contectAccessor;
             _historyManager = historyManager;
             _userManager = usermanager;
+            _generalService = generalService;
         }
 
         public async Task<ErrorsVM> CheckPreRegister(long UserID = 0)
@@ -206,29 +209,6 @@ namespace BusinessLayer.Services.Dissertation
             return res;
         }
 
-        public string DisplayStatusDissertation(int? status)
-        {
-            if (status == null || !status.HasValue)
-                return "";
-
-            if (status == 1)
-                return "تاییدیه استاد راهنمای اول";
-            else if (status == 2)
-                return "تاییدیه استاد راهنمای دوم";
-            else if (status == 3)
-                return "تاییدیه استاد راهنمای سوم";
-            else if (status == 4)
-                return "تاییدیه کارشناس آموزش";
-            else if (status == 5)
-                return "تاییدیه کارشناس تحصیلات تکمیلی";
-            else if (status == 6)
-                return "تاییدیه کارشناس امور پایان نامه";
-            else if (status == -3333)
-                return "رد پایان نامه";
-            else
-                return "وضعیت نامشخص";
-        }
-
         // Get Dissertation => گرفتن پایان نامه ثبت شده بدون تاییدیه
         public async Task<Models.OUTPUT.Dissertation.DissertationModelOutPut?> GetCurrentDissertation(long User_Id)
         {
@@ -259,7 +239,9 @@ namespace BusinessLayer.Services.Dissertation
                     model.DateStr = $"{dissertation.RegisterDateTime.Value.Year}/{dissertation.RegisterDateTime.Value.Month}/{dissertation.RegisterDateTime.Value.Day}";
                     model.TimeStr = $"{dissertation.RegisterDateTime.Value.Hour}:{dissertation.RegisterDateTime.Value.Minute}:{dissertation.RegisterDateTime.Value.Second}";
                 }
-                model.DisplayStatusDissertation = DisplayStatusDissertation(dissertation.StatusDissertation);
+
+                model.DisplayStatusDissertation = await _generalService.DisplayDissertationstatus(dissertation.StatusDissertation.HasValue
+                    ? dissertation.StatusDissertation.Value : -1);
                 return model;
             }
             catch
@@ -423,6 +405,16 @@ namespace BusinessLayer.Services.Dissertation
                     await _context.SaveChangesAsync();
                     res.Message = "بروزرسانی با موفقیت انجام شد";
                     res.IsValid = true;
+
+                    #region Set Log
+                    await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                            this._contectAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                            "Dissertation/UpdateDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                            _contectAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                            $"پایان نامه {Dissertation.DissertationId} با موفقیت برای کاربر {user.Id} به روز رسانی شد");
+                    #endregion
+
+
                 }
                 else
                     res.Message = "برای کاربر پایان نامه جاری وجود ندارد";
@@ -431,6 +423,14 @@ namespace BusinessLayer.Services.Dissertation
             {
                 res.Title = "خطا در اجرای برنامه";
                 res.Message = ex.Message;
+                #region Set Log
+                await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contectAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "Dissertation/UpdateDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        _contectAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Error Message : {ex.Message}");
+                #endregion
+
             }
             return res;
         }
@@ -448,6 +448,8 @@ namespace BusinessLayer.Services.Dissertation
                     if (Dissertation != null)
                     {
                         Dissertation.StatusDissertation = (int)XStatusDissertation;
+                        Dissertation.EditDateTime = DateTime.Now.ToPersianDateTime();
+                        Dissertation.UpdateCnt++;
                         _context.Dissertations.Update(Dissertation);
                         await _context.SaveChangesAsync();
                     }
