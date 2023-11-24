@@ -21,8 +21,8 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost]
-        public async Task<IActionResult> PreRegister(IFormFile DissertationFile,IFormFile ProFile, 
-            [FromForm]BusinessLayer.Models.INPUT.Dissertation.PreRegisterDataDTO PreRegisterData)
+        public async Task<IActionResult> PreRegister(IFormFile DissertationFile, IFormFile ProFile,
+            [FromForm] BusinessLayer.Models.INPUT.Dissertation.PreRegisterDataDTO PreRegisterData)
         {
             try
             {
@@ -38,7 +38,8 @@ namespace Dissertation_Project.Controllers.V1
                 if (Result.IsValid)
                     return Ok(Result);
                 return BadRequest(Result);
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest($"خطا در اجرای برنامه : {ex.Message}");
             }
@@ -49,11 +50,11 @@ namespace Dissertation_Project.Controllers.V1
         {
             try
             {
-                var UserID = User.Claims.FirstOrDefault(o=>o.Type == ClaimTypes.NameIdentifier)?.Value;
+                var UserID = User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (UserID.IsNullOrEmpty())
                     return Unauthorized("کاربر لاگین نکرده است");
                 var dissertation = await _dissertationBL.GetCurrentDissertation(UserID.Val64());
-                if(dissertation==null)
+                if (dissertation == null)
                     return NotFound("پایان نامه در جريانی وجود ندارد");
                 return Ok(dissertation);
             }
@@ -67,7 +68,30 @@ namespace Dissertation_Project.Controllers.V1
         public async Task<IActionResult> UpdateDissertation(long Dis_Id, IFormFile DissertationFile, IFormFile ProFile,
             [FromForm] BusinessLayer.Models.INPUT.Dissertation.PreRegisterDataDTO PreRegisterData)
         {
-            return Ok();
+            var UserID = User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (UserID.IsNullOrEmpty())
+                return Unauthorized("کاربر لاگین نکرده است");
+            var Result = await _dissertationBL.UpdateDissertation(DissertationFile, ProFile, new BusinessLayer.Models.INPUT.Dissertation.UpdateDissertationDTO
+            {
+                Abstract = PreRegisterData.Abstract,
+                CollegeRef = PreRegisterData.CollegeRef,
+                Dissertation_Id = Dis_Id,
+                FirstName = PreRegisterData.FirstName,
+                KeyWords = PreRegisterData.KeyWords,
+                LastName = PreRegisterData.LastName,
+                StudentId = UserID.Val64(),
+                Teacher1 = PreRegisterData.Teacher_1,
+                Teacher2 = PreRegisterData.Teacher_2,
+                Teacher3 = PreRegisterData.Teacher_3,
+                TermNumber = PreRegisterData.Term_Number,
+                TitleEnglish = PreRegisterData.Title_English,
+                TitlePersian = PreRegisterData.Title_Persian,
+            });
+
+            if (Result.IsValid)
+                return Ok(Result);
+            return BadRequest(Result);
+
         }
 
 

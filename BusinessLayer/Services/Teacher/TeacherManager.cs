@@ -40,6 +40,9 @@ namespace BusinessLayer.Services.Teacher
                     if (newTeacher.NationalCode.IsNullOrEmpty())
                         Error.ErrorList.Add("وارد کردن کدملي استاد راهنما الزامي است");
 
+                    if (Error.ErrorList.Count > 0)
+                        return Error;
+
                     var CollegeOfTeacher = await _context.Baslookups.Where(o => o.Type.ToLower() == DataLayer.Tools.BASLookupType.CollegesUni.ToString().ToLower()
                                                                                 && o.Id == newTeacher.CollegRef).FirstOrDefaultAsync();
                     if (CollegeOfTeacher != null)
@@ -133,9 +136,10 @@ namespace BusinessLayer.Services.Teacher
             var lstTeacher = new List<TeacherOutModelDTO>();
             try
             {
-                // برای گرفتن CollegeRefNavigation باید کاربرها با نقش مدنظر را پیدا کرده و CollegeRefNavigation را Include کنیم
-
-                var userssssss = await _context.Users.AsQueryable()
+                lstTeacher = await _context.Users.AsQueryable()
+                    .Join(_context.UserRoles, x => x.Id, y => y.UserId, (x, y) => new { user = x, Role = y })
+                    .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster)
+                    .Select(o => o.user)
                     .Join(_context.Baslookups, x => x.CollegeRef, y => y.Id, (x, y) => new TeacherOutModelDTO
                     {
                         Id = x.Id,
@@ -145,21 +149,8 @@ namespace BusinessLayer.Services.Teacher
                         LastName = x.LastName,
                         NationalCode = x.NationalCode,
                         UserName = x.UserName
-                    }).ToListAsync();
-
-
-                lstTeacher = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString()))
-                     .Where(o => o.Active == true)
-                     .Select(o => new TeacherOutModelDTO
-                     {
-                         Id = o.Id,
-                         FirstName = o.FirstName,
-                         LastName = o.LastName,
-                         UserName = o.UserName,
-                         NationalCode = o.NationalCode,
-                         CollegRef = o.CollegeRef.HasValue ? o.CollegeRef.Value : 0,
-                         College = o.CollegeRefNavigation != null ? o.CollegeRefNavigation.Title : ""
-                     }).ToList();
+                    })
+                    .ToListAsync();
             }
             catch
             {

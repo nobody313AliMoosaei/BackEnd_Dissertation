@@ -27,9 +27,9 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("ChangeDissertationStatus")]
-        public async Task<IActionResult> ChangeDissertationStatus(long DissertationId,string StatusStr)
+        public async Task<IActionResult> ChangeDissertationStatus(long DissertationId,string Status)
         {
-            return Ok(await _adminBL.ChangeDissertationStatus(DissertationId,StatusStr));
+            return Ok(await _adminBL.ChangeDissertationStatus(DissertationId,Status));
         }
 
         [HttpGet("GetAllUser")]

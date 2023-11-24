@@ -68,12 +68,12 @@ namespace BusinessLayer.Services.GeneralService
             return Err;
         }
 
-        public async Task<ErrorsVM> ChangeDissertationStatus(long DissertationID, string DissertationStatus)
+        public async Task<ErrorsVM> ChangeDissertationStatus(long DissertationID, string DissertationStatusId)
         {
             var Err = new ErrorsVM();
             try
             {
-                if (DissertationStatus.IsNullOrEmpty())
+                if (DissertationStatusId.IsNullOrEmpty())
                 {
                     Err.Message = "وضعیت نامعلوم است";
                     return Err;
@@ -84,10 +84,12 @@ namespace BusinessLayer.Services.GeneralService
 
                 if (Dis != null)
                 {
-                    var Status = (await GetAllDissertationStatus()).Where(o => o.Code == DissertationStatus.Val32()).FirstOrDefault();
+                    var Status = (await GetAllDissertationStatus()).Where(o => o.Id == DissertationStatusId.Val32()).FirstOrDefault();
                     if (Status != null)
                     {
                         Dis.StatusDissertation = Status.Code;
+                        Dis.UpdateCnt++;
+                        Dis.EditDateTime= DateTime.Now.ToPersianDateTime();
                         _context.Dissertations.Update(Dis);
                         await _context.SaveChangesAsync();
                         Err.Message = "تغییر وضعیت انجام شد";
@@ -227,7 +229,7 @@ namespace BusinessLayer.Services.GeneralService
                     .Select(o => new StatusModelDTO
                     {
                         Id = o.Id,
-                        Title = o.PersianName
+                        Title = o.PersianName,
                     }).ToListAsync();
             }
             catch

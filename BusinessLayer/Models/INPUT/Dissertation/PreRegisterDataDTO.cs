@@ -28,7 +28,7 @@ namespace BusinessLayer.Models.INPUT.Dissertation
         public string? LastName { get; set; }
 
         [Required(ErrorMessage = "انتخاب دانشکده اجباری است")]
-        public string? College { get; set; }
+        public long? CollegeRef { get; set; }
 
         [Required(ErrorMessage = "انتخاب استاد راهنمای اول اجباری است")]
         public long? Teacher_1 { get; set; }

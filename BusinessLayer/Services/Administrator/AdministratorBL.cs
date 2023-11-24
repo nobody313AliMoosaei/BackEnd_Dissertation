@@ -347,14 +347,15 @@ namespace BusinessLayer.Services.Administrator
                     user = await _userManager.FindByNameAsync(NewUser.UserName ?? "");
                     if (user != null)
                     {
-                        var ResultAddRole = await _generalService.AddRoleToUser(user, NewRole);
-                        if (!ResultAddRole.IsValid)
-                            Err.ErrorList.Add("نقش مد نظر به کاربر تخصیص داده نشد");
-                        else
+                        _context.UserRoles.Add(new IdentityUserRole<long>
                         {
-                            Err.Message = "کاربر ایجاد شد";
-                            Err.IsValid = true;
-                        }
+                            RoleId = NewRole.Val64(),
+                            UserId = user.Id
+                        });
+                        await _context.SaveChangesAsync();
+
+                        Err.Message = "کاربر ایجاد شد";
+                        Err.IsValid = true;
                     }
                     else
                         Err.ErrorList.Add("کاربر یافت نشد");
@@ -495,7 +496,7 @@ namespace BusinessLayer.Services.Administrator
         }
 
         // مشاهده پایان نامه های در جریان و رد شده
-        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetDissertationsByStatus( int StatusId = 1)
+        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetDissertationsByStatus(int StatusId = 1)
         {
             var model = new List<Models.OUTPUT.Dissertation.DissertationModelOutPut>();
             try
@@ -509,19 +510,23 @@ namespace BusinessLayer.Services.Administrator
                         .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
                         {
                             Abstract = o.Abstract,
-                            DateStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToPersianDateTime().ToString() : "",
+                            DateStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortDateString() : "",
                             DissertationId = o.DissertationId,
                             DissertationFileAddress = o.DissertationFileAddress,
                             ProceedingsFileAddress = o.ProceedingsFileAddress,
                             StudentId = o.StudentId,
                             StatusDissertation = o.StatusDissertation,
                             TermNumber = o.TermNumber,
-                            TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToPersianDateTime().ToLongTimeString():"",
+                            TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortTimeString() : "",
                             TitleEnglish = o.TitleEnglish,
                             TitlePersian = o.TitlePersian,
-                            DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault() == null ? ""
-                            : DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault().Title
+                            DisplayStatusDissertation = ""
                         }).ToListAsync();
+                    model = model.Select(o =>
+                    {
+                        o.DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault()?.Title;
+                        return o;
+                    }).ToList();
                 }
                 else // پایان نامه های غیر فعال
                 {
@@ -540,9 +545,13 @@ namespace BusinessLayer.Services.Administrator
                             TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToPersianDateTime().ToLongTimeString() : "",
                             TitleEnglish = o.TitleEnglish,
                             TitlePersian = o.TitlePersian,
-                            DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault() == null ? ""
-                            : DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault().Title
+                            DisplayStatusDissertation = ""
                         }).ToListAsync();
+                    model = model.Select(o =>
+                    {
+                        o.DisplayStatusDissertation = DisplayStautsDissertation.Where(t => t.Code == o.StatusDissertation).FirstOrDefault()?.Title;
+                        return o;
+                    }).ToList();
                 }
             }
             catch
@@ -551,6 +560,6 @@ namespace BusinessLayer.Services.Administrator
             }
             return model;
         }
-    
+
     }
 }

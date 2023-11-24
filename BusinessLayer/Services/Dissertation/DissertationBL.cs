@@ -95,10 +95,18 @@ namespace BusinessLayer.Services.Dissertation
                 // Update User
                 user.FirstName = data.FirstName;
                 user.LastName = data.LastName;
-                user.College = data.College;
+                //user.College = data.College;
+                var College = (await _context.Baslookups.Where(o => o.Type.ToLower() == DataLayer.Tools.BASLookupType.CollegesUni.ToString().ToLower()
+                && o.Id == data.CollegeRef.Value).FirstOrDefaultAsync());
+                user.CollegeRef = College?.Id;
+                user.CollegeRefNavigation = College;
+                user.College = College?.Title;
+
+                var Teachers = await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString());
+
                 if (data.Teacher_1 != null && data.Teacher_1 != 0)
                 {
-                    var teacher1 = await _context.Users.Where(o => o.Id == data.Teacher_1.Value).FirstOrDefaultAsync();
+                    var teacher1 = Teachers.Where(o => o.Id == data.Teacher_1.Value).FirstOrDefault();
                     if (teacher1 != null)
                     {
                         user.Teachers.Add(new DataLayer.Entities.Teachers()
@@ -112,7 +120,7 @@ namespace BusinessLayer.Services.Dissertation
                 }
                 if (data.Teacher_2 != null && data.Teacher_2 != 0)
                 {
-                    var teacher2 = await _context.Users.Where(o => o.Id == data.Teacher_2.Value).FirstOrDefaultAsync();
+                    var teacher2 = Teachers.Where(o => o.Id == data.Teacher_2.Value).FirstOrDefault();
                     if (teacher2 != null)
                     {
                         user.Teachers.Add(new DataLayer.Entities.Teachers()
@@ -126,7 +134,7 @@ namespace BusinessLayer.Services.Dissertation
                 }
                 if (data.Teacher_3 != null && data.Teacher_3.Value != 0)
                 {
-                    var teacher3 = await _context.Users.Where(o => o.Id == data.Teacher_3.Value).FirstOrDefaultAsync();
+                    var teacher3 = Teachers.Where(o => o.Id == data.Teacher_3.Value).FirstOrDefault();
                     if (teacher3 != null)
                     {
                         user.Teachers.Add(new DataLayer.Entities.Teachers()
@@ -260,7 +268,7 @@ namespace BusinessLayer.Services.Dissertation
             }
         }
 
-        public async Task<ErrorsVM?> UpdateDissertation(IFormFile DissertationFile, IFormFile ProFile, UpdateDissertationDTO UDissertation)
+        public async Task<ErrorsVM> UpdateDissertation(IFormFile DissertationFile, IFormFile ProFile, UpdateDissertationDTO UDissertation)
         {
             var res = new ErrorsVM();
             try
@@ -290,10 +298,10 @@ namespace BusinessLayer.Services.Dissertation
                     return res;
                 }
                 // Teachers
+                var Teachers = await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString());
                 if (UDissertation.Teacher1 != null && UDissertation.Teacher1 > 0)
                 {
-                    var teacher = await _context.Users.Where(o => o.Id == UDissertation.Teacher1)
-                        .FirstOrDefaultAsync();
+                    var teacher = Teachers.Where(o => o.Id == UDissertation.Teacher1).FirstOrDefault();
                     if (teacher != null)
                     {
                         user.Teachers = new List<Teachers>();
@@ -310,8 +318,7 @@ namespace BusinessLayer.Services.Dissertation
                 }
                 if (UDissertation.Teacher2 != null && UDissertation.Teacher2 > 0)
                 {
-                    var teacher = await _context.Users.Where(o => o.Id == UDissertation.Teacher2)
-                        .FirstOrDefaultAsync();
+                    var teacher = Teachers.Where(o => o.Id == UDissertation.Teacher2).FirstOrDefault();
                     if (teacher != null)
                     {
                         user.Teachers.Add(new Teachers
@@ -327,8 +334,7 @@ namespace BusinessLayer.Services.Dissertation
                 }
                 if (UDissertation.Teacher3 != null && UDissertation.Teacher3 > 0)
                 {
-                    var teacher = await _context.Users.Where(o => o.Id == UDissertation.Teacher3)
-                        .FirstOrDefaultAsync();
+                    var teacher = Teachers.Where(o => o.Id == UDissertation.Teacher3).FirstOrDefault();
                     if (teacher != null)
                     {
                         user.Teachers.Add(new Teachers
@@ -348,8 +354,14 @@ namespace BusinessLayer.Services.Dissertation
                 if (!UDissertation.LastName.IsNullOrEmpty())
                     user.LastName = UDissertation.LastName;
 
-                if (!UDissertation.College.IsNullOrEmpty())
-                    user.College = UDissertation.College;
+                if (!UDissertation.CollegeRef.HasValue)
+                {
+                    var _college = await _context.Baslookups.Where(o => o.Id == UDissertation.CollegeRef
+                     && o.Type.ToLower() == DataLayer.Tools.BASLookupType.CollegesUni.ToString().ToLower()).FirstOrDefaultAsync();
+                    user.CollegeRef = UDissertation.CollegeRef;
+                    user.CollegeRefNavigation = _college;
+                    user.College = _college?.Title;
+                }
 
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
@@ -452,7 +464,7 @@ namespace BusinessLayer.Services.Dissertation
             }
             return Err;
         }
-       
+
         public async Task<ErrorsVM?> ConfirmXStatus_UserRole(long User_Id, Dissertation_Status XStatus)
         {
             var res = new ErrorsVM();

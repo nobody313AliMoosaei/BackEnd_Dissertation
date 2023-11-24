@@ -12,7 +12,7 @@ namespace BusinessLayer.Models.INPUT.Dissertation
         public long? Teacher1 { get; set; }
         public long? Teacher2 { get; set; }
         public long? Teacher3 { get; set; }
-        public string? College { get; set; }
+        public long? CollegeRef { get; set; }
         public string? LastName { get; set; }
         public string? FirstName { get; set; }
 

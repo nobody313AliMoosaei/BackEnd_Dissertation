@@ -8,7 +8,7 @@ namespace DataLayer.Tools
 {
     public enum RoleName_enum
     {
-        Administrator,                      // ادمین
+        Administrator=1,                    // ادمین
         Student,                            // دانشجو
         GuideMaster,                        // استاد راهنما
         Adviser,                            // مشاور
