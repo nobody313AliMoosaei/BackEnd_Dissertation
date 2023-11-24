@@ -14,10 +14,12 @@ namespace Dissertation_Project.Controllers.V1
     public class DissertationController : ControllerBase
     {
         private DissertationBL _dissertationBL;
+        private BusinessLayer.Services.GeneralService.IGeneralService _generalService;
 
-        public DissertationController(DissertationBL dissertationBL)
+        public DissertationController(DissertationBL dissertationBL, BusinessLayer.Services.GeneralService.IGeneralService generalService)
         {
             _dissertationBL = dissertationBL;
+            _generalService = generalService;
         }
 
         [HttpPost]
@@ -94,6 +96,15 @@ namespace Dissertation_Project.Controllers.V1
 
         }
 
+
+        [HttpPost("SendComment")]
+        public async Task<IActionResult> SendComment([FromBody] BusinessLayer.Models.INPUT.CommentInputDTO Comment)
+        {
+            var result = await _generalService.SendComment(Comment.UserId, Comment.DissertationId, Comment.Title, Comment.Dsr, Comment.CommentId);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
+        }
 
     }
 }

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    //[Authorize(Roles = "Administrator,GuideMaster,Adviser,EducationExpert,PostgraduateEducationExpert,DissertationExpert")]
+    [Authorize(Roles = "Administrator,GuideMaster,Adviser,EducationExpert,PostgraduateEducationExpert,DissertationExpert")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -40,5 +40,15 @@ namespace Dissertation_Project.Controllers.V1
                 });
             }
         }
+
+        [HttpPost("SendComment")]
+        public async Task<IActionResult> SendComment([FromBody] BusinessLayer.Models.INPUT.CommentInputDTO Comment)
+        {
+            var result = await _generalService.SendComment(Comment.UserId, Comment.DissertationId, Comment.Title, Comment.Dsr, Comment.CommentId);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
     }
 }

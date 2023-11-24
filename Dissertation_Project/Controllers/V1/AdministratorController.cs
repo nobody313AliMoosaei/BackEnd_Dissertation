@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    //[Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -71,7 +71,7 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpGet("GetAllTeachers")]
-        public async Task<IActionResult> GetAllTeacher(string Value="")
+        public async Task<IActionResult> GetAllTeacher(string Value = "")
         {
             return Ok(await _teacherManager.GetAllTeachers(Value));
         }
@@ -80,7 +80,7 @@ namespace Dissertation_Project.Controllers.V1
         public async Task<IActionResult> GetAllRoles()
         {
             return Ok(await _generalService.GetAllRoles());
-            
+
         }
 
         [HttpPut("UpdateTeacher")]
@@ -119,6 +119,15 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _adminBL.GetDissertationsByStatus(XStatus));
         }
 
+
+        [HttpPost("SendComment")]
+        public async Task<IActionResult> SendComment([FromBody] BusinessLayer.Models.INPUT.CommentInputDTO Comment)
+        {
+            var result = await _generalService.SendComment(Comment.UserId, Comment.DissertationId, Comment.Title, Comment.Dsr, Comment.CommentId);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
+        }
 
 
     }

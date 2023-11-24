@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,16 +25,20 @@ namespace BusinessLayer.Services.GeneralService
         private SignInManager<Users> _signinManager;
         private Services.Teacher.ITeacherManager _teacherManager;
         private Services.UploadFile.IUploadFile _uploadFile;
-
+        private BusinessLayer.Services.Log.IHistoryManager _historyManager;
+        private IHttpContextAccessor _contextAccessor;
 
         public GeneralService(DataLayer.DataBase.Context_Project context, Teacher.ITeacherManager teacherManager
-            , SignInManager<Users> signinmanager, UserManager<Users> usermanager, UploadFile.IUploadFile uploadFile)
+            , SignInManager<Users> signinmanager, UserManager<Users> usermanager, UploadFile.IUploadFile uploadFile
+            , Log.IHistoryManager historyManager, IHttpContextAccessor contextAccessor)
         {
             _context = context;
             _teacherManager = teacherManager;
             _signinManager = signinmanager;
             _userManager = usermanager;
             _uploadFile = uploadFile;
+            _historyManager = historyManager;
+            _contextAccessor = contextAccessor;
         }
 
         public async Task<ErrorsVM> AddRoleToUser(Users? user, string RoleUser)
@@ -89,11 +94,21 @@ namespace BusinessLayer.Services.GeneralService
                     {
                         Dis.StatusDissertation = Status.Code;
                         Dis.UpdateCnt++;
-                        Dis.EditDateTime= DateTime.Now.ToPersianDateTime();
+                        Dis.EditDateTime = DateTime.Now.ToPersianDateTime();
                         _context.Dissertations.Update(Dis);
                         await _context.SaveChangesAsync();
                         Err.Message = "تغییر وضعیت انجام شد";
                         Err.IsValid = true;
+
+                        #region Set Log
+                        await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                                this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                                "ChangeDissertationStatus", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                                _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                                $"پایان نامه {Dis.DissertationId} به وضعیت {Status.Title} تغییر کرد");
+                        #endregion
+
+
                     }
                     else
                         Err.Message = "وضعیت مناسب نمی‌باشد";
@@ -108,6 +123,15 @@ namespace BusinessLayer.Services.GeneralService
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     Err.ErrorList.Add(ex.InnerException.Message);
+
+                #region Set Log
+                await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "ChangeDissertationStatus", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Error Message : {ex.Message}");
+                #endregion
+
             }
             return Err;
         }
@@ -164,7 +188,7 @@ namespace BusinessLayer.Services.GeneralService
             return model;
         }
 
-        public async Task<List<TeacherOutModelDTO>> GetAllTeacher(string Value="")
+        public async Task<List<TeacherOutModelDTO>> GetAllTeacher(string Value = "")
         {
             return await _teacherManager.GetAllTeachers(Value);
         }
@@ -265,7 +289,7 @@ namespace BusinessLayer.Services.GeneralService
             var Err = new ErrorsVM();
             try
             {
-                if(Title.IsNullOrEmpty() || Dsr.IsNullOrEmpty())
+                if (Title.IsNullOrEmpty() || Dsr.IsNullOrEmpty())
                 {
                     Err.Message = "تیتر یا توضحات کامنت نمی‌تواند خالی باشد";
                     return Err;
@@ -296,14 +320,24 @@ namespace BusinessLayer.Services.GeneralService
                         Dissertation.Comments.Where(o => o.Id == CommentId).FirstOrDefault()?
                             .InverseInversCommentRefNavigation.Add(new Comments
                             {
-                                Title= Title,
-                                Description= Dsr,
+                                Title = Title,
+                                Description = Dsr,
                             });
                     }
                     _context.Dissertations.Update(Dissertation);
                     await _context.SaveChangesAsync();
                     Err.Message = "کامنت ثبت شد";
                     Err.IsValid = true;
+
+                    #region Set Log
+                    await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                            this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                            "SendComment", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                            _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                            $"کامنت برای پایان نامه {Dissertation.DissertationId} توسط کاربر {UserId} ثبت شد");
+                    #endregion
+
+
                 }
             }
             catch (Exception ex)
@@ -311,6 +345,14 @@ namespace BusinessLayer.Services.GeneralService
                 Err.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     Err.ErrorList.Add(ex.InnerException.Message);
+                #region Set Log
+                await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        "SendComment", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        $"Error Message : {ex.Message}");
+                #endregion
+
             }
             return Err;
         }
