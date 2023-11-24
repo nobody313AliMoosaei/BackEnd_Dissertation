@@ -1,8 +1,10 @@
 ﻿using BusinessLayer.Models;
 using BusinessLayer.Services.GeneralService;
+using BusinessLayer.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
 {
@@ -48,6 +50,33 @@ namespace Dissertation_Project.Controllers.V1
             if (result.IsValid)
                 return Ok(result);
             return BadRequest(result);
+        }
+
+        [HttpPost("Download")]
+        public async Task<IActionResult> DonloadFile([FromBody] string FileAddress)
+        {
+            try
+            {
+                var UserID = User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (UserID.IsNullOrEmpty())
+                    return Unauthorized("کاربر لاگین نکرده است");
+
+                if (System.IO.File.Exists(FileAddress))
+                {
+                    var File_Info = new FileInfo(FileAddress);
+                    var Filestream = System.IO.File.OpenRead(FileAddress);
+                    string contentType = "application/octet-stream";
+
+                    var fileDownloadName = UserID + "__" + File_Info.Name;
+
+                    return File(Filestream, contentType, fileDownloadName);
+                }
+                return BadRequest();
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
 
     }
