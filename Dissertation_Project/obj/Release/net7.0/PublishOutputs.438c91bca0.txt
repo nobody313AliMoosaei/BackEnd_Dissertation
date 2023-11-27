@@ -9,6 +9,7 @@ D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Disser
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Azure.Identity.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Hangfire.AspNetCore.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Hangfire.Core.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Hangfire.NetCore.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Hangfire.SqlServer.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Microsoft.AspNetCore.Cryptography.Internal.dll
@@ -41,7 +42,6 @@ D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Disser
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\System.Configuration.ConfigurationManager.dll
-D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\System.Data.SqlClient.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\System.Drawing.Common.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\System.Memory.Data.dll
@@ -71,16 +71,13 @@ D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Disser
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll
-D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win-arm64\native\sni.dll
-D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win-x64\native\sni.dll
-D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win-x86\native\sni.dll
-D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\unix\lib\netstandard2.0\System.Data.SqlClient.dll
-D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Data.SqlClient.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\BusinessLayer.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\DataLayer.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\BusinessLayer.pdb
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\DataLayer.pdb
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Dissertation_Project.deps.json
