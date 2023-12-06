@@ -24,14 +24,14 @@ namespace BusinessLayer.Services.Dissertation
         private UserManager<Users> _userManager;
         private IGeneralService _generalService;
         private BusinessLayer.Services.Log.IHistoryManager _historyManager;
-        private IHttpContextAccessor _contectAccessor;
+        private IHttpContextAccessor _contextAccessor;
 
         public DissertationBL(Context_Project contex, UploadFile.IUploadFile uploadFile, IHttpContextAccessor contectAccessor
             , Log.IHistoryManager historyManager, UserManager<Users> usermanager, IGeneralService generalService)
         {
             _context = contex;
             _uploadFile = uploadFile;
-            _contectAccessor = contectAccessor;
+            _contextAccessor = contectAccessor;
             _historyManager = historyManager;
             _userManager = usermanager;
             _generalService = generalService;
@@ -193,9 +193,9 @@ namespace BusinessLayer.Services.Dissertation
 
                 #region log For Update User
                 await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime()
-                    , _contectAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "SignUp/Register", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                        _contectAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                    , _contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"اطلاعات کاربر {user.UserName} بروز شده است و پایان نامه با موفقیت بارگزاري شد");
                 #endregion
                 res.Message = "عمليات موفقيت آمیز بود";
@@ -373,19 +373,19 @@ namespace BusinessLayer.Services.Dissertation
                             Dissertation.ProceedingsFileName = Pro__File.FileName;
                         }
                     }
-                    if (UDissertation.TitleEnglish.IsNullOrEmpty())
+                    if (!UDissertation.TitleEnglish.IsNullOrEmpty())
                         Dissertation.TitleEnglish = UDissertation.TitleEnglish;
 
-                    if (UDissertation.TitlePersian.IsNullOrEmpty())
+                    if (!UDissertation.TitlePersian.IsNullOrEmpty())
                         Dissertation.TitlePersian = UDissertation.TitlePersian;
 
-                    if (UDissertation.TermNumber.IsNullOrEmpty())
+                    if (!UDissertation.TermNumber.IsNullOrEmpty())
                         Dissertation.TermNumber = UDissertation.TermNumber;
 
-                    if (UDissertation.Abstract.IsNullOrEmpty())
+                    if (!UDissertation.Abstract.IsNullOrEmpty())
                         Dissertation.Abstract = UDissertation.Abstract;
 
-                    if (UDissertation.TermNumber.IsNullOrEmpty())
+                    if (!UDissertation.TermNumber.IsNullOrEmpty())
                         Dissertation.TermNumber = UDissertation.TermNumber;
 
                     Dissertation.RegisterDateTime = DateTime.Now.ToPersianDateTime();
@@ -408,9 +408,9 @@ namespace BusinessLayer.Services.Dissertation
 
                     #region Set Log
                     await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
-                            this._contectAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                            "Dissertation/UpdateDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                            _contectAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                            this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                            this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                            _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                             $"پایان نامه {Dissertation.DissertationId} با موفقیت برای کاربر {user.Id} به روز رسانی شد");
                     #endregion
 
@@ -425,9 +425,9 @@ namespace BusinessLayer.Services.Dissertation
                 res.Message = ex.Message;
                 #region Set Log
                 await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
-                        this._contectAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Dissertation/UpdateDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                        _contectAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Error Message : {ex.Message}");
                 #endregion
 

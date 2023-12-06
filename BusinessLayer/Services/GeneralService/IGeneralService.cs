@@ -48,7 +48,8 @@ namespace BusinessLayer.Services.GeneralService
         
         // GetAll CollegesUni
         Task<List<Models.OUTPUT.Administrator.StatusModelDTO>> GetAllCollegesUni();
-        
-        //
+
+        // Download File
+        Models.OUTPUT.DownloadOutModelDTO? DownloadFileFormRoot(string FileAddress);
     }
 }

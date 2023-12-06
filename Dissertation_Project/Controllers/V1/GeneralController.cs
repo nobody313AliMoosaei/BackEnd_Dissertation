@@ -1,6 +1,9 @@
 ﻿using BusinessLayer.Services.GeneralService;
+using BusinessLayer.Utilities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace Dissertation_Project.Controllers.V1
 {
@@ -9,9 +12,11 @@ namespace Dissertation_Project.Controllers.V1
     public class GeneralController : ControllerBase
     {
         private IGeneralService _generalService;
-        public GeneralController(IGeneralService generalService)
+        private IWebHostEnvironment _webHostEnvironment;
+        public GeneralController(IGeneralService generalService, IWebHostEnvironment webHostEnvironment)
         {
             _generalService = generalService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpGet("GetAllRoles")]
@@ -39,5 +44,23 @@ namespace Dissertation_Project.Controllers.V1
         {
             return Ok(await _generalService.GetAllDissertationStatus());
         }
+
+        [HttpPost("DownloadFile")]
+        public IActionResult DownloadFileFormRoot([FromBody] string FileAddress)
+        {
+            if (System.IO.File.Exists(FileAddress))
+            {
+                var ResponseFileDownload = _generalService.DownloadFileFormRoot(FileAddress);
+                
+                if (ResponseFileDownload != null && ResponseFileDownload.FileStream != null && !ResponseFileDownload.FileDownloadName.IsNullOrEmpty())
+                    return File(ResponseFileDownload.FileStream, ResponseFileDownload.ContentType, ResponseFileDownload.FileDownloadName);
+
+                else
+                    return StatusCode((int)System.Net.HttpStatusCode.NoContent, "درخواست شما قابل انجام نمی‌باشد");
+            }
+            else
+                return NotFound();
+        }
+
     }
 }

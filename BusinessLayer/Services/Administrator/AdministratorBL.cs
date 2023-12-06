@@ -239,7 +239,7 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Administrator/UpdateUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"کاربر با نام کاربری {NewUser.UserName} بروز شد");
                 #endregion
@@ -257,7 +257,7 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Administrator/UpdateUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Message Error : {ex.Message}");
                 #endregion
@@ -289,7 +289,7 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Administrator/DeActiveUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"کاربر با شناسه {user.Id} غیر فعال شد");
                 #endregion
@@ -305,7 +305,7 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Administrator/DeActiveUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Message Error : {ex.Message}");
                 #endregion
@@ -359,7 +359,7 @@ namespace BusinessLayer.Services.Administrator
                         #region Set Log
                         await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                                 this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                                "Administrator/AddNewRoleToUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                                this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                                 _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                                 $"به کاربر {user.Id} نقش {NewRole} افزوده شد");
                         #endregion
@@ -379,7 +379,7 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Administrator/AddNewRoleToUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Message Error : {ex.Message}");
                 #endregion
@@ -446,7 +446,7 @@ namespace BusinessLayer.Services.Administrator
                         #region Set Log
                         await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                                 this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                                "Administrator/AddNewUser", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                                this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                                 _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                                 $"کاربر با نام کاربری {user.UserName} ایجاد شد");
                         #endregion
@@ -473,7 +473,7 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Administrator/AddNewUser", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Error Message : {ex.Message}");
                 #endregion
@@ -592,7 +592,7 @@ namespace BusinessLayer.Services.Administrator
                     #region Set Log
                     await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                             this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                            "Administrator/UploadDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                            this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                             _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                             $"پایان نامه برای کاربر {UserId} آپلود شد");
                     #endregion
@@ -608,7 +608,7 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "Administrator/UploadDissertation", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Error Message : {ex.Message}");
                 #endregion

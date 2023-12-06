@@ -124,7 +124,7 @@ namespace Dissertation_Project.Controllers.V1
 
                     return File(Filestream, contentType, fileDownloadName);
                 }
-                return BadRequest();
+                return NotFound();
             }
             catch
             {

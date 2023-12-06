@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "CDxjHU+swPutAYtQCEnrAQDqNjgKUEl06l8/N9AAzm8=",
+  "Hash": "iYtSUzS5GxZpSnGDUAnarCNDuoaj3qdWhI9gDcQSjSc=",
   "Source": "Dissertation_Project",
   "BasePath": "_content/Dissertation_Project",
   "Mode": "Default",
@@ -287,6 +287,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\bf842686-74e8-4e67-a876-fd2ae1c4f905.jpg"
+    },
+    {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\htmlpage.cshtml",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "htmlpage.cshtml",
+      "AssetKind": "Build",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "Never",
+      "OriginalItemSpec": "wwwroot\\htmlpage.cshtml"
     }
   ]
 }

@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Models;
+using BusinessLayer.Models.OUTPUT;
 using BusinessLayer.Models.OUTPUT.Administrator;
 using BusinessLayer.Models.OUTPUT.Teacher;
 using BusinessLayer.Services.UploadFile;
@@ -103,7 +104,7 @@ namespace BusinessLayer.Services.GeneralService
                         #region Set Log
                         await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                                 this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                                "ChangeDissertationStatus", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                                this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                                 _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                                 $"پایان نامه {Dis.DissertationId} به وضعیت {Status.Title} تغییر کرد");
                         #endregion
@@ -127,7 +128,7 @@ namespace BusinessLayer.Services.GeneralService
                 #region Set Log
                 await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "ChangeDissertationStatus", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                       this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Error Message : {ex.Message}");
                 #endregion
@@ -332,7 +333,7 @@ namespace BusinessLayer.Services.GeneralService
                     #region Set Log
                     await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                             this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                            "SendComment", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                            this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                             _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                             $"کامنت برای پایان نامه {Dissertation.DissertationId} توسط کاربر {UserId} ثبت شد");
                     #endregion
@@ -348,7 +349,7 @@ namespace BusinessLayer.Services.GeneralService
                 #region Set Log
                 await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "SendComment", BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"Error Message : {ex.Message}");
                 #endregion
@@ -357,5 +358,25 @@ namespace BusinessLayer.Services.GeneralService
             return Err;
         }
 
+        public DownloadOutModelDTO? DownloadFileFormRoot(string FileAddress)
+        {
+            var model = new DownloadOutModelDTO();
+            try
+            {
+                if (!FileAddress.IsNullOrEmpty())
+                {
+                    var File_Info = new FileInfo(FileAddress);
+                    model.FileStream = System.IO.File.OpenRead(FileAddress);
+                    //string contentType = "application/octet-stream";
+
+                    model.FileDownloadName =("__" + File_Info.Name).Trim();
+                }
+            }
+            catch
+            {
+                model = null;
+            }
+            return model;
+        }
     }
 }

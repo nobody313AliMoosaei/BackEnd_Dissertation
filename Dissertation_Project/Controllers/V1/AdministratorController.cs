@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    [Authorize(Roles = "Administrator")]
+    //[Authorize(Roles = "Administrator")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]

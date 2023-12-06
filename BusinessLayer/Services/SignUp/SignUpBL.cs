@@ -46,13 +46,15 @@ namespace BusinessLayer.Services.SignUp
         public async Task<ErrorsVM> Register(Models.INPUT.SignUp.RegisterUserDTO _newUser)
         {
             ErrorsVM err = new ErrorsVM();
-            StringBuilder sb = new StringBuilder();
             try
             {
                 if (_newUser.NationalCode.IsNullOrEmpty())
                 {
-                    sb.AppendLine("کد ملی وارد نشده است" + Environment.NewLine);
+                   err.ErrorList.Add("کد ملی وارد نشده است");
                 }
+                if (!_newUser.NationalCode.IsValidNationalCode())
+                    err.ErrorList.Add("کد ملی درست نیست");
+
                 var newuser = new Users()
                 {
                     Email = _newUser.Email,
@@ -67,14 +69,14 @@ namespace BusinessLayer.Services.SignUp
                     // اضافه کردن نقش پیش فرض برای کاربر
                     if (!await Add_Defualt_Role(newuser))
                     {
-                        sb.AppendLine("نقش مدنظر برای کاربر اضافه نشده است" + Environment.NewLine);
+                        err.ErrorList.Add("نقش مدنظر برای کاربر اضافه نشده است" + Environment.NewLine);
                     }
 
                     #region Background For Log 
                     var UsrName = _newUser.UserName.IsNullOrEmpty() ? _newUser.Email : _newUser.UserName;
                     await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        "SignUp/Register", BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"کاربر {UsrName} ثبت نام کرده است");
                     #endregion
@@ -89,14 +91,12 @@ namespace BusinessLayer.Services.SignUp
                         foreach (var itm in Resualt.Errors.ToList())
                         {
                             if (itm.Code == "DuplicateUserName")
-                                sb.AppendLine("کاربر تکراری مي‌باشد");
+                                err.ErrorList.Add("کاربر تکراری مي‌باشد");
                             else
-                                sb.AppendLine($"Title : {itm.Code} Message : {itm.Description}");
+                                err.ErrorList.Add($"Title : {itm.Code} Message : {itm.Description}");
                         }
                     }
                 }
-                if (sb.Length > 0)
-                    err.Message = sb.ToString();
             }
             catch (Exception ex)
             {
