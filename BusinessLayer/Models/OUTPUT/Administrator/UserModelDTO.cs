@@ -18,5 +18,6 @@ namespace BusinessLayer.Models.OUTPUT.Administrator
         public long CollegeRef { get; set; }
         public List<string> TeachersName { get; set; } = new List<string>();
         public bool HasDissertation { get; set; }
+        public bool Active { get; set; } = false;
     }
 }

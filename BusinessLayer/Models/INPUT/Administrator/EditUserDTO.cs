@@ -12,7 +12,7 @@ namespace BusinessLayer.Models.INPUT.Administrator
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? NationalCode { get; set; }
-        public string? PhoneNumber { get; set; }
+        //public string? PhoneNumber { get; set; }
         public string? UserName { get; set; }
         public long? CollegeRef { get; set; }
         public long? Teacher1_Ref { get; set; }

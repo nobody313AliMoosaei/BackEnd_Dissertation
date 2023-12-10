@@ -46,11 +46,11 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("DownloadFile")]
-        public IActionResult DownloadFileFormRoot([FromBody] string FileAddress)
+        public IActionResult DownloadFileFormRoot([FromBody] BusinessLayer.Models.INPUT.FileInfoDownloadDTO FileInfo)
         {
-            if (System.IO.File.Exists(FileAddress))
+            if (System.IO.File.Exists(FileInfo.FileAddress))
             {
-                var ResponseFileDownload = _generalService.DownloadFileFormRoot(FileAddress);
+                var ResponseFileDownload = _generalService.DownloadFileFormRoot(FileInfo.FileAddress);
                 
                 if (ResponseFileDownload != null && ResponseFileDownload.FileStream != null && !ResponseFileDownload.FileDownloadName.IsNullOrEmpty())
                     return File(ResponseFileDownload.FileStream, ResponseFileDownload.ContentType, ResponseFileDownload.FileDownloadName);
@@ -60,6 +60,12 @@ namespace Dissertation_Project.Controllers.V1
             }
             else
                 return NotFound();
+        }
+
+        [HttpPost("GetUserById")]
+        public async Task<IActionResult> GetUserById(long UserId)
+        {
+            return Ok(await _generalService.GetUserById(UserId));
         }
 
     }

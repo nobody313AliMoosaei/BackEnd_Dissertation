@@ -369,12 +369,45 @@ namespace BusinessLayer.Services.GeneralService
                     model.FileStream = System.IO.File.OpenRead(FileAddress);
                     //string contentType = "application/octet-stream";
 
-                    model.FileDownloadName =("__" + File_Info.Name).Trim();
+                    model.FileDownloadName = ("__" + File_Info.Name).Trim();
                 }
             }
             catch
             {
                 model = null;
+            }
+            return model;
+        }
+
+        public async Task<UserModelDTO> GetUserById(long UserId)
+        {
+            var model = new UserModelDTO();
+            try
+            {
+                var AllTeacher = await _teacherManager.GetAllTeachers();
+
+                var user = await _context.Users.Where(o => o.Active == true && o.Id == UserId)
+                    .Include(o=>o.CollegeRefNavigation)
+                    .Include(o=>o.Teachers)
+                    .FirstOrDefaultAsync();
+
+                if (user.Teachers.Count > 0)
+                {
+                    model.TeachersName = (await _teacherManager.GetAllTeachers())
+                        .Join(user.Teachers, x => x.Id, y => y.TeacherId, (x, y) => { return x; }).Select(o=>o.FirstName + " " + o.LastName).ToList();
+                }
+                model.FirsName = user.FirstName;
+                model.LastName = user.LastName;
+                model.CollegeName = user.College;
+                model.CollegeRef = user.CollegeRef.HasValue? user.CollegeRef.Value:-1;
+                model.NationalCode = user.NationalCode;
+                model.UserId = user.Id;
+                model.UserName = user.UserName;
+                model.PhoneNumber = user.PhoneNumber;
+
+            }
+            catch
+            {
             }
             return model;
         }

@@ -17,7 +17,10 @@ namespace Dissertation_Project.Controllers.V1
         private BusinessLayer.Services.Administrator.AdministratorBL _adminBL;
         private BusinessLayer.Services.Teacher.ITeacherManager _teacherManager;
         private BusinessLayer.Services.GeneralService.IGeneralService _generalService;
-        public AdministratorController(BusinessLayer.Services.Administrator.AdministratorBL adminbl, BusinessLayer.Services.Teacher.ITeacherManager teacherManager, BusinessLayer.Services.GeneralService.IGeneralService generalService)
+
+        public AdministratorController(BusinessLayer.Services.Administrator.AdministratorBL adminbl,
+            BusinessLayer.Services.Teacher.ITeacherManager teacherManager,
+            BusinessLayer.Services.GeneralService.IGeneralService generalService)
         {
             _adminBL = adminbl;
             _teacherManager = teacherManager;
@@ -25,9 +28,9 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpGet("GetAllDissertation")]
-        public async Task<IActionResult> GetAllDissertation(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllDissertation(int pageNumber, int pageSize, [FromBody] BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filter)
         {
-            return Ok(await _adminBL.GetAllDissertation(pageNumber, pageSize));
+            return Ok(await _adminBL.GetAllDissertation(pageNumber, pageSize, _filter));
         }
 
         [HttpPost("ChangeDissertationStatus")]
@@ -36,10 +39,10 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _adminBL.ChangeDissertationStatus(DissertationId, Status));
         }
 
-        [HttpGet("GetAllUser")]
-        public async Task<IActionResult> GetAllUser(string Value = "")
+        [HttpOptions("GetAllUser")]
+        public async Task<IActionResult> GetAllUser([FromBody] BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filter, int PageNumber, int PageSize = 5)
         {
-            return Ok(await _adminBL.GetAllUsers(Value));
+            return Ok(await _adminBL.GetAllUsers(_filter, PageNumber, PageSize));
         }
 
         [HttpGet("GetDissertationStatus")]
@@ -115,7 +118,7 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _teacherManager.AddNewTeacher(newTeacher));
         }
 
-        [HttpGet("GetDissertation")]
+        [HttpGet("GetDissertationByStatus")]
         public async Task<IActionResult> GetDissertation(int XStatus = 1)
         {
             return Ok(await _adminBL.GetDissertationsByStatus(XStatus));
@@ -132,7 +135,7 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("Download")]
-        public async Task<IActionResult> DonloadFile([FromBody]string FileAddress)
+        public IActionResult DonloadFile([FromBody] string FileAddress)
         {
             try
             {
@@ -145,8 +148,8 @@ namespace Dissertation_Project.Controllers.V1
                     var File_Info = new FileInfo(FileAddress);
                     var Filestream = System.IO.File.OpenRead(FileAddress);
                     string contentType = "application/octet-stream";
-                    
-                    var fileDownloadName = UserID+"__"+ File_Info.Name;
+
+                    var fileDownloadName = UserID + "__" + File_Info.Name;
 
                     return File(Filestream, contentType, fileDownloadName);
                 }
@@ -156,6 +159,12 @@ namespace Dissertation_Project.Controllers.V1
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("GetTeachersByCollegeRef")]
+        public async Task<IActionResult> GetTeachersByCollegeRef(long CollegeRef)
+        {
+            return Ok(await _teacherManager.GetTeachersCollege(CollegeRef));
         }
 
     }

@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,12 +40,23 @@ namespace BusinessLayer.Services.Administrator
         }
 
         // مشاهده تمام پایان نامه ها با وضعیت
-        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetAllDissertation(int PageNumber, int PageSize)
+        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetAllDissertation(int PageNumber, int PageSize, BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filterModel)
         {
             var model = new List<Models.OUTPUT.Dissertation.DissertationModelOutPut>();
             try
             {
-                model = await _context.Dissertations.Where(o => o.DissertationId > 0)
+                Expression<Func<DataLayer.Entities.Dissertations, bool>> _where = o => true;
+
+                if (!_filterModel.Title.IsNullOrEmpty())
+                    _where = _where.AndAlso(o => o.TitleEnglish.Trim() == _filterModel.Title.Trim() || o.TitlePersian == _filterModel.Title.Trim());
+                if (!_filterModel.UserName.IsNullOrEmpty())
+                    _where = _where.AndAlso(o => o.Student.UserName == _filterModel.UserName.Trim());
+
+                _where = _where.AndAlso(o => o.DissertationId > 0);
+
+                model = await _context.Dissertations
+                    .Include(o => o.Student)
+                    .Where(_where)
                     .Skip((PageNumber - 1) * PageSize)
                     .Take(PageSize)
                     .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
@@ -55,10 +70,12 @@ namespace BusinessLayer.Services.Administrator
                         TermNumber = o.TermNumber,
                         StudentId = o.StudentId,
                         StatusDissertation = o.StatusDissertation,
+                        DissertationFileAddress = o.DissertationFileAddress,
+                        ProceedingsFileAddress = o.ProceedingsFileAddress
                     }).ToListAsync();
 
-
                 var disStatus = await _generalService.GetAllDissertationStatus();
+
                 if (disStatus.Any())
                 {
                     model = model.Select(o =>
@@ -87,50 +104,63 @@ namespace BusinessLayer.Services.Administrator
         }
 
         // مشاهده تمام کاربران
-        public async Task<List<Models.OUTPUT.Administrator.UserModelDTO>> GetAllUsers(string Value = "")
+        public async Task<List<Models.OUTPUT.Administrator.UserModelDTO>>
+            GetAllUsers(BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filterModel, int PageNumber, int PageSize = 5)
         {
             var model = new List<Models.OUTPUT.Administrator.UserModelDTO>();
             try
             {
-                if (Value.IsNullOrEmpty())
-                    model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
-                        .Where(o => o != null && o.Active == true)
-                        .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
-                        {
-                            UserId = o.Id,
-                            FirsName = o.FirstName,
-                            LastName = o.LastName,
-                            PhoneNumber = o.PhoneNumber,
-                            NationalCode = o.NationalCode,
-                            CollegeName = o.College,
-                            CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
-                        }).ToList();
-                else
-                    model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
-                            .Where(o => o != null && o.Active == true && (o.FirstName == Value || o.LastName == Value
-                                    || o.UserName == Value || o.Email == Value || o.NationalCode == Value
-                                    || (o.FirstName + o.LastName).Replace(" ", "") == Value.Replace(" ", "")))
-                            .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
-                            {
-                                UserId = o.Id,
-                                FirsName = o.FirstName,
-                                LastName = o.LastName,
-                                PhoneNumber = o.PhoneNumber,
-                                NationalCode = o.NationalCode,
-                                CollegeName = o.College,
-                                CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
-                            }).ToList();
+                Expression<Func<DataLayer.Entities.Users?, bool>> _where = o => true;
+
+                if (!_filterModel.FullName.IsNullOrEmpty())
+                    _where = _where.AndAlso(o => (o.FirstName.Trim() + o.LastName.Trim()).Trim() == _filterModel.FullName.Trim());
+
+                if (!_filterModel.UserName.IsNullOrEmpty())
+                    _where = _where.AndAlso(o => o.UserName.Trim() == _filterModel.UserName.Trim());
+
+                model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
+                    .AsQueryable().Where(_where)
+                    .Skip((PageNumber-1)*PageSize)
+                    .Take(PageSize)
+                    .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
+                    {
+                        UserId = o.Id,
+                        FirsName = o.FirstName,
+                        LastName = o.LastName,
+                        PhoneNumber = o.PhoneNumber,
+                        NationalCode = o.NationalCode,
+                        CollegeName = o.College,
+                        CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
+                        UserName = o.UserName,
+                        Active = o.Active
+                    }).ToList();
+
+                //model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
+                //        .Where(o => o != null && o.Active == true && (o.FirstName == Value || o.LastName == Value
+                //                || o.UserName == Value || o.Email == Value || o.NationalCode == Value
+                //                || (o.FirstName + o.LastName).Replace(" ", "") == Value.Replace(" ", "")))
+                //        .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
+                //        {
+                //            UserId = o.Id,
+                //            FirsName = o.FirstName,
+                //            LastName = o.LastName,
+                //            PhoneNumber = o.PhoneNumber,
+                //            NationalCode = o.NationalCode,
+                //            CollegeName = o.College,
+                //            CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
+                //        }).ToList();
 
 
                 if (model.Count > 0)
                 {
-                    var allTeacher = await _context.Teachers.ToListAsync();
+                    var allTeacher = await _context.Teachers
+                        .Include(o => o.StudentNavigation).Include(o => o.TeacherNavigation).ToListAsync();
+
                     model.ForEach(o =>
                     {
                         o.HasDissertation = _context.Dissertations.Where(t => t.StudentId == o.UserId).Count() > 0;
                         o.TeachersName = allTeacher.Join(model, x => x.StudentId, y => y.UserId, (x, y) =>
                         {
-
                             return x.TeacherNavigation != null ? (x.TeacherNavigation.FirstName + " " + x.TeacherNavigation.LastName)
                             : "";
                         }).ToList();
@@ -171,8 +201,8 @@ namespace BusinessLayer.Services.Administrator
                 if (!NewUser.NationalCode.IsNullOrEmpty())
                     user.NationalCode = NewUser.NationalCode;
 
-                if (!NewUser.PhoneNumber.IsNullOrEmpty())
-                    user.PhoneNumber = NewUser.PhoneNumber;
+                //if (!NewUser.PhoneNumber.IsNullOrEmpty())
+                //    user.PhoneNumber = NewUser.PhoneNumber;
 
                 if (!NewUser.UserName.IsNullOrEmpty())
                     user.UserName = NewUser.UserName;
@@ -275,7 +305,7 @@ namespace BusinessLayer.Services.Administrator
                 var user = await _context.Users.Where(o => o.Id == UserId).FirstOrDefaultAsync();
                 if (user != null)
                 {
-                    user.Active = false;
+                    user.Active = !user.Active;
                     _context.Users.Update(user);
                     await _context.SaveChangesAsync();
 
@@ -412,8 +442,7 @@ namespace BusinessLayer.Services.Administrator
                     return Err;
                 }
                 if (NewUser.FirstName.IsNullOrEmpty() || NewUser.LastName.IsNullOrEmpty()
-                    || NewUser.NationalCode.IsNullOrEmpty() || NewUser.PhoneNumber.IsNullOrEmpty()
-                    || NewUser.UserName.IsNullOrEmpty())
+                    || NewUser.NationalCode.IsNullOrEmpty() || NewUser.UserName.IsNullOrEmpty())
                 {
                     Err.ErrorList.Add("اطلاعات شخصی کاربر ناقص است");
                     Err.Message = "اطلاعات کاربر ناقص است";
@@ -424,9 +453,18 @@ namespace BusinessLayer.Services.Administrator
                     FirstName = NewUser.FirstName,
                     LastName = NewUser.LastName,
                     NationalCode = NewUser.NationalCode,
-                    PhoneNumber = NewUser.PhoneNumber,
-                    UserName = NewUser.UserName
+                    UserName = NewUser.UserName,
                 };
+
+                var CollegeNav = await _context.Baslookups.Where(o => o.Id == (NewUser.CollegeRef.HasValue ? NewUser.CollegeRef.Value : -1)).FirstOrDefaultAsync();
+                if (CollegeNav != null)
+                {
+                    user.College = CollegeNav.Title;
+                    user.CollegeRefNavigation = CollegeNav;
+                    user.CollegeRef = CollegeNav.Id;
+                }
+
+
                 var ResultAddUser = await _userManager.CreateAsync(user, user.NationalCode ?? "123456");
                 if (ResultAddUser.Succeeded)
                 {
@@ -439,6 +477,59 @@ namespace BusinessLayer.Services.Administrator
                             UserId = user.Id
                         });
                         await _context.SaveChangesAsync();
+
+
+                        // Teacher_1
+                        if (NewUser.Teacher1_Ref.HasValue)
+                        {
+                            var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher1_Ref.Value).FirstOrDefaultAsync();
+                            if (teacher != null)
+                            {
+                                user.Teachers.Add(new Teachers
+                                {
+                                    StudentId = user.Id,
+                                    StudentNavigation = user,
+                                    TeacherId = teacher.Id,
+                                    TeacherNavigation = teacher
+                                });
+                            }
+                        }
+
+                        // teacher_2
+                        if (NewUser.Teacher2_Ref.HasValue)
+                        {
+                            var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher2_Ref.Value).FirstOrDefaultAsync();
+                            if (teacher != null)
+                            {
+                                user.Teachers.Add(new Teachers
+                                {
+                                    StudentId = user.Id,
+                                    StudentNavigation = user,
+                                    TeacherId = teacher.Id,
+                                    TeacherNavigation = teacher
+                                });
+                            }
+                        }
+
+                        // teacher_3
+                        if (NewUser.Teacher3_Ref.HasValue)
+                        {
+                            var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher3_Ref.Value).FirstOrDefaultAsync();
+                            if (teacher != null)
+                            {
+                                user.Teachers.Add(new Teachers
+                                {
+                                    StudentId = user.Id,
+                                    StudentNavigation = user,
+                                    TeacherId = teacher.Id,
+                                    TeacherNavigation = teacher
+                                });
+                            }
+                        }
+
+                        _context.Users.Update(user);
+                        await _context.SaveChangesAsync();
+
 
                         Err.Message = "کاربر ایجاد شد";
                         Err.IsValid = true;
@@ -494,7 +585,8 @@ namespace BusinessLayer.Services.Administrator
                 }
 
                 var user = await _context.Users.Where(o => (o.Email.ToLower()) == Value.ToLower()
-                || o.NationalCode == Value || o.UserName == Value)
+                || o.NationalCode == Value || o.UserName == Value
+                || (o.FirstName+o.LastName).Trim() == Value.Trim())
                     .Include(o => o.CollegeRefNavigation)
                     .Include(o => o.Teachers)
                     .FirstOrDefaultAsync();

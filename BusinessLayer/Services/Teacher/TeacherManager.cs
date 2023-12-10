@@ -150,8 +150,7 @@ namespace BusinessLayer.Services.Teacher
                             LastName = x.LastName,
                             NationalCode = x.NationalCode,
                             UserName = x.UserName
-                        })
-                        .ToListAsync();
+                        }).ToListAsync();
                 else
                 {
                     Value = Value.Trim();

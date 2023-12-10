@@ -51,5 +51,8 @@ namespace BusinessLayer.Services.GeneralService
 
         // Download File
         Models.OUTPUT.DownloadOutModelDTO? DownloadFileFormRoot(string FileAddress);
+
+        // GetUserById
+        Task<UserModelDTO> GetUserById(long UserId);
     }
 }
