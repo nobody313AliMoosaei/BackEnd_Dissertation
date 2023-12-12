@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    //[Authorize(Roles = "Administrator")]
+    // [Authorize(Roles = "Administrator")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -27,7 +27,7 @@ namespace Dissertation_Project.Controllers.V1
             _generalService = generalService;
         }
 
-        [HttpGet("GetAllDissertation")]
+        [HttpPost("GetAllDissertation")]
         public async Task<IActionResult> GetAllDissertation(int pageNumber, int pageSize, [FromBody] BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filter)
         {
             return Ok(await _adminBL.GetAllDissertation(pageNumber, pageSize, _filter));

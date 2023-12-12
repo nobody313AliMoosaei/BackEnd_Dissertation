@@ -96,19 +96,19 @@ builder.Services.AddTransient<BusinessLayer.Services.Log.IHistoryManager, Busine
 
 builder.Services.AddTransient<BusinessLayer.Services.Session.ISessionManager, BusinessLayer.Services.Session.SessionManager>();
 
-builder.Services.AddScoped<BusinessLayer.Services.SignUp.SignUpBL>();
-
 builder.Services.AddTransient<BusinessLayer.Services.UploadFile.IUploadFile, BusinessLayer.Services.UploadFile.UploadFile>();
+
+builder.Services.AddScoped<BusinessLayer.Services.SignUp.SignUpBL>();
 
 builder.Services.AddScoped<BusinessLayer.Services.Dissertation.DissertationBL>();
 
 builder.Services.AddScoped<BusinessLayer.Services.Administrator.AdministratorBL>();
 
+builder.Services.AddScoped<BusinessLayer.Services.EmployeeService.EmployeeService>();
+
 builder.Services.AddTransient<BusinessLayer.Services.Teacher.ITeacherManager, BusinessLayer.Services.Teacher.TeacherManager>();
 
 builder.Services.AddTransient<BusinessLayer.Services.GeneralService.IGeneralService, BusinessLayer.Services.GeneralService.GeneralService>();
-
-
 
 #endregion
 

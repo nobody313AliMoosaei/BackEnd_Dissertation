@@ -48,7 +48,7 @@ namespace BusinessLayer.Services.Administrator
                 Expression<Func<DataLayer.Entities.Dissertations, bool>> _where = o => true;
 
                 if (!_filterModel.Title.IsNullOrEmpty())
-                    _where = _where.AndAlso(o => o.TitleEnglish.Trim() == _filterModel.Title.Trim() || o.TitlePersian == _filterModel.Title.Trim());
+                    _where = _where.AndAlso(o => o.TitleEnglish.Trim().Contains(_filterModel.Title.Trim()) || o.TitlePersian.Contains(_filterModel.Title.Trim()));
                 if (!_filterModel.UserName.IsNullOrEmpty())
                     _where = _where.AndAlso(o => o.Student.UserName == _filterModel.UserName.Trim());
 
@@ -113,14 +113,19 @@ namespace BusinessLayer.Services.Administrator
                 Expression<Func<DataLayer.Entities.Users?, bool>> _where = o => true;
 
                 if (!_filterModel.FullName.IsNullOrEmpty())
-                    _where = _where.AndAlso(o => (o.FirstName.Trim() + o.LastName.Trim()).Trim() == _filterModel.FullName.Trim());
+                    _where = _where.AndAlso(o => (o.FirstName + o.LastName).Trim().Replace(" ","") == _filterModel.FullName.Trim().Replace(" ",""));
 
                 if (!_filterModel.UserName.IsNullOrEmpty())
                     _where = _where.AndAlso(o => o.UserName.Trim() == _filterModel.UserName.Trim());
 
-                model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
+                var Role = await _context.Roles.Where(o => o.Name.ToLower() == DataLayer.Tools.RoleName_enum.Student.ToString().ToLower()).FirstOrDefaultAsync();
+
+                model = await _context.Users.Include(o => o.Teachers).ThenInclude(o=>o.TeacherNavigation)
+                    .Join(_context.UserRoles, user => user.Id, UserRole => UserRole.UserId, (x, y) => new { user = x, UserRole = y })
+                    .Where(o => o.UserRole.RoleId == Role.Id)
+                    .Select(o=>o.user)
                     .AsQueryable().Where(_where)
-                    .Skip((PageNumber-1)*PageSize)
+                    .Skip((PageNumber - 1) * PageSize)
                     .Take(PageSize)
                     .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
                     {
@@ -132,8 +137,28 @@ namespace BusinessLayer.Services.Administrator
                         CollegeName = o.College,
                         CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
                         UserName = o.UserName,
-                        Active = o.Active
-                    }).ToList();
+                        Active = o.Active,
+                        TeachersName = o.Teachers.Count>0 ? o.Teachers.Select(t => t.TeacherNavigation.FirstName + " " + t.TeacherNavigation.LastName).ToList()
+                        : new List<string>()
+                    }).ToListAsync();
+
+
+                //model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
+                //    .AsQueryable().Where(_where)
+                //    .Skip((PageNumber - 1) * PageSize)
+                //    .Take(PageSize)
+                //    .Select(o => new Models.OUTPUT.Administrator.UserModelDTO
+                //    {
+                //        UserId = o.Id,
+                //        FirsName = o.FirstName,
+                //        LastName = o.LastName,
+                //        PhoneNumber = o.PhoneNumber,
+                //        NationalCode = o.NationalCode,
+                //        CollegeName = o.College,
+                //        CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
+                //        UserName = o.UserName,
+                //        Active = o.Active
+                //    }).ToList();
 
                 //model = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.Student.ToString()))
                 //        .Where(o => o != null && o.Active == true && (o.FirstName == Value || o.LastName == Value
@@ -165,6 +190,7 @@ namespace BusinessLayer.Services.Administrator
                             : "";
                         }).ToList();
                     });
+
                 }
             }
             catch
@@ -586,7 +612,7 @@ namespace BusinessLayer.Services.Administrator
 
                 var user = await _context.Users.Where(o => (o.Email.ToLower()) == Value.ToLower()
                 || o.NationalCode == Value || o.UserName == Value
-                || (o.FirstName+o.LastName).Trim() == Value.Trim())
+                || (o.FirstName + o.LastName).Trim() == Value.Trim())
                     .Include(o => o.CollegeRefNavigation)
                     .Include(o => o.Teachers)
                     .FirstOrDefaultAsync();

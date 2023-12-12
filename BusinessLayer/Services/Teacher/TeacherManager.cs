@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -156,7 +157,7 @@ namespace BusinessLayer.Services.Teacher
                     Value = Value.Trim();
                     lstTeacher = await _context.Users.Where(o => o.FirstName == Value || o.LastName == Value
                                     || o.Email == Value || o.NationalCode == Value || o.UserName == Value
-                                    || (o.FirstName+o.LastName).Replace(" ","") == Value.Replace(" ",""))
+                                    || (o.FirstName + o.LastName).Replace(" ", "") == Value.Replace(" ", ""))
                     .Join(_context.UserRoles, x => x.Id, y => y.UserId, (x, y) => new { user = x, Role = y })
                     .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster)
                     .Select(o => o.user)
@@ -200,10 +201,14 @@ namespace BusinessLayer.Services.Teacher
             var lstTeacher = new List<TeacherOutModelDTO>();
             try
             {
-                lstTeacher = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString()))
-                     .Where(o => o.Active == true && o.CollegeRef == CollegeRef)
-                     .Select(o => new TeacherOutModelDTO
-                     {
+                var Role = await _context.Roles.Where(o => o.Name.ToLower() == DataLayer.Tools.RoleName_enum.GuideMaster.ToString().ToLower()).FirstOrDefaultAsync();
+                lstTeacher = await _context.Users.Include(o => o.CollegeRefNavigation)
+                    .Join(_context.UserRoles, user => user.Id, UserRole => UserRole.UserId, (x, y) => new { user = x, UserRole = y })
+                    .Where(o => o.UserRole.RoleId == Role.Id)
+                    .Select(o => o.user)
+                    .Where(o => o.Active == true && o.CollegeRef == CollegeRef)
+                    .Select(o => new TeacherOutModelDTO
+                    {
                          Id = o.Id,
                          FirstName = o.FirstName,
                          LastName = o.LastName,
@@ -211,7 +216,20 @@ namespace BusinessLayer.Services.Teacher
                          NationalCode = o.NationalCode,
                          CollegRef = o.CollegeRef.Value,
                          College = o.CollegeRefNavigation.Title
-                     }).ToList();
+                    }).ToListAsync();
+
+                //lstTeacher = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString()))
+                //     .Where(o => o.Active == true && o.CollegeRef == CollegeRef)
+                //     .Select(o => new TeacherOutModelDTO
+                //     {
+                //         Id = o.Id,
+                //         FirstName = o.FirstName,
+                //         LastName = o.LastName,
+                //         UserName = o.UserName,
+                //         NationalCode = o.NationalCode,
+                //         CollegRef = o.CollegeRef.Value,
+                //         College = o.CollegeRefNavigation.Title
+                //     }).ToList();
             }
             catch
             {

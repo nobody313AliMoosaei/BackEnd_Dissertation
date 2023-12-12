@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Models;
 using BusinessLayer.Models.OUTPUT.Administrator;
+using BusinessLayer.Models.OUTPUT.General;
 using BusinessLayer.Models.OUTPUT.Teacher;
 using BusinessLayer.Services.UploadFile;
 using Microsoft.AspNetCore.Http;
@@ -54,5 +55,9 @@ namespace BusinessLayer.Services.GeneralService
 
         // GetUserById
         Task<UserModelDTO> GetUserById(long UserId);
+
+        Task<List<BusinessLayer.Models.OUTPUT.General.CommentOutPutModelDTO>> GetAllDissertationComments(long DissertationId, int PageNumber, int PageSize);
+
+        Task<List<CommentOutPutModelDTO>> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize);
     }
 }

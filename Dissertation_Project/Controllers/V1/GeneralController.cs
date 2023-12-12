@@ -68,5 +68,17 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _generalService.GetUserById(UserId));
         }
 
+        [HttpGet("GetAllCommentsOfDissertationById")]
+        public async Task<IActionResult> GetAllDissertationComments(long DissertationId, int PageNumber, int PageSize)
+        {
+            return Ok(_generalService.GetAllDissertationComments(DissertationId, PageNumber, PageSize));
+        }
+
+        [HttpGet("GetAllReplayCommentsByCommentId")]
+        public async Task<IActionResult> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize)
+        {
+            return Ok(_generalService.GetAllReplayCommentsByCommentId(DissertationId,CommentId,PageNumber, PageSize));
+        }
+
     }
 }

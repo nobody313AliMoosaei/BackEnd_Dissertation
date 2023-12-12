@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Models;
 using BusinessLayer.Models.OUTPUT;
 using BusinessLayer.Models.OUTPUT.Administrator;
+using BusinessLayer.Models.OUTPUT.General;
 using BusinessLayer.Models.OUTPUT.Teacher;
 using BusinessLayer.Services.UploadFile;
 using BusinessLayer.Utilities;
@@ -310,6 +311,7 @@ namespace BusinessLayer.Services.GeneralService
                     {
                         Title = Title,
                         Description = Dsr,
+                        InsertDateTime = DateTime.Now.ToPersianDateTime(),
                     };
 
                     if (CommentId == 0)//add Comment
@@ -387,19 +389,19 @@ namespace BusinessLayer.Services.GeneralService
                 var AllTeacher = await _teacherManager.GetAllTeachers();
 
                 var user = await _context.Users.Where(o => o.Active == true && o.Id == UserId)
-                    .Include(o=>o.CollegeRefNavigation)
-                    .Include(o=>o.Teachers)
+                    .Include(o => o.CollegeRefNavigation)
+                    .Include(o => o.Teachers)
                     .FirstOrDefaultAsync();
 
                 if (user.Teachers.Count > 0)
                 {
                     model.TeachersName = (await _teacherManager.GetAllTeachers())
-                        .Join(user.Teachers, x => x.Id, y => y.TeacherId, (x, y) => { return x; }).Select(o=>o.FirstName + " " + o.LastName).ToList();
+                        .Join(user.Teachers, x => x.Id, y => y.TeacherId, (x, y) => { return x; }).Select(o => o.FirstName + " " + o.LastName).ToList();
                 }
                 model.FirsName = user.FirstName;
                 model.LastName = user.LastName;
                 model.CollegeName = user.College;
-                model.CollegeRef = user.CollegeRef.HasValue? user.CollegeRef.Value:-1;
+                model.CollegeRef = user.CollegeRef.HasValue ? user.CollegeRef.Value : -1;
                 model.NationalCode = user.NationalCode;
                 model.UserId = user.Id;
                 model.UserName = user.UserName;
@@ -411,5 +413,103 @@ namespace BusinessLayer.Services.GeneralService
             }
             return model;
         }
+
+        public async Task<List<CommentOutPutModelDTO>> GetAllDissertationComments(long DissertationId, int PageNumber, int PageSize)
+        {
+            var lstComments = new List<CommentOutPutModelDTO>();
+            try
+            {
+                lstComments = await _context.Comments.Where(o => o.DissertationRef == DissertationId)
+                    .Include(o => o.UserRefNavigation)
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
+                    .Select(o => new CommentOutPutModelDTO
+                    {
+                        Description = o.Description,
+                        Title = o.Title,
+                        Id = o.Id,
+                        InsertDateTime = DateTime.Now,
+                        User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
+                        User_UserName = o.UserRefNavigation.UserName
+                    }).ToListAsync();
+
+                if (lstComments.Count == 0)
+                {
+                    var aaaa = await _context.Dissertations.Where(o => o.DissertationId == DissertationId)
+                        .Include(o => o.Comments)
+                        .FirstOrDefaultAsync();
+
+                    lstComments = aaaa.Comments
+                        .Skip((PageNumber - 1) * PageSize)
+                        .Take(PageSize)
+                        .Select(o => new CommentOutPutModelDTO
+                        {
+                            Description = o.Description,
+                            Title = o.Title,
+                            Id = o.Id,
+                            InsertDateTime = DateTime.Now,
+                            User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
+                            User_UserName = o.UserRefNavigation.UserName
+                        }).ToList();
+                }
+            }
+            catch
+            {
+
+            }
+            return lstComments;
+        }
+
+        public async Task<List<CommentOutPutModelDTO>> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize)
+        {
+            var lstComments = new List<CommentOutPutModelDTO>();
+            try
+            {
+                lstComments = _context.Comments.Where(o => o.Id == CommentId)
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
+                    .Include(o=>o.InversCommentRefNavigation)
+                    .ThenInclude(o=>o.UserRefNavigation)
+                    .Include(o => o.UserRefNavigation)
+                    .Select(o => new CommentOutPutModelDTO
+                    {
+                        Description = o.InversCommentRefNavigation.Description,
+                        Title = o.InversCommentRefNavigation.Title,
+                        Id = o.InversCommentRefNavigation.Id,
+                        InsertDateTime = o.InversCommentRefNavigation.InsertDateTime,
+                        
+                        User_FullName = o.InversCommentRefNavigation.UserRefNavigation.FirstName + " "
+                        + o.InversCommentRefNavigation.UserRefNavigation.LastName,
+
+                        User_UserName = o.InversCommentRefNavigation.UserRefNavigation.UserName
+                    })
+                    .ToList();
+
+                //if (lstComments.Count == 0)
+                //{
+                //    var aaaa = await _context.Dissertations.Where(o => o.DissertationId == DissertationId)
+                //        .Include(o => o.Comments)
+                //        .FirstOrDefaultAsync();
+
+                //    lstComments = aaaa.Comments.Select(o => new CommentOutPutModelDTO
+                //    {
+                //        Description = o.Description,
+                //        Title = o.Title,
+                //        Id = o.Id,
+                //        InsertDateTime = DateTime.Now,
+                //        User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
+                //        User_UserName = o.UserRefNavigation.UserName
+                //    }).ToList();
+                //}
+
+            }
+            catch
+            {
+
+            }
+            return lstComments;
+        }
+
+
     }
 }

@@ -8,26 +8,42 @@ using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    [Authorize(Roles = "Administrator,GuideMaster,Adviser,EducationExpert,PostgraduateEducationExpert,DissertationExpert")]
+    //[Authorize(Roles = "Administrator,GuideMaster,Adviser,EducationExpert,PostgraduateEducationExpert,DissertationExpert")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]
     public class OtherEmployeesController : ControllerBase
     {
         private IGeneralService _generalService;
+        private BusinessLayer.Services.EmployeeService.EmployeeService _employeeService;
+        private BusinessLayer.Services.Administrator.AdministratorBL _administratorBL;
 
-        public OtherEmployeesController(IGeneralService generalService)
+        public OtherEmployeesController(IGeneralService generalService, BusinessLayer.Services.EmployeeService.EmployeeService employeeService
+            , BusinessLayer.Services.Administrator.AdministratorBL AdministratorBL)
         {
             _generalService = generalService;
+            _employeeService = employeeService;
+            _administratorBL = AdministratorBL;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllDissertation([FromBody]string Value = "")
+        //[HttpGet("GetAllDissertation")]
+        //public async Task<IActionResult> GetAllDissertation([FromBody]string Value = "")
+        //{
+        //    return Ok(await _generalService.GetAllDissertationStatus());
+        //}
+        [HttpGet("/Teacher/GetSelfDissertation")]
+        public async Task<IActionResult> GetSelfDissertationOfTeacher(long TeacherId, int PageNumber, int PageSize)
         {
-            return Ok(await _generalService.GetAllDissertationStatus());
+            return Ok(await _employeeService.GetAllDissertationOfTeacher(TeacherId, PageNumber, PageSize));
         }
 
-        [HttpPost]
+        [HttpOptions("GetAllDissertations")]
+        public async Task<IActionResult> GetAllDissertation([FromBody] BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filterModel, int PageNumber, int PageSize)
+        {
+            return Ok(await _administratorBL.GetAllDissertation(PageNumber, PageSize, _filterModel));
+        }
+
+        [HttpPost("ChangeDissertationStatus")]
         public async Task<IActionResult> ChangeDissertationStatus([FromBody] BusinessLayer.Models.INPUT.OtherEmployees.ChangeStatusDTO model)
         {
             if (ModelState.IsValid)
