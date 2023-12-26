@@ -197,6 +197,46 @@ namespace DataLayer.Migrations
                             Description = "ExpirDissertation",
                             Title = "رد پایان نامه",
                             Type = "DissertationStatus"
+                        },
+                        new
+                        {
+                            Id = 20L,
+                            Code = 0,
+                            Description = "جدول نقش های سیستم",
+                            Title = "AspNetRoles",
+                            Type = "App_Table"
+                        },
+                        new
+                        {
+                            Id = 21L,
+                            Code = 1,
+                            Description = "جدول تمام کاربران سیستم",
+                            Title = "AspNetUsers",
+                            Type = "App_Table"
+                        },
+                        new
+                        {
+                            Id = 22L,
+                            Code = 2,
+                            Description = "جدول تمام کامنت های سیستم",
+                            Title = "Comments",
+                            Type = "App_Table"
+                        },
+                        new
+                        {
+                            Id = 23L,
+                            Code = 3,
+                            Description = "جدول تمام پایان نامه های سیستم",
+                            Title = "Dissertations",
+                            Type = "App_Table"
+                        },
+                        new
+                        {
+                            Id = 24L,
+                            Code = 4,
+                            Description = "جدول تمام لاگ های سیستم",
+                            Title = "Logs",
+                            Type = "App_Table"
                         });
                 });
 
@@ -209,17 +249,13 @@ namespace DataLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Description")
-                        .HasMaxLength(1)
-                        .HasColumnType("nvarchar(1)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long?>("DissertationRef")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime?>("InsertDateTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<long?>("InversCommentRef")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Title")
                         .HasMaxLength(150)
@@ -232,8 +268,6 @@ namespace DataLayer.Migrations
                         .HasName("PK__Comments__3214EC077B918307");
 
                     b.HasIndex("DissertationRef");
-
-                    b.HasIndex("InversCommentRef");
 
                     b.HasIndex("UserRef");
 
@@ -569,7 +603,7 @@ namespace DataLayer.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "cef7bbe5-9f72-4915-855b-4f1e46c6b479",
+                            ConcurrencyStamp = "8657a778-a0fb-4a6f-918d-6ceb4e3f31ff",
                             EmailConfirmed = false,
                             FirstName = "Ali",
                             LastName = "Moosaei",
@@ -699,19 +733,12 @@ namespace DataLayer.Migrations
                         .HasForeignKey("DissertationRef")
                         .HasConstraintName("FK__Comments__Disser__7E37BEF6");
 
-                    b.HasOne("DataLayer.Entities.Comments", "InversCommentRefNavigation")
-                        .WithMany("InverseInversCommentRefNavigation")
-                        .HasForeignKey("InversCommentRef")
-                        .HasConstraintName("FK__Comments__Invers__7F2BE32F");
-
                     b.HasOne("DataLayer.Entities.Users", "UserRefNavigation")
                         .WithMany("Comments")
                         .HasForeignKey("UserRef")
                         .HasConstraintName("FK__Comments__UserRe__7D439ABD");
 
                     b.Navigation("DissertationRefNavigation");
-
-                    b.Navigation("InversCommentRefNavigation");
 
                     b.Navigation("UserRefNavigation");
                 });
@@ -816,11 +843,6 @@ namespace DataLayer.Migrations
             modelBuilder.Entity("DataLayer.Entities.Baslookup", b =>
                 {
                     b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.Comments", b =>
-                {
-                    b.Navigation("InverseInversCommentRefNavigation");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Dissertations", b =>

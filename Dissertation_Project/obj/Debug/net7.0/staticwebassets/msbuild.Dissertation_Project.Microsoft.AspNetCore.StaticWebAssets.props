@@ -1,5 +1,21 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\AllFiles\1402\02d068b7-8928-40e1-bb42-27d4bb7b4f69.pdf))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dissertation_Project</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dissertation_Project</BasePath>
+      <RelativePath>AllFiles/1402/02d068b7-8928-40e1-bb42-27d4bb7b4f69.pdf</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\AllFiles\1402\02d068b7-8928-40e1-bb42-27d4bb7b4f69.pdf))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\AllFiles\1402\1\31\346cda31-f476-4dfc-985c-f7214a2f2797.mp3))">
       <SourceType>Package</SourceType>
       <SourceId>Dissertation_Project</SourceId>
@@ -207,6 +223,22 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\AllFiles\1402\45c118b6-f5f5-4a68-a8ab-52d2c43dabc2.jpg))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\AllFiles\1402\52c5ec09-2249-45d0-a48d-6878e31b3779.docx))">
+      <SourceType>Package</SourceType>
+      <SourceId>Dissertation_Project</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/Dissertation_Project</BasePath>
+      <RelativePath>AllFiles/1402/52c5ec09-2249-45d0-a48d-6878e31b3779.docx</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\AllFiles\1402\52c5ec09-2249-45d0-a48d-6878e31b3779.docx))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\AllFiles\1402\878dc7b0-4704-4bdd-8309-a7b051784856.jpg))">
       <SourceType>Package</SourceType>

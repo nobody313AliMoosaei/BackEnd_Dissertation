@@ -6,11 +6,14 @@ using DataLayer.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
@@ -27,9 +30,10 @@ namespace BusinessLayer.Services.Administrator
         private UserManager<DataLayer.Entities.Users> _userManager;
         private BusinessLayer.Services.Log.IHistoryManager _HistoryService;
         private IHttpContextAccessor _contextAccessor;
+        private IConfiguration _configuration;
 
         public AdministratorBL(DataLayer.DataBase.Context_Project context, Teacher.ITeacherManager teacherManager, GeneralService.IGeneralService generalService
-            , UserManager<DataLayer.Entities.Users> usermanager, Log.IHistoryManager historyService, IHttpContextAccessor contextAccessor)
+            , UserManager<DataLayer.Entities.Users> usermanager, Log.IHistoryManager historyService, IHttpContextAccessor contextAccessor, IConfiguration configuration)
         {
             _context = context;
             _teacherManager = teacherManager;
@@ -37,6 +41,8 @@ namespace BusinessLayer.Services.Administrator
             _userManager = usermanager;
             _HistoryService = historyService;
             _contextAccessor = contextAccessor;
+            _configuration = configuration;
+
         }
 
         // مشاهده تمام پایان نامه ها با وضعیت
@@ -113,17 +119,17 @@ namespace BusinessLayer.Services.Administrator
                 Expression<Func<DataLayer.Entities.Users?, bool>> _where = o => true;
 
                 if (!_filterModel.FullName.IsNullOrEmpty())
-                    _where = _where.AndAlso(o => (o.FirstName + o.LastName).Trim().Replace(" ","") == _filterModel.FullName.Trim().Replace(" ",""));
+                    _where = _where.AndAlso(o => (o.FirstName + o.LastName).Trim().Replace(" ", "") == _filterModel.FullName.Trim().Replace(" ", ""));
 
                 if (!_filterModel.UserName.IsNullOrEmpty())
                     _where = _where.AndAlso(o => o.UserName.Trim() == _filterModel.UserName.Trim());
 
                 var Role = await _context.Roles.Where(o => o.Name.ToLower() == DataLayer.Tools.RoleName_enum.Student.ToString().ToLower()).FirstOrDefaultAsync();
 
-                model = await _context.Users.Include(o => o.Teachers).ThenInclude(o=>o.TeacherNavigation)
+                model = await _context.Users.Include(o => o.Teachers).ThenInclude(o => o.TeacherNavigation)
                     .Join(_context.UserRoles, user => user.Id, UserRole => UserRole.UserId, (x, y) => new { user = x, UserRole = y })
                     .Where(o => o.UserRole.RoleId == Role.Id)
-                    .Select(o=>o.user)
+                    .Select(o => o.user)
                     .AsQueryable().Where(_where)
                     .Skip((PageNumber - 1) * PageSize)
                     .Take(PageSize)
@@ -138,7 +144,7 @@ namespace BusinessLayer.Services.Administrator
                         CollegeRef = o.CollegeRef != null ? o.CollegeRef.Value : 0,
                         UserName = o.UserName,
                         Active = o.Active,
-                        TeachersName = o.Teachers.Count>0 ? o.Teachers.Select(t => t.TeacherNavigation.FirstName + " " + t.TeacherNavigation.LastName).ToList()
+                        TeachersName = o.Teachers.Count > 0 ? o.Teachers.Select(t => t.TeacherNavigation.FirstName + " " + t.TeacherNavigation.LastName).ToList()
                         : new List<string>()
                     }).ToListAsync();
 
@@ -612,7 +618,7 @@ namespace BusinessLayer.Services.Administrator
 
                 var user = await _context.Users.Where(o => (o.Email.ToLower()) == Value.ToLower()
                 || o.NationalCode == Value || o.UserName == Value
-                || (o.FirstName + o.LastName).Trim() == Value.Trim())
+                || (o.FirstName + o.LastName).Replace(" ", "").Trim() == Value.Replace(" ", "").Trim())
                     .Include(o => o.CollegeRefNavigation)
                     .Include(o => o.Teachers)
                     .FirstOrDefaultAsync();
@@ -801,5 +807,31 @@ namespace BusinessLayer.Services.Administrator
             return model;
         }
 
+        public async Task<DataSet> ExportTable(long TableID)
+        {
+            DataSet ds = new DataSet();
+
+            if (TableID == 0)
+                return ds;
+            var TableName = await _context.Baslookups.Where(o => o.Id == TableID).Select(o => o.Title).FirstOrDefaultAsync();
+            if (TableName.IsNullOrEmpty())
+                return ds;
+
+            var sqlconn = _configuration["ConnectionStrings:SqlConnection"]?.ToString();
+            string getcustomer = $"select * from {TableName}";
+
+            using (SqlConnection scon = new SqlConnection(sqlconn))
+            {
+                using (SqlCommand cmd = new SqlCommand(getcustomer))
+                {
+                    cmd.Connection = scon;
+                    using (SqlDataAdapter sqlAdapter = new SqlDataAdapter(cmd))
+                    {
+                        sqlAdapter.Fill(ds);
+                    }
+                }
+            }
+            return ds;
+        }
     }
 }

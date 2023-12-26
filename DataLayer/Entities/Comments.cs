@@ -17,13 +17,7 @@ namespace DataLayer.Entities
 
         public long? DissertationRef { get; set; }
 
-        public long? InversCommentRef { get; set; }
-
         public virtual Dissertations? DissertationRefNavigation { get; set; }
-
-        public virtual Comments? InversCommentRefNavigation { get; set; }
-
-        public virtual ICollection<Comments> InverseInversCommentRefNavigation { get; } = new List<Comments>();
 
         public virtual Users? UserRefNavigation { get; set; }
     }

@@ -312,6 +312,7 @@ namespace BusinessLayer.Services.GeneralService
                         Title = Title,
                         Description = Dsr,
                         InsertDateTime = DateTime.Now.ToPersianDateTime(),
+                        UserRef = UserId,
                     };
 
                     if (CommentId == 0)//add Comment
@@ -320,12 +321,12 @@ namespace BusinessLayer.Services.GeneralService
                     }
                     else // Replay
                     {
-                        Dissertation.Comments.Where(o => o.Id == CommentId).FirstOrDefault()?
-                            .InverseInversCommentRefNavigation.Add(new Comments
-                            {
-                                Title = Title,
-                                Description = Dsr,
-                            });
+                        //Dissertation.Comments.Where(o => o.Id == CommentId).FirstOrDefault()?
+                        //    .InverseInversCommentRefNavigation.Add(new Comments
+                        //    {
+                        //        Title = Title,
+                        //        Description = Dsr,
+                        //    });
                     }
                     _context.Dissertations.Update(Dissertation);
                     await _context.SaveChangesAsync();
@@ -419,6 +420,19 @@ namespace BusinessLayer.Services.GeneralService
             var lstComments = new List<CommentOutPutModelDTO>();
             try
             {
+                var tttt = await _context.Comments.FromSqlRaw("select * from comments")
+                    .Skip((PageNumber - 1) * PageSize)
+                    .Take(PageSize)
+                    .Select(o => new CommentOutPutModelDTO
+                    {
+                        Description = o.Description,
+                        Title = o.Title,
+                        Id = o.Id,
+                        InsertDateTime = DateTime.Now,
+                        User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
+                        User_UserName = o.UserRefNavigation.UserName
+                    }).ToListAsync();
+
                 lstComments = await _context.Comments.Where(o => o.DissertationRef == DissertationId)
                     .Include(o => o.UserRefNavigation)
                     .Skip((PageNumber - 1) * PageSize)
@@ -460,56 +474,78 @@ namespace BusinessLayer.Services.GeneralService
             return lstComments;
         }
 
-        public async Task<List<CommentOutPutModelDTO>> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize)
+        public async Task<List<StatusModelDTO>> GetApp_Tables()
         {
-            var lstComments = new List<CommentOutPutModelDTO>();
+            var model = new List<StatusModelDTO>();
             try
             {
-                lstComments = _context.Comments.Where(o => o.Id == CommentId)
-                    .Skip((PageNumber - 1) * PageSize)
-                    .Take(PageSize)
-                    .Include(o=>o.InversCommentRefNavigation)
-                    .ThenInclude(o=>o.UserRefNavigation)
-                    .Include(o => o.UserRefNavigation)
-                    .Select(o => new CommentOutPutModelDTO
+                model = await _context.Baslookups.Where(o => o.Type.ToLower() == DataLayer.Tools.BASLookupType.App_Table.ToString().ToLower())
+                    .Select(o => new StatusModelDTO
                     {
-                        Description = o.InversCommentRefNavigation.Description,
-                        Title = o.InversCommentRefNavigation.Title,
-                        Id = o.InversCommentRefNavigation.Id,
-                        InsertDateTime = o.InversCommentRefNavigation.InsertDateTime,
-                        
-                        User_FullName = o.InversCommentRefNavigation.UserRefNavigation.FirstName + " "
-                        + o.InversCommentRefNavigation.UserRefNavigation.LastName,
-
-                        User_UserName = o.InversCommentRefNavigation.UserRefNavigation.UserName
-                    })
-                    .ToList();
-
-                //if (lstComments.Count == 0)
-                //{
-                //    var aaaa = await _context.Dissertations.Where(o => o.DissertationId == DissertationId)
-                //        .Include(o => o.Comments)
-                //        .FirstOrDefaultAsync();
-
-                //    lstComments = aaaa.Comments.Select(o => new CommentOutPutModelDTO
-                //    {
-                //        Description = o.Description,
-                //        Title = o.Title,
-                //        Id = o.Id,
-                //        InsertDateTime = DateTime.Now,
-                //        User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
-                //        User_UserName = o.UserRefNavigation.UserName
-                //    }).ToList();
-                //}
-
+                        Id = o.Id,
+                        Code = 0,
+                        Title = o.Description
+                    }).ToListAsync();
             }
             catch
-            {
-
-            }
-            return lstComments;
+            { }
+            return model;
         }
 
+        //public async Task<List<CommentOutPutModelDTO>> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize)
+        //{
+        //    var lstComments = new List<CommentOutPutModelDTO>();
+        //    try
+        //    {
+        //        lstComments = _context.Comments.Where(o => o.Id == CommentId)
+        //            .Skip((PageNumber - 1) * PageSize)
+        //            .Take(PageSize)
+        //            //.Include(o=>o.InversCommentRefNavigation)
+        //            //.ThenInclude(o=>o.UserRefNavigation)
+        //            .Include(o => o.UserRefNavigation)
+        //            .Select(o => new CommentOutPutModelDTO
+        //            {
+        //                Description = o.InversCommentRefNavigation.Description,
+        //                Title = o.InversCommentRefNavigation.Title,
+        //                Id = o.InversCommentRefNavigation.Id,
+        //                InsertDateTime = o.InversCommentRefNavigation.InsertDateTime,
+
+        //                User_FullName = o.InversCommentRefNavigation.UserRefNavigation.FirstName + " "
+        //                + o.InversCommentRefNavigation.UserRefNavigation.LastName,
+
+        //                User_UserName = o.InversCommentRefNavigation.UserRefNavigation.UserName
+        //            })
+        //            .ToList();
+
+        //        //if (lstComments.Count == 0)
+        //        //{
+        //        //    var aaaa = await _context.Dissertations.Where(o => o.DissertationId == DissertationId)
+        //        //        .Include(o => o.Comments)
+        //        //        .FirstOrDefaultAsync();
+
+        //        //    lstComments = aaaa.Comments.Select(o => new CommentOutPutModelDTO
+        //        //    {
+        //        //        Description = o.Description,
+        //        //        Title = o.Title,
+        //        //        Id = o.Id,
+        //        //        InsertDateTime = DateTime.Now,
+        //        //        User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
+        //        //        User_UserName = o.UserRefNavigation.UserName
+        //        //    }).ToList();
+        //        //}
+
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //    return lstComments;
+        //}
+
+        //public async Task<object> GetExcel()
+        //{
+        //    _context.Database.ExecuteSqlAsync()
+        //}
 
     }
 }

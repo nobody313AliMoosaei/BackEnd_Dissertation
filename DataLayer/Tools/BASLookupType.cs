@@ -9,6 +9,7 @@ namespace DataLayer.Tools
     public enum BASLookupType
     {
         CollegesUni,
-        DissertationStatus
+        DissertationStatus,
+        App_Table
     }
 }

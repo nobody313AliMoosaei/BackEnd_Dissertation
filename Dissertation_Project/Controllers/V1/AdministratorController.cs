@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.Models.INPUT.Administrator;
 using BusinessLayer.Models.INPUT.Teacher;
 using BusinessLayer.Utilities;
+using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,7 @@ using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
 {
-    // [Authorize(Roles = "Administrator")]
+    //[Authorize(Roles = "Administrator")]
     [ApiVersion("1.0")]
     [Route("API/v{version:apiVersion}/[controller]")]
     [ApiController]
@@ -39,7 +40,7 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _adminBL.ChangeDissertationStatus(DissertationId, Status));
         }
 
-        [HttpOptions("GetAllUser")]
+        [HttpPost("GetAllUser")]
         public async Task<IActionResult> GetAllUser([FromBody] BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filter, int PageNumber, int PageSize = 5)
         {
             return Ok(await _adminBL.GetAllUsers(_filter, PageNumber, PageSize));
@@ -165,6 +166,32 @@ namespace Dissertation_Project.Controllers.V1
         public async Task<IActionResult> GetTeachersByCollegeRef(long CollegeRef)
         {
             return Ok(await _teacherManager.GetTeachersCollege(CollegeRef));
+        }
+
+        [HttpGet("ExportExcel")]
+        public async Task<IActionResult> ExportExcel(long TableID)
+        {
+            try
+            {
+                if (TableID == 0)
+                    return NotFound("سریال جدول به درستی ارسال نشده است");
+
+                var TableName = (await _generalService.GetApp_Tables())
+                    .Where(o=>o.Id == TableID).Select(o=>o.Title).FirstOrDefault();
+
+                var arraylist = await _adminBL.ExportTable(TableID);
+
+                XLWorkbook xl = new XLWorkbook();
+                xl.Worksheets.Add(arraylist);
+
+                MemoryStream mstream = new MemoryStream();
+                xl.SaveAs(mstream);
+                return File(mstream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"{TableName}.xlsx");
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
     }

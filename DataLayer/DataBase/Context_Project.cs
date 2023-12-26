@@ -51,16 +51,16 @@ namespace DataLayer.DataBase
             {
                 entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC077B918307");
 
-                entity.Property(e => e.Description).HasMaxLength(1);
+                entity.Property(e => e.Description);
                 entity.Property(e => e.Title).HasMaxLength(150);
 
                 entity.HasOne(d => d.DissertationRefNavigation).WithMany(p => p.Comments)
                     .HasForeignKey(d => d.DissertationRef)
                     .HasConstraintName("FK__Comments__Disser__7E37BEF6");
 
-                entity.HasOne(d => d.InversCommentRefNavigation).WithMany(p => p.InverseInversCommentRefNavigation)
-                    .HasForeignKey(d => d.InversCommentRef)
-                    .HasConstraintName("FK__Comments__Invers__7F2BE32F");
+                //entity.HasOne(d => d.InversCommentRefNavigation).WithMany(p => p.InverseInversCommentRefNavigation)
+                //    .HasForeignKey(d => d.InversCommentRef)
+                //    .HasConstraintName("FK__Comments__Invers__7F2BE32F");
 
                 entity.HasOne(d => d.UserRefNavigation).WithMany(p => p.Comments)
                     .HasForeignKey(d => d.UserRef)
@@ -360,6 +360,53 @@ namespace DataLayer.DataBase
                     RoleId = 1
                 });
             });
+            #endregion
+
+            #region Set Application Tables into Baslookup
+            modelBuilder.Entity<Baslookup>()
+                .HasData(new List<Baslookup>()
+                {
+                    new Baslookup
+                    {
+                        Id = 20,
+                        Code=0,
+                        Type="App_Table",
+                        Title ="AspNetRoles",
+                        Description="جدول نقش های سیستم"
+                    },
+                    new Baslookup
+                    {
+                        Id = 21,
+                        Code=1,
+                        Type="App_Table",
+                        Title ="AspNetUsers",
+                        Description="جدول تمام کاربران سیستم"
+                    },
+                    new Baslookup
+                    {
+                        Id = 22,
+                        Code=2,
+                        Type="App_Table",
+                        Title ="Comments",
+                        Description="جدول تمام کامنت های سیستم"
+                    },
+                    new Baslookup
+                    {
+                        Id = 23,
+                        Code=3,
+                        Type="App_Table",
+                        Title ="Dissertations",
+                        Description="جدول تمام پایان نامه های سیستم"
+                    },
+                    new Baslookup
+                    {
+                        Id = 24,
+                        Code=4,
+                        Type="App_Table",
+                        Title ="Logs",
+                        Description="جدول تمام لاگ های سیستم"
+                    },
+                });
             #endregion
 
             base.OnModelCreating(modelBuilder);
