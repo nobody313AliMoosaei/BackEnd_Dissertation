@@ -266,7 +266,7 @@ namespace BusinessLayer.Services.Teacher
                             await _userManager.UpdateAsync(teacher);
                             await _context.SaveChangesAsync();
                             Err.IsValid = true;
-                            Err.Message = "استاد راهنما ثبت شد";
+                            Err.Message = "استاد راهنما به‌روز شد";
                         }
                         else
                             Err.ErrorList.Add("دانشکده معتبر نيست");

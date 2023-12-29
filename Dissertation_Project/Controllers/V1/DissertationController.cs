@@ -132,5 +132,13 @@ namespace Dissertation_Project.Controllers.V1
             }
         }
 
+        [HttpGet("GetAllDissertationOfUesr")]
+        public async Task<IActionResult> GetAllDissertationOfUesr()
+        {
+            var userId = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId.IsNullOrEmpty())
+                return Unauthorized("کاربر لاگین نکرده است");
+            return Ok(await _generalService.GetAllDissertationOfUesr(userId.Val64()));
+        }
     }
 }

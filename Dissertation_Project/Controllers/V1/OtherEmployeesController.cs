@@ -26,18 +26,27 @@ namespace Dissertation_Project.Controllers.V1
             _administratorBL = AdministratorBL;
         }
 
-        //[HttpGet("GetAllDissertation")]
-        //public async Task<IActionResult> GetAllDissertation([FromBody]string Value = "")
-        //{
-        //    return Ok(await _generalService.GetAllDissertationStatus());
-        //}
-        [HttpGet("/Teacher/GetSelfDissertation")]
+        [HttpGet("GetSelfDissertation")]
         public async Task<IActionResult> GetSelfDissertationOfTeacher(long TeacherId, int PageNumber, int PageSize)
         {
+            if (TeacherId == 0)
+            {
+                var UserId = User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+                TeacherId = (UserId.IsNullOrEmpty()) ? 0 : UserId.Val64();
+            }
             return Ok(await _employeeService.GetAllDissertationOfTeacher(TeacherId, PageNumber, PageSize));
         }
 
-        [HttpOptions("GetAllDissertations")]
+        [HttpGet("GetSelfDissertationAutomatic")]
+        public async Task<IActionResult> GetSelfDissertationOfTeacherAutomaticly(int PageNumber, int PageSize)
+        {
+            var UserId = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (UserId.IsNullOrEmpty())
+                return Unauthorized("کاربر لاگین نکرده");
+            return Ok(await _employeeService.GetAllDissertationOfTeacher(UserId.Val64(), PageNumber, PageSize));
+        }
+
+        [HttpPost("GetAllDissertations")]
         public async Task<IActionResult> GetAllDissertation([FromBody] BusinessLayer.Models.INPUT.Administrator.FilterDissertationDTO _filterModel, int PageNumber, int PageSize)
         {
             return Ok(await _administratorBL.GetAllDissertation(PageNumber, PageSize, _filterModel));

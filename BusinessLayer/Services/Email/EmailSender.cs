@@ -19,7 +19,7 @@ namespace BusinessLayer.Services.Email
                 client.Port = 587;
                 client.Host = "smtp.mail.yahoo.com";
                 client.EnableSsl = true;
-                //client.Timeout = 1000000;
+                client.Timeout = 1000000;
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
                 client.UseDefaultCredentials = false;
 

@@ -57,6 +57,10 @@ namespace BusinessLayer.Services.Administrator
                     _where = _where.AndAlso(o => o.TitleEnglish.Trim().Contains(_filterModel.Title.Trim()) || o.TitlePersian.Contains(_filterModel.Title.Trim()));
                 if (!_filterModel.UserName.IsNullOrEmpty())
                     _where = _where.AndAlso(o => o.Student.UserName == _filterModel.UserName.Trim());
+                if (!_filterModel.FullName.IsNullOrEmpty())
+                    _where = _where.AndAlso(o => (o.Student.FirstName + o.Student.LastName).Replace(" ", "").Trim()
+                    == _filterModel.FullName.Replace(" ", "").Trim());
+
 
                 _where = _where.AndAlso(o => o.DissertationId > 0);
 
@@ -182,22 +186,22 @@ namespace BusinessLayer.Services.Administrator
                 //        }).ToList();
 
 
-                if (model.Count > 0)
-                {
-                    var allTeacher = await _context.Teachers
-                        .Include(o => o.StudentNavigation).Include(o => o.TeacherNavigation).ToListAsync();
+                //if (model.Count > 0)
+                //{
+                //    var allTeacher = await _context.Teachers
+                //        .Include(o => o.StudentNavigation).Include(o => o.TeacherNavigation).ToListAsync();
 
-                    model.ForEach(o =>
-                    {
-                        o.HasDissertation = _context.Dissertations.Where(t => t.StudentId == o.UserId).Count() > 0;
-                        o.TeachersName = allTeacher.Join(model, x => x.StudentId, y => y.UserId, (x, y) =>
-                        {
-                            return x.TeacherNavigation != null ? (x.TeacherNavigation.FirstName + " " + x.TeacherNavigation.LastName)
-                            : "";
-                        }).ToList();
-                    });
+                //    model.ForEach(o =>
+                //    {
+                //        o.HasDissertation = _context.Dissertations.Where(t => t.StudentId == o.UserId).Count() > 0;
+                //        o.TeachersName = allTeacher.Join(model, x => x.StudentId, y => y.UserId, (x, y) =>
+                //        {
+                //            return x.TeacherNavigation != null ? (x.TeacherNavigation.FirstName + " " + x.TeacherNavigation.LastName)
+                //            : "";
+                //        }).ToList();
+                //    });
 
-                }
+                //}
             }
             catch
             {
@@ -249,52 +253,55 @@ namespace BusinessLayer.Services.Administrator
                         user.CollegeRefNavigation = college;
                     }
                 }
+
                 if (NewUser.Teacher1_Ref.HasValue && NewUser.Teacher1_Ref != 0)
                 {
-                    var teacher = await _teacherManager.GetTeacher(NewUser.Teacher1_Ref.Value);
-                    if (teacher != null)
+                    var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher1_Ref.Value).FirstOrDefaultAsync();
+                    if (teacher != null && (await _userManager.IsInRoleAsync(teacher, DataLayer.Tools.RoleName_enum.GuideMaster.ToString())))
                     {
-                        user.Teachers = new List<DataLayer.Entities.Teachers>();
+                        user.Teachers = new HashSet<DataLayer.Entities.Teachers>();
                         DataLayer.Entities.Teachers _teacher = new DataLayer.Entities.Teachers()
                         {
-                            Id = teacher.Id,
                             StudentId = user.Id,
                             StudentNavigation = user,
-                            TeacherId = teacher.Id
+                            TeacherId = teacher.Id,
+                            TeacherNavigation = teacher
                         };
                         user.Teachers.Add(_teacher);
                     }
                 }
                 if (NewUser.Teacher2_Ref.HasValue && NewUser.Teacher2_Ref != 0)
                 {
-                    var teacher = await _teacherManager.GetTeacher(NewUser.Teacher2_Ref.Value);
-                    if (teacher != null)
+                    var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher2_Ref.Value).FirstOrDefaultAsync();
+                    if (teacher != null && (await _userManager.IsInRoleAsync(teacher, DataLayer.Tools.RoleName_enum.GuideMaster.ToString())))
                     {
                         DataLayer.Entities.Teachers _teacher = new DataLayer.Entities.Teachers()
                         {
-                            Id = teacher.Id,
                             StudentId = user.Id,
                             StudentNavigation = user,
-                            TeacherId = teacher.Id
+                            TeacherId = teacher.Id,
+                            TeacherNavigation = teacher
                         };
                         user.Teachers.Add(_teacher);
                     }
                 }
                 if (NewUser.Teacher3_Ref.HasValue && NewUser.Teacher3_Ref != 0)
                 {
-                    var teacher = await _teacherManager.GetTeacher(NewUser.Teacher3_Ref.Value);
-                    if (teacher != null)
+                    var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher3_Ref.Value).FirstOrDefaultAsync();
+                    if (teacher != null && (await _userManager.IsInRoleAsync(teacher, DataLayer.Tools.RoleName_enum.GuideMaster.ToString())))
                     {
                         DataLayer.Entities.Teachers _teacher = new DataLayer.Entities.Teachers()
                         {
-                            Id = teacher.Id,
                             StudentId = user.Id,
                             StudentNavigation = user,
-                            TeacherId = teacher.Id
+                            TeacherId = teacher.Id,
+                            TeacherNavigation = teacher
                         };
                         user.Teachers.Add(_teacher);
                     }
                 }
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
                 Err.Message = "کاربر با موفقیت بروز شد";
                 Err.IsValid = true;
 
@@ -520,7 +527,7 @@ namespace BusinessLayer.Services.Administrator
                                 user.Teachers.Add(new Teachers
                                 {
                                     StudentId = user.Id,
-                                    StudentNavigation = user,
+                                    //StudentNavigation = user,
                                     TeacherId = teacher.Id,
                                     TeacherNavigation = teacher
                                 });
@@ -536,7 +543,7 @@ namespace BusinessLayer.Services.Administrator
                                 user.Teachers.Add(new Teachers
                                 {
                                     StudentId = user.Id,
-                                    StudentNavigation = user,
+                                    //StudentNavigation = user,
                                     TeacherId = teacher.Id,
                                     TeacherNavigation = teacher
                                 });
@@ -552,7 +559,7 @@ namespace BusinessLayer.Services.Administrator
                                 user.Teachers.Add(new Teachers
                                 {
                                     StudentId = user.Id,
-                                    StudentNavigation = user,
+                                    //StudentNavigation = user,
                                     TeacherId = teacher.Id,
                                     TeacherNavigation = teacher
                                 });
@@ -833,5 +840,117 @@ namespace BusinessLayer.Services.Administrator
             }
             return ds;
         }
+
+        public async Task<ErrorsVM> InsertNewCollege(BusinessLayer.Models.INPUT.Administrator.NewCollegeDTO NewCollege)
+        {
+            var model = new ErrorsVM();
+            try
+            {
+                // اگر کد صفر یا یک عدد منفی ارسال شود، به صورت اتوماتیک یک کد ست میشود
+
+                var AllColleges = await _generalService.GetAllCollegesUni();
+
+                if (NewCollege.Code <= 0 || NewCollege.Title.IsNullOrEmpty())
+                    model.ErrorList.Add("ارسال اطلاعات جهت ثبت دانشکده درست نیست");
+
+                if (AllColleges.Where(o => o.Code == NewCollege.Code).ToList().Count > 0)
+                    model.ErrorList.Add("کد ارسال شده برای ثبت دانشکده موجود است");
+
+                if (model.ErrorList.Count == 0)
+                {
+                    Baslookup newBasLookup;
+                    int NewCode;
+                    if (NewCollege.Code <= 0)
+                    {
+                        NewCode = AllColleges.Max(o => o.Code);
+                        newBasLookup = new Baslookup()
+                        {
+                            Code = NewCode + 1,
+                            Title = NewCollege.Title,
+                            Type = NewCollege.Type,
+                            Description = NewCollege.Dsr
+                        };
+                    }
+                    else
+                    {
+                        newBasLookup = new Baslookup()
+                        {
+                            Code = NewCollege.Code,
+                            Title = NewCollege.Title,
+                            Type = NewCollege.Type,
+                            Description = NewCollege.Dsr
+                        };
+                    }
+                    _context.Baslookups.Add(newBasLookup);
+                    await _context.SaveChangesAsync();
+                    model.IsValid = true;
+                    model.Message = "دانشکده با موفقیت ثبت شد";
+                }
+            }
+            catch (Exception ex)
+            {
+                model.Message = "خطا در اجرای برنامه";
+                model.ErrorList.Add(ex.Message);
+                if (ex.InnerException != null)
+                    model.ErrorList.Add(ex.InnerException.Message);
+            }
+            return model;
+        }
+
+        public async Task<ErrorsVM> DeleteCollegeById(long CollegeRef)
+        {
+            var model = new ErrorsVM();
+            try
+            {
+                var baslookups = await _context.Baslookups.Where(o => o.Id == CollegeRef).ToListAsync();
+                _context.Baslookups.RemoveRange(baslookups);
+                await _context.SaveChangesAsync();
+                model.IsValid = true;
+                model.Message = "دانشکده حذف شد";
+            }
+            catch (Exception ex)
+            {
+                model.Message = "خطا در اجرای برنامه";
+                model.ErrorList.Add(ex.Message);
+                if (ex.InnerException != null)
+                    model.ErrorList.Add(ex.InnerException.Message);
+            }
+            return model;
+        }
+
+        public async Task<List<UserModelDTO>> GetUserInRole(long RoleRef)
+        {
+            var model = new List<UserModelDTO>();
+            try
+            {
+                model = await _context.Users
+                    .Include(o => o.Teachers)
+                    .ThenInclude(o => o.TeacherNavigation)
+                    .Include(o => o.Dissertations)
+                    .Join(_context.UserRoles, x => x.Id, y => y.UserId, (x, y) => new { user = x, UserRole = y })
+                    .Where(o => o.UserRole.RoleId == RoleRef)
+                    .Select(o => new UserModelDTO
+                    {
+                        FirsName = o.user.FirstName,
+                        LastName = o.user.LastName,
+                        Active = o.user.Active,
+                        CollegeName = o.user.College,
+                        CollegeRef = o.user.CollegeRef.HasValue ? o.user.CollegeRef.Value : 0,
+                        HasDissertation = o.user.Dissertations.Count > 0,
+                        NationalCode = o.user.NationalCode,
+                        TeachersName = o.user.Teachers.Where(t => t.TeacherNavigation != null)
+                        .Select(t => t.TeacherNavigation.FirstName + " " + t.TeacherNavigation.LastName).ToList(),
+                        UserId = o.user.Id,
+                        UserName = o.user.UserName
+                    })
+                    .ToListAsync();
+            }
+            catch
+            {
+
+            }
+            return model;
+        }
+
     }
 }

@@ -27,12 +27,16 @@ namespace BusinessLayer.Services.EmployeeService
 
             try
             {
-                //Expression<Func<DataLayer.Entities.Dissertations, bool>> _where = o => true;
-                //_where = _where.AndAlso(o=>o.)
+                var ttt = await _context.Dissertations
+                    .Include(o => o.Student)
+                    .ThenInclude(o => o.Teachers)
+                    .Where(o => o.Student.Teachers.Count > 0)
+                    .ToListAsync();
+
                 model = await _context.Dissertations
                     .Include(o => o.Student)
                     .ThenInclude(o => o.Teachers)
-                    .Where(o => o.StatusDissertation < (int)DataLayer.Tools.Dissertation_Status.ConfirmationGuideMaster
+                    .Where(o => o.StatusDissertation < (int)DataLayer.Tools.Dissertation_Status.ConfirmationGuideMaster3
                 && o.StatusDissertation >= (int)DataLayer.Tools.Dissertation_Status.Register
                 && o.Student.Teachers.Any(t => t.TeacherId == TeacherId))
                     .Skip((PageNumber - 1) * PageSize)

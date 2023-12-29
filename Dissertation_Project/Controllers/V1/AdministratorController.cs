@@ -35,9 +35,9 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("ChangeDissertationStatus")]
-        public async Task<IActionResult> ChangeDissertationStatus(long DissertationId, string Status)
+        public async Task<IActionResult> ChangeDissertationStatus(long DissertationId, string StatusId)
         {
-            return Ok(await _adminBL.ChangeDissertationStatus(DissertationId, Status));
+            return Ok(await _adminBL.ChangeDissertationStatus(DissertationId, StatusId));
         }
 
         [HttpPost("GetAllUser")]
@@ -177,7 +177,7 @@ namespace Dissertation_Project.Controllers.V1
                     return NotFound("سریال جدول به درستی ارسال نشده است");
 
                 var TableName = (await _generalService.GetApp_Tables())
-                    .Where(o=>o.Id == TableID).Select(o=>o.Title).FirstOrDefault();
+                    .Where(o => o.Id == TableID).Select(o => o.Title).FirstOrDefault();
 
                 var arraylist = await _adminBL.ExportTable(TableID);
 
@@ -194,5 +194,22 @@ namespace Dissertation_Project.Controllers.V1
             }
         }
 
+        [HttpPost("AddNewCollege")]
+        public async Task<IActionResult> AddNewCollege([FromBody] BusinessLayer.Models.INPUT.Administrator.NewCollegeDTO NewCollege)
+        {
+            return Ok(await _adminBL.InsertNewCollege(NewCollege));
+        }
+
+        [HttpPost("DeleteCollege")]
+        public async Task<IActionResult> RemoveCollege(long CollegeRef)
+        {
+            return Ok(await _adminBL.DeleteCollegeById(CollegeRef));
+        }
+
+        [HttpGet("GetUserInRole")]
+        public async Task<IActionResult> GetUserInRole(long RoleRef)
+        {
+            return Ok(await _adminBL.GetUserInRole(RoleRef));
+        }
     }
 }

@@ -2,8 +2,11 @@
 using BusinessLayer.Models.INPUT.SignUp;
 using BusinessLayer.Services.SignUp;
 using BusinessLayer.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
+using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
 {
@@ -65,7 +68,7 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpGet(nameof(ChangePassword))]
-        public async Task<IActionResult> ChangePassword(string User_Id,string Token)
+        public async Task<IActionResult> ChangePassword(string User_Id, string Token)
         {
             return Ok();
         }
@@ -86,6 +89,22 @@ namespace Dissertation_Project.Controllers.V1
                 res.Message = ex.Message;
                 return BadRequest(res);
             }
+        }
+
+        [Authorize]
+        [HttpGet("RefreshTokenAutomatic")]
+        public async Task<IActionResult> RefreshTokenAutomatic()
+        {
+            var userid = User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userid.IsNullOrEmpty())
+                return BadRequest("کاربر لاگین نکرده و امکان استفاده از دریافت توکن اتوماتیک را ندارد");
+            return Ok(await _signUpBL.RefreshToken(userid.Val64()));
+        }
+
+        [HttpGet("RefreshToken")]
+        public async Task<IActionResult> RefreshToken(long UserId)
+        {
+            return Ok(await _signUpBL.RefreshToken(UserId));
         }
     }
 }

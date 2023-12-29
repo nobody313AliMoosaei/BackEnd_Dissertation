@@ -15,6 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,10 +31,11 @@ namespace BusinessLayer.Services.GeneralService
         private Services.UploadFile.IUploadFile _uploadFile;
         private BusinessLayer.Services.Log.IHistoryManager _historyManager;
         private IHttpContextAccessor _contextAccessor;
+        private BusinessLayer.Services.Email.IEmailSender _emailService;
 
         public GeneralService(DataLayer.DataBase.Context_Project context, Teacher.ITeacherManager teacherManager
             , SignInManager<Users> signinmanager, UserManager<Users> usermanager, UploadFile.IUploadFile uploadFile
-            , Log.IHistoryManager historyManager, IHttpContextAccessor contextAccessor)
+            , Log.IHistoryManager historyManager, IHttpContextAccessor contextAccessor, Email.IEmailSender emailService)
         {
             _context = context;
             _teacherManager = teacherManager;
@@ -41,6 +44,7 @@ namespace BusinessLayer.Services.GeneralService
             _uploadFile = uploadFile;
             _historyManager = historyManager;
             _contextAccessor = contextAccessor;
+            _emailService = emailService;
         }
 
         public async Task<ErrorsVM> AddRoleToUser(Users? user, string RoleUser)
@@ -86,7 +90,7 @@ namespace BusinessLayer.Services.GeneralService
                     return Err;
                 }
 
-                var Dis = await _context.Dissertations.Where(o => o.DissertationId == DissertationID
+                var Dis = await _context.Dissertations.Include(o => o.Student).Where(o => o.DissertationId == DissertationID
                 && o.StatusDissertation >= (int)DataLayer.Tools.Dissertation_Status.Register).FirstOrDefaultAsync();
 
                 if (Dis != null)
@@ -99,7 +103,15 @@ namespace BusinessLayer.Services.GeneralService
                         Dis.EditDateTime = DateTime.Now.ToPersianDateTime();
                         _context.Dissertations.Update(Dis);
                         await _context.SaveChangesAsync();
-                        Err.Message = "تغییر وضعیت انجام شد";
+
+                        // send Email
+                        var ResultEmail = await _emailService.SendEmailAsync
+                            (Dis.Student.Email, "تغییر وضعیت پایان نامه", $"وضعیت پایان نامه شما به {Status.Title} تغییر پیدا کرده است.");
+
+                        if (ResultEmail)
+                            Err.Message = "تغییر وضعیت انجام شد و ایمیل ارسال شد";
+                        else
+                            Err.Message = "تغییر وضعیت انجام شد";
                         Err.IsValid = true;
 
                         #region Set Log
@@ -420,19 +432,6 @@ namespace BusinessLayer.Services.GeneralService
             var lstComments = new List<CommentOutPutModelDTO>();
             try
             {
-                var tttt = await _context.Comments.FromSqlRaw("select * from comments")
-                    .Skip((PageNumber - 1) * PageSize)
-                    .Take(PageSize)
-                    .Select(o => new CommentOutPutModelDTO
-                    {
-                        Description = o.Description,
-                        Title = o.Title,
-                        Id = o.Id,
-                        InsertDateTime = DateTime.Now,
-                        User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
-                        User_UserName = o.UserRefNavigation.UserName
-                    }).ToListAsync();
-
                 lstComments = await _context.Comments.Where(o => o.DissertationRef == DissertationId)
                     .Include(o => o.UserRefNavigation)
                     .Skip((PageNumber - 1) * PageSize)
@@ -444,8 +443,24 @@ namespace BusinessLayer.Services.GeneralService
                         Id = o.Id,
                         InsertDateTime = DateTime.Now,
                         User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
-                        User_UserName = o.UserRefNavigation.UserName
+                        User_UserName = o.UserRefNavigation.UserName,
+                        UserRef = o.UserRef
                     }).ToListAsync();
+
+                // Join UserRole with Roles
+                var RoleInfo = await _context.Roles.Join(_context.UserRoles, x => x.Id, y => y.RoleId, (x, y) => new { Role = x, UserRole = y })
+                    .Select(o => new
+                    {
+                        o.UserRole.RoleId,
+                        o.UserRole.UserId,
+                        o.Role.Name
+                    }).ToListAsync();
+
+                lstComments.ForEach(o =>
+                {
+                    o.User_Roles = RoleInfo.Where(t => t.UserId == o.UserRef).Select(p => p.Name).ToList();
+                });
+
 
                 if (lstComments.Count == 0)
                 {
@@ -465,6 +480,10 @@ namespace BusinessLayer.Services.GeneralService
                             User_FullName = o.UserRefNavigation.FirstName + " " + o.UserRefNavigation.LastName,
                             User_UserName = o.UserRefNavigation.UserName
                         }).ToList();
+                    lstComments.ForEach(o =>
+                    {
+                        o.User_Roles = RoleInfo.Where(t => t.UserId == o.UserRef).Select(p => p.Name).ToList();
+                    });
                 }
             }
             catch
@@ -492,6 +511,7 @@ namespace BusinessLayer.Services.GeneralService
             return model;
         }
 
+        #region Replay Comment
         //public async Task<List<CommentOutPutModelDTO>> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize)
         //{
         //    var lstComments = new List<CommentOutPutModelDTO>();
@@ -546,6 +566,103 @@ namespace BusinessLayer.Services.GeneralService
         //{
         //    _context.Database.ExecuteSqlAsync()
         //}
+        #endregion
+
+        public async Task<UserModelDTO> GetDataFromAPI(string NationalCode, DateTime BirthDate)
+        {
+            try
+            {
+                DateTime Birthdate = new DateTime(BirthDate.Year, BirthDate.Month, BirthDate.Day, new System.Globalization.PersianCalendar());
+                var baseAddress = new System.Uri("https://api.sandbox.faraboom.co/v1/");
+                var client = new System.Net.Http.HttpClient { BaseAddress = baseAddress };
+                client.DefaultRequestHeaders.AcceptLanguage.Clear();
+                client.DefaultRequestHeaders.Add("App-Key", "14290");
+                client.DefaultRequestHeaders.Add("Accept-Language", "fa");
+                client.DefaultRequestHeaders.Add("Device-Id", "192.168.1.1");
+                client.DefaultRequestHeaders.Add("Token-Id", "8wOAgcUOEQPGYuj6CV1bM7E7RePOrrIbtUlGB5B2ZjnYJWJN4rX2NB5GH2ukRt5bYM7z4eGM1n4TTeQJZHChrv4");
+                client.DefaultRequestHeaders.Add("CLIENT-DEVICE-ID", "192.168.1.1");
+                client.DefaultRequestHeaders.Add("CLIENT-IP-ADDRESS", "192.168.1.1");
+                client.DefaultRequestHeaders.Add("CLIENT-USER-AGENT", "User Agent");
+                client.DefaultRequestHeaders.Add("CLIENT-USER-ID", "0912212981");
+                client.DefaultRequestHeaders.Add("CLIENT-PLATFORM-TYPE", "WEB");
+                client.DefaultRequestHeaders.Add("Bank-Id", "LTFRIR");
+
+                var data = new
+                {
+                    national_code = NationalCode,
+                    birth_date = Birthdate
+                };
+                var ttt = Newtonsoft.Json.JsonConvert.SerializeObject(data);
+                var response = await client.PostAsJsonAsync("identity/inquiry/birthDate", data);
+                var result = await response.Content.ReadAsStringAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return new UserModelDTO();
+        }
+
+        public async Task<Models.OUTPUT.General.ReportCountSystemDTO?> ReportCountSystem()
+        {
+            var obj = new ReportCountSystemDTO();
+            try
+            {
+                // تعداد استاد راهنما 
+                obj.TeachersCount = (await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString())).Count;
+
+                //تعداد دانشجو 
+                obj.StudentCount = (await _userManager.GetUsersInRoleAsync(RoleName_enum.Student.ToString())).Count;
+
+                //تداد دانشکده 
+                obj.CollegeCount = await _context.Baslookups
+                    .Where(o => o.Type.ToLower() == DataLayer.Tools.BASLookupType.CollegesUni.ToString().ToLower()).CountAsync();
+
+                //تعداد پایان نامه ها 
+                obj.DissertationCount = await _context.Dissertations.CountAsync();
+            }
+            catch
+            {
+                obj = null;
+            }
+            return obj;
+        }
+
+        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetAllDissertationOfUesr(long UserId)
+        {
+            var model = new List<Models.OUTPUT.Dissertation.DissertationModelOutPut>();
+            try
+            {
+                var AllDissertationStatus = await GetAllDissertationStatus();
+
+                model = await _context.Dissertations
+                    .Where(o => o.StudentId == UserId)
+                    .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
+                    {
+                        Abstract = o.Abstract,
+                        StudentId = o.StudentId,
+                        DateStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortDateString() : "",
+                        DissertationId = o.DissertationId,
+                        DissertationFileAddress = o.DissertationFileAddress,
+                        ProceedingsFileAddress = o.ProceedingsFileAddress,
+                        StatusDissertation = o.StatusDissertation,
+                        TermNumber = o.TermNumber,
+                        TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortTimeString() : "",
+                        TitleEnglish = o.TitleEnglish,
+                        TitlePersian = o.TitlePersian,
+                    }).ToListAsync();
+                model.ForEach(o =>
+                {
+                    o.DisplayStatusDissertation = (AllDissertationStatus.Where(t => t.Code == o.StatusDissertation.Value).FirstOrDefault() == null) ?
+                        "" : AllDissertationStatus.Where(t => t.Code == o.StatusDissertation.Value).FirstOrDefault().Title;
+                });
+            }
+            catch
+            {
+
+            }
+            return model;
+        }
 
     }
 }

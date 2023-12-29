@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "YoCIpUmPRjsa6NHhGD0HU6c3siL1OQrrobLv6sBxoZnAt3nyg9rcGBA2eXIN/NeQ0Hgt1JZxgImuB+6YVdWJpQ==",
+  "dgSpecHash": "4iq0HvC6UzlaqN5x1vo2Sto6W3uQCnoQ/c7cnFj1dAsjRlApIxMYy1dWwktclzSz4FCmcwzJplchST5YMYgagw==",
   "success": true,
   "projectFilePath": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\Dissertation_Project.csproj",
   "expectedPackageFiles": [
@@ -76,7 +76,7 @@
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\microsoft.win32.systemevents\\7.0.0\\microsoft.win32.systemevents.7.0.0.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
-    "C:\\Users\\AliMoosaei\\.nuget\\packages\\newtonsoft.json\\11.0.1\\newtonsoft.json.11.0.1.nupkg.sha512",
+    "C:\\Users\\AliMoosaei\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",

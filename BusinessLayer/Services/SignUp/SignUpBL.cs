@@ -50,7 +50,7 @@ namespace BusinessLayer.Services.SignUp
             {
                 if (_newUser.NationalCode.IsNullOrEmpty())
                 {
-                   err.ErrorList.Add("کد ملی وارد نشده است");
+                    err.ErrorList.Add("کد ملی وارد نشده است");
                 }
                 if (!_newUser.NationalCode.IsValidNationalCode())
                     err.ErrorList.Add("کد ملی درست نیست");
@@ -294,6 +294,24 @@ namespace BusinessLayer.Services.SignUp
             return res;
         }
 
+        public async Task<string> RefreshToken(long UserId)
+        {
+            try
+            {
+                var user = await _context.Users.Where(o => o.Id == UserId).FirstOrDefaultAsync();
+                if (user != null)
+                {
+                    var Roles = await _userManager.GetRolesAsync(user);
+                    string Token = _jwtTokenManager.GetUserToken(user.Id, user.UserName, Roles.ToList());
+                    return Token;
+                }
+                return string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
 
     }
 }

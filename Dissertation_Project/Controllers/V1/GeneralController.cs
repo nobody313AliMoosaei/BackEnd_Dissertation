@@ -51,7 +51,7 @@ namespace Dissertation_Project.Controllers.V1
             if (System.IO.File.Exists(FileInfo.FileAddress))
             {
                 var ResponseFileDownload = _generalService.DownloadFileFormRoot(FileInfo.FileAddress);
-                
+
                 if (ResponseFileDownload != null && ResponseFileDownload.FileStream != null && !ResponseFileDownload.FileDownloadName.IsNullOrEmpty())
                     return File(ResponseFileDownload.FileStream, ResponseFileDownload.ContentType, ResponseFileDownload.FileDownloadName);
 
@@ -71,7 +71,7 @@ namespace Dissertation_Project.Controllers.V1
         [HttpGet("GetAllCommentsOfDissertationById")]
         public async Task<IActionResult> GetAllDissertationComments(long DissertationId, int PageNumber, int PageSize)
         {
-            return Ok(_generalService.GetAllDissertationComments(DissertationId, PageNumber, PageSize));
+            return Ok(await _generalService.GetAllDissertationComments(DissertationId, PageNumber, PageSize));
         }
 
         //[HttpGet("GetAllReplayCommentsByCommentId")]
@@ -93,7 +93,23 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _generalService.GetApp_Tables());
         }
 
+        [Obsolete("Deprecated By Ali Moosaei",true)]
+        [HttpGet("GEtDataFromAPI")]
+        public async Task<IActionResult> GEtasdasd(string nationalcode, DateTime birthdate)
+        {
+            return Ok(await _generalService.GetDataFromAPI(nationalcode, birthdate));
+        }
 
+        [HttpGet("GetReportSystemCount")]
+        public async Task<IActionResult> GetSystemCount()
+        {
+            return Ok(await _generalService.ReportCountSystem());
+        }
 
+        [HttpGet("GetAllDissertationOfUesr")]
+        public async Task<IActionResult> GetAllDissertationUesr(long UserId)
+        {
+            return Ok(await _generalService.GetAllDissertationOfUesr(UserId));
+        }
     }
 }

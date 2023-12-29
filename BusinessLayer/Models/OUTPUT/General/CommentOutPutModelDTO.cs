@@ -19,5 +19,9 @@ namespace BusinessLayer.Models.OUTPUT.General
         public string? User_FullName { get; set; }
 
         public string? User_UserName { get; set; }
+
+        public List<string> User_Roles { get; set; } = new List<string>();
+
+        public long? UserRef { get; set; }
     }
 }

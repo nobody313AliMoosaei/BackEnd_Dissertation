@@ -25,9 +25,11 @@ namespace BusinessLayer.Services.Dissertation
         private IGeneralService _generalService;
         private BusinessLayer.Services.Log.IHistoryManager _historyManager;
         private IHttpContextAccessor _contextAccessor;
+        private Email.IEmailSender _emailService;
 
         public DissertationBL(Context_Project contex, UploadFile.IUploadFile uploadFile, IHttpContextAccessor contectAccessor
-            , Log.IHistoryManager historyManager, UserManager<Users> usermanager, IGeneralService generalService)
+            , Log.IHistoryManager historyManager, UserManager<Users> usermanager, IGeneralService generalService
+            , Email.IEmailSender emailSender)
         {
             _context = contex;
             _uploadFile = uploadFile;
@@ -35,6 +37,7 @@ namespace BusinessLayer.Services.Dissertation
             _historyManager = historyManager;
             _userManager = usermanager;
             _generalService = generalService;
+            _emailService = emailSender;
         }
 
         public async Task<ErrorsVM> CheckPreRegister(long UserID = 0)
@@ -104,6 +107,7 @@ namespace BusinessLayer.Services.Dissertation
                 user.CollegeRef = College?.Id;
                 user.CollegeRefNavigation = College;
                 user.College = College?.Title;
+                user.Email = data.Email;
 
                 var Teachers = await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString());
 
@@ -198,6 +202,10 @@ namespace BusinessLayer.Services.Dissertation
                         _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
                         $"اطلاعات کاربر {user.UserName} بروز شده است و پایان نامه با موفقیت بارگزاري شد");
                 #endregion
+
+                var resultEmail = await _emailService.SendEmailAsync(user.Email,
+                    "پیش ثبت نام", "پیش ثبت نام شما در سامانه پایان نامه دانشگاه تربیت دبیر شهید رجایی با موفقیت انجام شد.");
+
                 res.Message = "عمليات موفقيت آمیز بود";
                 res.IsValid = true;
             }

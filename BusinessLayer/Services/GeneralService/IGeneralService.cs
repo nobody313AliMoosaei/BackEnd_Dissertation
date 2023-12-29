@@ -19,20 +19,20 @@ namespace BusinessLayer.Services.GeneralService
         Task<List<DataLayer.Entities.Baslookup>?> GetAllCollegeUni();
         // Add Role To User
         Task<ErrorsVM> AddRoleToUser(DataLayer.Entities.Users? user, string RoleUser);
-        
+
         // LogOut
         Task<ErrorsVM> LogOut();
-        
+
         // Change Status Dissertation
         Task<ErrorsVM> ChangeDissertationStatus(long DissertationID, string DissertationStatus);
-        
+
         // Upload File
         Task<ResultUploadFile> UploadFile(IFormFile MainFile);
-        
+
         // Get Teachers
         Task<List<TeacherOutModelDTO>> GetAllTeacher(string Value = "");
         Task<List<TeacherOutModelDTO>> GetCollegeTeacher(long CollegeId);
-        
+
         // send Comment
         Task<ErrorsVM> SendComment(long UserId, long DissertationId, string Title, string Dsr, long CommentId = 0);
 
@@ -43,10 +43,13 @@ namespace BusinessLayer.Services.GeneralService
         Task<List<Models.OUTPUT.Administrator.StatusModelDTO>> GetAllRoles();
 
         // GetAll DissertationStatus
-        Task<string?> DisplayDissertationstatus(int code);
-        Task<List<StatusModelDTO>?> GetAllDissertationStatus();
-        Task<List<StatusModelDTO>> GetStatus(string StatusType);
         
+        Task<string?> DisplayDissertationstatus(int code);
+        
+        Task<List<StatusModelDTO>?> GetAllDissertationStatus();
+        
+        Task<List<StatusModelDTO>> GetStatus(string StatusType);
+
         // GetAll CollegesUni
         Task<List<Models.OUTPUT.Administrator.StatusModelDTO>> GetAllCollegesUni();
 
@@ -57,7 +60,15 @@ namespace BusinessLayer.Services.GeneralService
         Task<UserModelDTO> GetUserById(long UserId);
 
         Task<List<BusinessLayer.Models.OUTPUT.General.CommentOutPutModelDTO>> GetAllDissertationComments(long DissertationId, int PageNumber, int PageSize);
+        
         Task<List<StatusModelDTO>> GetApp_Tables();
+        
         //Task<List<CommentOutPutModelDTO>> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize);
+        
+        Task<UserModelDTO> GetDataFromAPI(string NationalCode, DateTime BirthDate);
+
+        Task<Models.OUTPUT.General.ReportCountSystemDTO?> ReportCountSystem();
+
+        Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetAllDissertationOfUesr(long UserId);
     }
 }

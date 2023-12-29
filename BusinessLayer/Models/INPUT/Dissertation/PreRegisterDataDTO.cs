@@ -38,5 +38,9 @@ namespace BusinessLayer.Models.INPUT.Dissertation
         public long? Teacher_3 { get; set; }
 
         public List<string>? KeyWords { get; set; } = new List<string>();
+
+        [DataType(DataType.EmailAddress)]
+        [Required(ErrorMessage ="وارد کردن ایمیل اجباری است")]
+        public string? Email { get; set; }
     }
 }
