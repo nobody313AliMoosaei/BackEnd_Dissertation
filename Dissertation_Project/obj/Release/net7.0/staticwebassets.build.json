@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "CDxjHU+swPutAYtQCEnrAQDqNjgKUEl06l8/N9AAzm8=",
+  "Hash": "lw2VijdWMHniUnu/c/i2DD7x/1TDYJvlInMfxrMoL7s=",
   "Source": "Dissertation_Project",
   "BasePath": "_content/Dissertation_Project",
   "Mode": "Default",
@@ -16,6 +16,23 @@
     }
   ],
   "Assets": [
+    {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\02d068b7-8928-40e1-bb42-27d4bb7b4f69.pdf",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "AllFiles/1402/02d068b7-8928-40e1-bb42-27d4bb7b4f69.pdf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\02d068b7-8928-40e1-bb42-27d4bb7b4f69.pdf"
+    },
     {
       "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\1\\31\\346cda31-f476-4dfc-985c-f7214a2f2797.mp3",
       "SourceId": "Dissertation_Project",
@@ -238,6 +255,23 @@
       "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\45c118b6-f5f5-4a68-a8ab-52d2c43dabc2.jpg"
     },
     {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\52c5ec09-2249-45d0-a48d-6878e31b3779.docx",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "AllFiles/1402/52c5ec09-2249-45d0-a48d-6878e31b3779.docx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\52c5ec09-2249-45d0-a48d-6878e31b3779.docx"
+    },
+    {
       "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\AllFiles\\1402\\878dc7b0-4704-4bdd-8309-a7b051784856.jpg",
       "SourceId": "Dissertation_Project",
       "SourceType": "Discovered",
@@ -287,6 +321,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\AllFiles\\1402\\bf842686-74e8-4e67-a876-fd2ae1c4f905.jpg"
+    },
+    {
+      "Identity": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\htmlpage.cshtml",
+      "SourceId": "Dissertation_Project",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\wwwroot\\",
+      "BasePath": "_content/Dissertation_Project",
+      "RelativePath": "htmlpage.cshtml",
+      "AssetKind": "Build",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "Never",
+      "OriginalItemSpec": "wwwroot\\htmlpage.cshtml"
     }
   ]
 }
