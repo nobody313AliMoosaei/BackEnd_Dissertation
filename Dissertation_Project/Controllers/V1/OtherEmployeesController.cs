@@ -4,6 +4,7 @@ using BusinessLayer.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
@@ -77,6 +78,25 @@ namespace Dissertation_Project.Controllers.V1
             return BadRequest(result);
         }
 
+        [HttpGet("IsValidUser")]
+        public async Task<IActionResult> IsValidUser()
+        {
+            try
+            {
+                var userId = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+                if (userId.IsNullOrEmpty())
+                    return StatusCode((int)HttpStatusCode.NotFound, false);
+
+                var result = await _generalService.UserIsEmployee(userId.Val64());
+                if (result)
+                    return StatusCode((int)HttpStatusCode.Found, result);
+                return StatusCode((int)HttpStatusCode.NotFound, result);
+            }
+            catch
+            {
+                return StatusCode((int)HttpStatusCode.NotFound, false);
+            }
+        }
 
     }
 }

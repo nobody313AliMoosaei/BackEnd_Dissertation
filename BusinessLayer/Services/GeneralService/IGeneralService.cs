@@ -43,11 +43,11 @@ namespace BusinessLayer.Services.GeneralService
         Task<List<Models.OUTPUT.Administrator.StatusModelDTO>> GetAllRoles();
 
         // GetAll DissertationStatus
-        
+
         Task<string?> DisplayDissertationstatus(int code);
-        
+
         Task<List<StatusModelDTO>?> GetAllDissertationStatus();
-        
+
         Task<List<StatusModelDTO>> GetStatus(string StatusType);
 
         // GetAll CollegesUni
@@ -60,15 +60,21 @@ namespace BusinessLayer.Services.GeneralService
         Task<UserModelDTO> GetUserById(long UserId);
 
         Task<List<BusinessLayer.Models.OUTPUT.General.CommentOutPutModelDTO>> GetAllDissertationComments(long DissertationId, int PageNumber, int PageSize);
-        
+
         Task<List<StatusModelDTO>> GetApp_Tables();
-        
+
         //Task<List<CommentOutPutModelDTO>> GetAllReplayCommentsByCommentId(long DissertationId, long CommentId, int PageNumber, int PageSize);
-        
+
         Task<UserModelDTO> GetDataFromAPI(string NationalCode, DateTime BirthDate);
 
         Task<Models.OUTPUT.General.ReportCountSystemDTO?> ReportCountSystem();
 
         Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>> GetAllDissertationOfUesr(long UserId);
+
+        Task<bool> UserIsEmployee(long UserId);
+
+        Task<bool> UserIsAdmin(long UserId);
+
+        Task<bool> UserIsStudent(long UserId);
     }
 }

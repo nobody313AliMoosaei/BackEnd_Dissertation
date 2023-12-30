@@ -145,6 +145,15 @@ builder.Services.AddCors(option =>
         .AllowAnyMethod()
         .AllowAnyHeader();
     });
+
+    option.AddPolicy("AAA", pt =>
+    {
+        pt.WithOrigins("https://localhost:3000")
+        .WithMethods("GET", "POST", "PUT", "DELETE")
+        .AllowAnyHeader()
+        .AllowAnyOrigin()
+        .AllowCredentials();
+    });
 });
 
 #endregion

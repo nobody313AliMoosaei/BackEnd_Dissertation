@@ -664,5 +664,57 @@ namespace BusinessLayer.Services.GeneralService
             return model;
         }
 
+
+        public async Task<bool> UserIsEmployee(long UserId)
+        {
+            try
+            {
+                var user = await _context.Users.Where(o => o.Id == UserId).FirstOrDefaultAsync();
+                if (user == null)
+                    return false;
+
+                var lstRole = new List<string>()
+                {
+                    "Administrator","GuideMaster","Adviser","EducationExpert","PostgraduateEducationExpert","DissertationExpert"
+                };
+                return (await _userManager.GetRolesAsync(user)).Where(o => o != null)
+                    .Where(o => lstRole.Any(t => t.ToLower() == o.ToLower())).Count() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UserIsAdmin(long UserId)
+        {
+            try
+            {
+                var user = await _context.Users.Where(o => o.Id == UserId).FirstOrDefaultAsync();
+                if (user == null)
+                    return false;
+                return (await _userManager.GetRolesAsync(user)).Where(o => o != null)
+                    .Where(o => o.ToLower() == RoleName_enum.Administrator.ToString().ToLower()).Count() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UserIsStudent(long UserId)
+        {
+            try
+            {
+                var user = await _context.Users.Where(o => o.Id == UserId).FirstOrDefaultAsync();
+                if (user == null) return false;
+                return (await _userManager.GetRolesAsync(user)).Where(o => o != null)
+                    .Where(o => o.ToLower() == RoleName_enum.Student.ToString().ToLower()).Count() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

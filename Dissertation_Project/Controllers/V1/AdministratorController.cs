@@ -5,6 +5,7 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
@@ -59,7 +60,7 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateUser(EditUserDTO userModel)
+        public async Task<IActionResult> UpdateUser([FromBody]EditUserDTO userModel)
         {
             return Ok(await _adminBL.UpdateUser(userModel));
         }
@@ -90,13 +91,13 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPut("UpdateTeacher")]
-        public async Task<IActionResult> UpdateTeacher(long TeacherId, TeacherInModelDTO TeacherModel)
+        public async Task<IActionResult> UpdateTeacher(long TeacherId, [FromBody]TeacherInModelDTO TeacherModel)
         {
             return Ok(await _teacherManager.UpdateTeacher(TeacherId, TeacherModel));
         }
 
         [HttpPost("AddNewUser")]
-        public async Task<IActionResult> AddNewUser(EditUserDTO NewUser, string Role)
+        public async Task<IActionResult> AddNewUser([FromBody] EditUserDTO NewUser, string Role)
         {
             return Ok(await _adminBL.AddNewUser(NewUser, Role));
         }
@@ -114,7 +115,7 @@ namespace Dissertation_Project.Controllers.V1
         }
 
         [HttpPost("AddNewTeacher")]
-        public async Task<IActionResult> AddNewTeacher(TeacherInModelDTO newTeacher)
+        public async Task<IActionResult> AddNewTeacher([FromBody] TeacherInModelDTO newTeacher)
         {
             return Ok(await _teacherManager.AddNewTeacher(newTeacher));
         }
@@ -210,6 +211,25 @@ namespace Dissertation_Project.Controllers.V1
         public async Task<IActionResult> GetUserInRole(long RoleRef)
         {
             return Ok(await _adminBL.GetUserInRole(RoleRef));
+        }
+
+        [HttpGet("IsValidUser")]
+        public async Task<IActionResult> ValidUser()
+        {
+            try
+            {
+                var userid = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+                if (userid.IsNullOrEmpty())
+                    return NotFound(false);
+                var result = await _generalService.UserIsAdmin(userid.Val64());
+                if (result)
+                    return StatusCode((int)HttpStatusCode.Found, result);
+                return NotFound(result);
+            }
+            catch
+            {
+                return NotFound();
+            }
         }
     }
 }

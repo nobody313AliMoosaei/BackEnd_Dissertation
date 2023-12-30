@@ -3,6 +3,7 @@ using BusinessLayer.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
@@ -140,5 +141,25 @@ namespace Dissertation_Project.Controllers.V1
                 return Unauthorized("کاربر لاگین نکرده است");
             return Ok(await _generalService.GetAllDissertationOfUesr(userId.Val64()));
         }
+
+        [HttpGet("IsValidUser")]
+        public async Task<IActionResult> ValidUser()
+        {
+            try
+            {
+                var userid = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+                if (userid.IsNullOrEmpty())
+                    return NotFound(false);
+                var result = await _generalService.UserIsStudent(userid.Val64());
+                if (result)
+                    return StatusCode((int)HttpStatusCode.Found, result);
+                return NotFound(result);
+            }
+            catch
+            {
+                return NotFound(false);
+            }
+        }
+
     }
 }
