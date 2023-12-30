@@ -603,7 +603,7 @@ namespace DataLayer.Migrations
                             Id = 1L,
                             AccessFailedCount = 0,
                             Active = true,
-                            ConcurrencyStamp = "29556871-dd0f-4f49-b7b0-78c7c79d31af",
+                            ConcurrencyStamp = "00c194af-4f8b-438c-a33f-543b93a48358",
                             EmailConfirmed = false,
                             FirstName = "Ali",
                             LastName = "Moosaei",
