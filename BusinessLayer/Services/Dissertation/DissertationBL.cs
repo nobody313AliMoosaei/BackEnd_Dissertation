@@ -107,7 +107,6 @@ namespace BusinessLayer.Services.Dissertation
                 user.CollegeRef = College?.Id;
                 user.CollegeRefNavigation = College;
                 user.College = College?.Title;
-                user.Email = data.Email;
 
                 var Teachers = await _userManager.GetUsersInRoleAsync(DataLayer.Tools.RoleName_enum.GuideMaster.ToString());
 
@@ -218,44 +217,51 @@ namespace BusinessLayer.Services.Dissertation
         }
 
         // Get Dissertation => گرفتن پایان نامه ثبت شده بدون تاییدیه
-        public async Task<Models.OUTPUT.Dissertation.DissertationModelOutPut?> GetCurrentDissertation(long User_Id)
+        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>?> GetCurrentDissertation(long User_Id)
         {
+            var lstDissertations = new List<Models.OUTPUT.Dissertation.DissertationModelOutPut>();
             try
             {
                 if (User_Id == 0)
                     return null;
 
-                var dissertation = await _context.Dissertations.Where(o => o.StudentId == User_Id
-                && o.StatusDissertation == (int)DataLayer.Tools.Dissertation_Status.Register)
-                    .FirstOrDefaultAsync();
-
-                if (dissertation == null)
+                var user = await _context.Users.Where(o => o.Id == User_Id).FirstOrDefaultAsync();
+                if (user == null)
                     return null;
 
-                var model = new Models.OUTPUT.Dissertation.DissertationModelOutPut();
-                model.StudentId = dissertation.StudentId;
-                model.Abstract = dissertation.Abstract;
-                model.DissertationFileAddress = dissertation.DissertationFileAddress;
-                model.ProceedingsFileAddress = dissertation.DissertationFileAddress;
-                model.TitlePersian = dissertation.TitlePersian;
-                model.TitleEnglish = dissertation.TitleEnglish;
-                model.TermNumber = dissertation.TermNumber;
-                model.StatusDissertation = dissertation.StatusDissertation;
-                model.DissertationId = dissertation.DissertationId;
-                if (dissertation.RegisterDateTime != null && dissertation.RegisterDateTime.HasValue)
-                {
-                    model.DateStr = $"{dissertation.RegisterDateTime.Value.Year}/{dissertation.RegisterDateTime.Value.Month}/{dissertation.RegisterDateTime.Value.Day}";
-                    model.TimeStr = $"{dissertation.RegisterDateTime.Value.Hour}:{dissertation.RegisterDateTime.Value.Minute}:{dissertation.RegisterDateTime.Value.Second}";
-                }
+                if (!(await _userManager.IsInRoleAsync(user, DataLayer.Tools.RoleName_enum.Student.ToString())))
+                    return null;
 
-                model.DisplayStatusDissertation = await _generalService.DisplayDissertationstatus(dissertation.StatusDissertation.HasValue
-                    ? dissertation.StatusDissertation.Value : -1);
-                return model;
+                lstDissertations = await _context.Dissertations.Where(o => o.StudentId == User_Id)
+                    .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
+                    {
+                        Abstract = o.Abstract,
+                        DateStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortDateString() : "",
+                        TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortTimeString() : "",
+                        DissertationFileAddress = o.DissertationFileAddress,
+                        ProceedingsFileAddress = o.ProceedingsFileAddress,
+                        DissertationId = o.DissertationId,
+                        StudentId = o.StudentId.Value,
+                        StatusDissertation = o.StatusDissertation,
+                        TermNumber = o.TermNumber,
+                        TitleEnglish = o.TitleEnglish,
+                        TitlePersian = o.TitlePersian
+                    }).ToListAsync();
+
+                var allStatus = await _generalService.GetAllDissertationStatus();
+                if (allStatus != null && allStatus.Count > 0)
+                {
+                    lstDissertations.ForEach(o =>
+                    {
+                        o.DisplayStatusDissertation = allStatus.Where(t => t.Code == o.StatusDissertation).FirstOrDefault()?.Title;
+                    });
+                }
             }
             catch
             {
                 return null;
             }
+            return lstDissertations;
         }
 
         public async Task<ErrorsVM> UpdateDissertation(IFormFile DissertationFile, IFormFile ProFile, UpdateDissertationDTO UDissertation)
@@ -522,6 +528,54 @@ namespace BusinessLayer.Services.Dissertation
                 res.Message = ex.InnerException == null ? ex.Message : $"InnerMessage: {ex.InnerException.Message}{Environment.NewLine}Message: {ex.Message}";
             }
             return res;
+        }
+
+
+        public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>?> GetAllDissertationOfTeacher(long TeacherRef)
+        {
+            var lstDissertations = new List<Models.OUTPUT.Dissertation.DissertationModelOutPut>();
+            try
+            {
+                var user = await _context.Users.Where(o => o.Id == TeacherRef).FirstOrDefaultAsync();
+                if (user == null)
+                    return null;
+
+                if (!(await _userManager.IsInRoleAsync(user, DataLayer.Tools.RoleName_enum.GuideMaster.ToString())))
+                    return null;
+
+                lstDissertations = await _context.Dissertations.Include(o => o.Student).ThenInclude(x => x.Teachers)
+                    .Where(o => o.Student.Teachers.Count > 0
+                            && o.StatusDissertation == (int)DataLayer.Tools.Dissertation_Status.Register
+                            && o.Student.Teachers.Any(t => t.TeacherId == TeacherRef))
+                    .Select(o => new Models.OUTPUT.Dissertation.DissertationModelOutPut
+                    {
+                        Abstract = o.Abstract,
+                        DateStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortDateString() : "",
+                        TimeStr = o.RegisterDateTime.HasValue ? o.RegisterDateTime.Value.ToShortTimeString() : "",
+                        DissertationFileAddress = o.DissertationFileAddress,
+                        ProceedingsFileAddress = o.ProceedingsFileAddress,
+                        DissertationId = o.DissertationId,
+                        StudentId = o.StudentId.Value,
+                        StatusDissertation = o.StatusDissertation,
+                        TermNumber = o.TermNumber,
+                        TitleEnglish = o.TitleEnglish,
+                        TitlePersian = o.TitlePersian
+                    }).ToListAsync();
+
+                var allStatus = await _generalService.GetAllDissertationStatus();
+                if (allStatus != null && allStatus.Count > 0)
+                {
+                    lstDissertations.ForEach(o =>
+                    {
+                        o.DisplayStatusDissertation = allStatus.Where(t => t.Code == o.StatusDissertation).FirstOrDefault()?.Title;
+                    });
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return lstDissertations;
         }
 
     }

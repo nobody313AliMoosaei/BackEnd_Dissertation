@@ -1,9 +1,11 @@
 ﻿using BusinessLayer.Services.GeneralService;
 using BusinessLayer.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
 {
@@ -93,7 +95,7 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _generalService.GetApp_Tables());
         }
 
-        [Obsolete("Deprecated By Ali Moosaei",true)]
+        [Obsolete("Deprecated By Ali Moosaei", true)]
         [HttpGet("GEtDataFromAPI")]
         public async Task<IActionResult> GEtasdasd(string nationalcode, DateTime birthdate)
         {
@@ -110,6 +112,16 @@ namespace Dissertation_Project.Controllers.V1
         public async Task<IActionResult> GetAllDissertationUesr(long UserId)
         {
             return Ok(await _generalService.GetAllDissertationOfUesr(UserId));
+        }
+
+        [Authorize]
+        [HttpGet("GetUserAutomatic")]
+        public async Task<IActionResult> GetUserByToken()
+        {
+            var userid = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userid.IsNullOrEmpty())
+                return Unauthorized("کاربر لاگین نکرده است");
+            return Ok(await _generalService.GetUserById(userid.Val64()));
         }
     }
 }

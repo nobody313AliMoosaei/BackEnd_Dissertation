@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Runtime.Versioning;
 using System.Security.Claims;
 
 namespace Dissertation_Project.Controllers.V1
@@ -27,6 +28,7 @@ namespace Dissertation_Project.Controllers.V1
             _administratorBL = AdministratorBL;
         }
 
+        [Obsolete("Deprecated By AliMoosaei", true)]
         [HttpGet("GetSelfDissertation")]
         public async Task<IActionResult> GetSelfDissertationOfTeacher(long TeacherId, int PageNumber, int PageSize)
         {
@@ -38,7 +40,7 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _employeeService.GetAllDissertationOfTeacher(TeacherId, PageNumber, PageSize));
         }
 
-        [HttpGet("GetSelfDissertationAutomatic")]
+        [HttpGet("GetSelfDissertationOfTeacherAutomatic")]
         public async Task<IActionResult> GetSelfDissertationOfTeacherAutomaticly(int PageNumber, int PageSize)
         {
             var UserId = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
@@ -96,6 +98,15 @@ namespace Dissertation_Project.Controllers.V1
             {
                 return StatusCode((int)HttpStatusCode.NotFound, false);
             }
+        }
+
+        [HttpGet("GetAllDissertationOfOtherEmployee")]
+        public async Task<IActionResult> GetAllDissertationOfOtherEmployee(int pageNumber, int PageSize)
+        {
+            var userId = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userId.IsNullOrEmpty())
+                return Unauthorized();
+            return Ok(await _employeeService.GetAllDissertationsOtherEmployee(userId.Val64(), pageNumber, PageSize));
         }
 
     }

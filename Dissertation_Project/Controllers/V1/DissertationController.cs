@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Services.Dissertation;
 using BusinessLayer.Utilities;
+using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,15 @@ namespace Dissertation_Project.Controllers.V1
     {
         private DissertationBL _dissertationBL;
         private BusinessLayer.Services.GeneralService.IGeneralService _generalService;
+        private BusinessLayer.Services.Administrator.AdministratorBL _adminBL;
 
-        public DissertationController(DissertationBL dissertationBL, BusinessLayer.Services.GeneralService.IGeneralService generalService)
+        public DissertationController(DissertationBL dissertationBL,
+            BusinessLayer.Services.GeneralService.IGeneralService generalService,
+            BusinessLayer.Services.Administrator.AdministratorBL adminBL)
         {
             _dissertationBL = dissertationBL;
             _generalService = generalService;
+            _adminBL = adminBL;
         }
 
         [HttpPost]
@@ -56,6 +61,7 @@ namespace Dissertation_Project.Controllers.V1
                 var UserID = User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
                 if (UserID.IsNullOrEmpty())
                     return Unauthorized("کاربر لاگین نکرده است");
+
                 var dissertation = await _dissertationBL.GetCurrentDissertation(UserID.Val64());
                 if (dissertation == null)
                     return NotFound("پایان نامه در جريانی وجود ندارد");
@@ -67,7 +73,7 @@ namespace Dissertation_Project.Controllers.V1
             }
         }
 
-        [HttpPut]
+        [HttpPost("UpdateDissertation")]
         public async Task<IActionResult> UpdateDissertation(long Dis_Id, IFormFile DissertationFile, IFormFile ProFile,
             [FromForm] BusinessLayer.Models.INPUT.Dissertation.PreRegisterDataDTO PreRegisterData)
         {
@@ -160,6 +166,44 @@ namespace Dissertation_Project.Controllers.V1
                 return NotFound(false);
             }
         }
+
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] BusinessLayer.Models.INPUT.SignUp.UpdateUserDTO modelUser)
+        {
+            var UserId = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (UserId.IsNullOrEmpty())
+                return Unauthorized("کاربر لاگین نکرده است");
+
+            var result = await _adminBL.UpdateUser(new BusinessLayer.Models.INPUT.Administrator.EditUserDTO
+            {
+                UserId = UserId.Val64(),
+                CollegeRef = modelUser.CollegeRef,
+                FirstName = modelUser.FirstName,
+                LastName = modelUser.LastName,
+                NationalCode = modelUser.NationalCode,
+                Teacher1_Ref = modelUser.Teacher_1,
+                Teacher2_Ref = modelUser.Teacher_2,
+                Teacher3_Ref = modelUser.Teacher_3,
+                UserName = modelUser.UserName
+            });
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
+        }
+
+        [Obsolete("deprecated By AliMoosaei",true)]
+        [HttpGet("GetAllDissertationOfTeacher")]
+        public async Task<IActionResult> GEtAllDissertationsOfTEacher()
+        {
+            var UserId = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (UserId.IsNullOrEmpty()) return Unauthorized("کاربر لاگین نکرده است");
+
+            var result = await _dissertationBL.GetAllDissertationOfTeacher(UserId.Val64());
+            if (result == null)
+                return BadRequest();
+            return Ok(result);
+        }
+
 
     }
 }

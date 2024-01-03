@@ -5,6 +5,7 @@ using ClosedXML.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Net;
 using System.Security.Claims;
 
@@ -38,7 +39,10 @@ namespace Dissertation_Project.Controllers.V1
         [HttpPost("ChangeDissertationStatus")]
         public async Task<IActionResult> ChangeDissertationStatus(long DissertationId, string StatusId)
         {
-            return Ok(await _adminBL.ChangeDissertationStatus(DissertationId, StatusId));
+            var result = await _adminBL.ChangeDissertationStatus(DissertationId, StatusId);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpPost("GetAllUser")]
@@ -59,18 +63,25 @@ namespace Dissertation_Project.Controllers.V1
             return Ok(await _adminBL.GetStatusByType(DataLayer.Tools.BASLookupType.CollegesUni.ToString()));
         }
 
-        [HttpPut("UpdateUser")]
-        public async Task<IActionResult> UpdateUser([FromBody]EditUserDTO userModel)
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] EditUserDTO userModel)
         {
-            return Ok(await _adminBL.UpdateUser(userModel));
+            var result = await _adminBL.UpdateUser(userModel);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
-        [HttpPut("DeActiveUser")]
+        [HttpPost("DeActiveUser")]
         public async Task<IActionResult> DeActiveUser(long UserId)
         {
-            return Ok(await _adminBL.DeActiveUser(UserId));
+            var result = await _adminBL.DeActiveUser(UserId);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
+        [Obsolete("Deprecate By AliMoosaei", true)]
         [HttpPost("AddNewRoleToUser")]
         public async Task<IActionResult> AddNewRoleToUser(long UserId, string NewRole)
         {
@@ -90,16 +101,22 @@ namespace Dissertation_Project.Controllers.V1
 
         }
 
-        [HttpPut("UpdateTeacher")]
-        public async Task<IActionResult> UpdateTeacher(long TeacherId, [FromBody]TeacherInModelDTO TeacherModel)
+        [HttpPost("UpdateTeacher")]
+        public async Task<IActionResult> UpdateTeacher(long TeacherId, [FromBody] TeacherInModelDTO TeacherModel)
         {
-            return Ok(await _teacherManager.UpdateTeacher(TeacherId, TeacherModel));
+            var result = await _teacherManager.UpdateTeacher(TeacherId, TeacherModel);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpPost("AddNewUser")]
         public async Task<IActionResult> AddNewUser([FromBody] EditUserDTO NewUser, string Role)
         {
-            return Ok(await _adminBL.AddNewUser(NewUser, Role));
+            var result = await _adminBL.AddNewUser(NewUser, Role);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpGet("FindUser")]
@@ -111,13 +128,19 @@ namespace Dissertation_Project.Controllers.V1
         [HttpPost("UploadDissertation")]
         public async Task<IActionResult> UploadDissertationForUser(long UserId, IFormFile Dis_File, IFormFile Pre_File, [FromForm] NewDissertationDTO DissertationModel)
         {
-            return Ok(await _adminBL.UploadDissertationForUser(UserId, DissertationModel, Dis_File, Pre_File));
+            var result = await _adminBL.UploadDissertationForUser(UserId, DissertationModel, Dis_File, Pre_File);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpPost("AddNewTeacher")]
         public async Task<IActionResult> AddNewTeacher([FromBody] TeacherInModelDTO newTeacher)
         {
-            return Ok(await _teacherManager.AddNewTeacher(newTeacher));
+            var result = await _teacherManager.AddNewTeacher(newTeacher);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpGet("GetDissertationByStatus")]
@@ -136,6 +159,7 @@ namespace Dissertation_Project.Controllers.V1
             return BadRequest(result);
         }
 
+        [Obsolete("Deprecate By AliMoosaei", true)]
         [HttpPost("Download")]
         public IActionResult DonloadFile([FromBody] string FileAddress)
         {
@@ -198,13 +222,19 @@ namespace Dissertation_Project.Controllers.V1
         [HttpPost("AddNewCollege")]
         public async Task<IActionResult> AddNewCollege([FromBody] BusinessLayer.Models.INPUT.Administrator.NewCollegeDTO NewCollege)
         {
-            return Ok(await _adminBL.InsertNewCollege(NewCollege));
+            var result = await _adminBL.InsertNewCollege(NewCollege);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpPost("DeleteCollege")]
         public async Task<IActionResult> RemoveCollege(long CollegeRef)
         {
-            return Ok(await _adminBL.DeleteCollegeById(CollegeRef));
+            var result = await _adminBL.DeleteCollegeById(CollegeRef);
+            if (result.IsValid)
+                return Ok(result);
+            return BadRequest(result);
         }
 
         [HttpGet("GetUserInRole")]

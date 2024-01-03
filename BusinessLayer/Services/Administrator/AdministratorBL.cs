@@ -61,7 +61,6 @@ namespace BusinessLayer.Services.Administrator
                     _where = _where.AndAlso(o => (o.Student.FirstName + o.Student.LastName).Replace(" ", "").Trim()
                     == _filterModel.FullName.Replace(" ", "").Trim());
 
-
                 _where = _where.AndAlso(o => o.DissertationId > 0);
 
                 model = await _context.Dissertations
@@ -850,7 +849,7 @@ namespace BusinessLayer.Services.Administrator
 
                 var AllColleges = await _generalService.GetAllCollegesUni();
 
-                if (NewCollege.Code <= 0 || NewCollege.Title.IsNullOrEmpty())
+                if (NewCollege.Title.IsNullOrEmpty())
                     model.ErrorList.Add("ارسال اطلاعات جهت ثبت دانشکده درست نیست");
 
                 if (AllColleges.Where(o => o.Code == NewCollege.Code).ToList().Count > 0)

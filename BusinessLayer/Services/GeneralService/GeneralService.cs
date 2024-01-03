@@ -419,7 +419,7 @@ namespace BusinessLayer.Services.GeneralService
                 model.UserId = user.Id;
                 model.UserName = user.UserName;
                 model.PhoneNumber = user.PhoneNumber;
-
+                model.Email = user.Email;
             }
             catch
             {
@@ -716,5 +716,69 @@ namespace BusinessLayer.Services.GeneralService
                 return false;
             }
         }
+
+
+        //public async Task<ErrorsVM> UpdateUser(long UserId, BusinessLayer.Models.INPUT.SignUp.UpdateUserDTO UpdateUser)
+        //{
+        //    var res = new ErrorsVM();
+        //    try
+        //    {
+        //        var user = await _context.Users.Include(o=>o.Teachers)
+        //            .Where(o=>o.Id==UserId && o.Active== true).FirstOrDefaultAsync();
+        //        if(user == null)
+        //        {
+        //            res.Message = "کاربر وجود ندارد";
+        //        }
+        //        else
+        //        {
+        //            user.FirstName = UpdateUser.FirstName;
+        //            user.LastName = UpdateUser.LastName;
+        //            user.NationalCode = UpdateUser.NationalCode;
+        //            user.Email = UpdateUser.EmailAddress;
+        //            var resultChangePassword = await _userManager.ChangePasswordAsync(user, user.PasswordHash, UpdateUser.NationalCode);
+        //            if(!resultChangePassword.Succeeded)
+        //            {
+        //                res.Message = "تغییر رمز برای کاربر انجام نشده است";
+        //                return res;
+        //            }
+
+        //            // college
+        //            var college = await _context.Baslookups.Where(o => o.Type.ToLower() == DataLayer.Tools.BASLookupType.CollegesUni.ToString().ToLower()
+        //            && o.Id == UpdateUser.CollegeRef).FirstOrDefaultAsync();
+        //            if(college == null)
+        //            {
+        //                res.Message = "دانشکده انتخاب نشده است";
+        //                return res;
+        //            }
+        //            user.CollegeRef = college.Id;
+        //            user.College = college.Title;
+        //            user.CollegeRefNavigation = college;
+
+        //            // teacher1
+        //            var allTeachers = await GetAllTeacher();
+        //            if(allTeachers.Count==0)
+        //                res.ErrorList.Add("استاد راهنمایی تعریف شده وجود ندارد");
+
+        //            if (UpdateUser.Teacher_1.HasValue && UpdateUser.Teacher_1 != 0)
+        //            {
+        //                var teacher = allTeachers.Where(o => o.Id == UpdateUser.Teacher_1.Value).FirstOrDefault();
+        //                user.Teachers = new List<DataLayer.Entities.Teachers>();
+        //                user.Teachers.Add(new Teachers
+        //                {
+        //                    StudentId = user.Id,
+        //                    TeacherId = teacher.
+        //                })
+        //            }
+        //        }
+        //    }
+        //    catch
+        //    {
+
+        //    }
+        //    return res;
+        //}
+
+
+
     }
 }

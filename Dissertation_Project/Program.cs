@@ -141,17 +141,9 @@ builder.Services.AddCors(option =>
 {
     option.AddPolicy("CORS_DEFUALT", pt =>
     {
-        pt.AllowAnyOrigin()
+        pt.WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:3002")
         .AllowAnyMethod()
-        .AllowAnyHeader();
-    });
-
-    option.AddPolicy("AAA", pt =>
-    {
-        pt.WithOrigins("https://localhost:3000")
-        .WithMethods("GET", "POST", "PUT", "DELETE")
         .AllowAnyHeader()
-        .AllowAnyOrigin()
         .AllowCredentials();
     });
 });

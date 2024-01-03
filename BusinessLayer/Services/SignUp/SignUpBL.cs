@@ -144,7 +144,6 @@ namespace BusinessLayer.Services.SignUp
                     }
                 }
 
-
                 var RoleUser = await _userManager.GetRolesAsync(user);
 
                 if (RoleUser == null || RoleUser.Count == 0)
@@ -181,7 +180,8 @@ namespace BusinessLayer.Services.SignUp
                     model.Errors.IsValid = false;
                     model.Errors.Message = sb.ToString();
                 }
-                model.Errors.IsValid = true;
+                else
+                    model.Errors.IsValid = true;
             }
             catch (Exception ex)
             {
