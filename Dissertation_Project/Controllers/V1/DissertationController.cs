@@ -1,8 +1,6 @@
 ﻿using BusinessLayer.Services.Dissertation;
 using BusinessLayer.Utilities;
-using DocumentFormat.OpenXml.Bibliography;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Security.Claims;
