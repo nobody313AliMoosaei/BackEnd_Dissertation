@@ -140,7 +140,8 @@ namespace BusinessLayer.Services.Teacher
                 if (Value.IsNullOrEmpty())
                     lstTeacher = await _context.Users.AsQueryable()
                         .Join(_context.UserRoles, x => x.Id, y => y.UserId, (x, y) => new { user = x, Role = y })
-                        .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster)
+                        .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster
+                                && o.user.Active == true)
                         .Select(o => o.user)
                         .Join(_context.Baslookups, x => x.CollegeRef, y => y.Id, (x, y) => new TeacherOutModelDTO
                         {
@@ -159,7 +160,8 @@ namespace BusinessLayer.Services.Teacher
                                     || o.Email == Value || o.NationalCode == Value || o.UserName == Value
                                     || (o.FirstName + o.LastName).Replace(" ", "") == Value.Replace(" ", ""))
                     .Join(_context.UserRoles, x => x.Id, y => y.UserId, (x, y) => new { user = x, Role = y })
-                    .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster)
+                    .Where(o => o.Role.RoleId == (int)DataLayer.Tools.RoleName_enum.GuideMaster
+                                && o.user.Active == true)
                     .Select(o => o.user)
                     .Join(_context.Baslookups, x => x.CollegeRef, y => y.Id, (x, y) => new TeacherOutModelDTO
                     {

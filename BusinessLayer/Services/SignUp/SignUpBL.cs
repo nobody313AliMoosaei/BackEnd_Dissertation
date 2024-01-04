@@ -145,6 +145,13 @@ namespace BusinessLayer.Services.SignUp
                 if (user == null)
                 {
                     user = await _context.Users.Where(o => o.UserName == LoginInfo.UserName || o.Email == LoginInfo.UserName).FirstOrDefaultAsync();
+
+                    if (user.Active == false)
+                    {
+                        model.Errors.Message = "کاربر غیر فعال است";
+                        return model;
+                    }
+
                     if (user == null)
                     {
                         sb.AppendLine("کاربر یافت نشد" + Environment.NewLine);
@@ -152,6 +159,12 @@ namespace BusinessLayer.Services.SignUp
                         model.Errors.Message = sb.ToString();
                         return model;
                     }
+                }
+
+                if (user.Active == false)
+                {
+                    model.Errors.Message = "کاربر غیر فعال است";
+                    return model;
                 }
 
                 var RoleUser = await _userManager.GetRolesAsync(user);

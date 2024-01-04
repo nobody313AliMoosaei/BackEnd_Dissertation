@@ -499,6 +499,15 @@ namespace BusinessLayer.Services.Administrator
                     UserName = NewUser.UserName,
                 };
 
+                // Check Duplicat User
+                if ((await _context.Users.Where(o => o.Active==true && ( o.UserName == NewUser.UserName
+                 || o.NationalCode == NewUser.NationalCode)).CountAsync()) > 0)
+                {
+                    Err.ErrorList.Add("کاربر تکراری می باشد");
+                    Err.Message = "کاربر موچود است";
+                    return Err;
+                }
+
                 var CollegeNav = await _context.Baslookups.Where(o => o.Id == (NewUser.CollegeRef.HasValue ? NewUser.CollegeRef.Value : -1)).FirstOrDefaultAsync();
                 if (CollegeNav != null)
                 {

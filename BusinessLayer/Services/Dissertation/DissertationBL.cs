@@ -178,27 +178,47 @@ namespace BusinessLayer.Services.Dissertation
                     }
                 }
 
+                // Valid Files
+
                 // Upload File
-                var DissertationFile = await _uploadFile.UploadFileAysnc(Dissertation_File);
-                var ProFile = await _uploadFile.UploadFileAysnc(Pro_File);
-                if (DissertationFile != null)
+                if (IsValidFile(Dissertation_File.FileName, true))
                 {
-                    NewDissertation.DissertationFileName = DissertationFile.FileName;
-                    NewDissertation.DissertationFileAddress = DissertationFile.FileAddress;
+                    var DissertationFile = await _uploadFile.UploadFileAysnc(Dissertation_File);
+                    if (DissertationFile != null)
+                    {
+                        NewDissertation.DissertationFileName = DissertationFile.FileName;
+                        NewDissertation.DissertationFileAddress = DissertationFile.FileAddress;
+                    }
+                    else
+                        res.ErrorList.Add("فایل پایان نامه ثبت نشد");
                 }
-                if (ProFile != null)
+                else
+                    res.ErrorList.Add("فایل پایان نامه ثبت نشد");
+                if (IsValidFile(Dissertation_File.FileName, true))
                 {
-                    NewDissertation.ProceedingsFileName = ProFile.FileName;
-                    NewDissertation.ProceedingsFileAddress = ProFile.FileAddress;
+                    var ProFile = await _uploadFile.UploadFileAysnc(Pro_File);
+                    if (ProFile != null)
+                    {
+                        NewDissertation.ProceedingsFileName = ProFile.FileName;
+                        NewDissertation.ProceedingsFileAddress = ProFile.FileAddress;
+                    }
+                    else
+                        res.ErrorList.Add("فایل تاییدیه ثبت نشد");
                 }
+                else
+                    res.ErrorList.Add("فایل پایان نامه ثبت نشد");
+
                 NewDissertation.StatusDissertation = (int)DataLayer.Tools.Dissertation_Status.Register;
 
                 // Add Dissertation In user
-                user.Dissertations.Add(NewDissertation);
-
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
-
+                if (res.ErrorList.Count == 0)
+                {
+                    user.Dissertations.Add(NewDissertation);
+                    _context.Users.Update(user);
+                    await _context.SaveChangesAsync();
+                    res.Message = "عمليات موفقيت آمیز بود";
+                    res.IsValid = true;
+                }
                 #region log For Update User
                 await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime()
                     , _contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
@@ -214,8 +234,6 @@ namespace BusinessLayer.Services.Dissertation
                     "پیش ثبت نام", "پیش ثبت نام شما در سامانه پایان نامه دانشگاه تربیت دبیر شهید رجایی با موفقیت انجام شد.");
                 #endregion
 
-                res.Message = "عمليات موفقيت آمیز بود";
-                res.IsValid = true;
             }
             catch (Exception ex)
             {
@@ -224,6 +242,34 @@ namespace BusinessLayer.Services.Dissertation
             }
             return res;
         }
+
+        public bool IsValidFile(string FileName, bool IsMainDissertation = false)
+        {
+            FileInfo _fileInfo = new FileInfo(FileName);
+            if (IsMainDissertation)
+            {
+                List<string> ValidExtentionOfDissertation = new List<string>
+                {
+                    ".zip",".rar",".rar4",".doc",".docm",".docx",".dot",".dotx"
+                };
+
+                if (ValidExtentionOfDissertation.Any(o => o.ToLower() == _fileInfo.Extension.ToLower()))
+                    return true;
+                return false;
+            }
+            else
+            {
+                List<string> ValidExtentionOfPro = new List<string>
+                {
+                    ".jpg" ,".jpeg" , ".jfif" , ".pjpeg" , ".pjp",".png",".webp",".svg"
+                };
+                if (ValidExtentionOfPro.Any(o => o.ToLower() == _fileInfo.Extension.ToLower()))
+                    return true;
+                return false;
+            }
+        }
+
+
 
         // Get Dissertation => گرفتن پایان نامه ثبت شده بدون تاییدیه
         public async Task<List<Models.OUTPUT.Dissertation.DissertationModelOutPut>?> GetCurrentDissertation(long User_Id)
