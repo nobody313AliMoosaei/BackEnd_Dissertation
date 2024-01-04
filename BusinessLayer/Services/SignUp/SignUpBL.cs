@@ -77,9 +77,19 @@ namespace BusinessLayer.Services.SignUp
                     await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"کاربر {UsrName} ثبت نام کرده است");
                     #endregion
+
+                    //await _emailSender.SendEmailAsync(_newUser.Email, "سامانه آپلود پایان نامه دانشگاه شهید رجایی",
+                    //   "شما با موفقت در سامانه ثبت نام شدید");
+
+                    #region Send Email IN BackGround
+                    _historyManager.SendEmail(_newUser.Email, "سامانه آپلود پایان نامه دانشگاه شهید رجایی",
+                       "شما با موفقت در سامانه ثبت نام شدید");
+                    #endregion
+
+
                     err.IsValid = true;
                     err.Message = "کاربر با موفقيت ثبت نام کرده است";
 
@@ -169,6 +179,11 @@ namespace BusinessLayer.Services.SignUp
                         Role = RoleUser.FirstOrDefault(),
                         Token = Token
                     };
+
+                    #region Send Email
+                    //await _emailSender.SendEmailAsync(user.Email, "ورود به سامانه", "شما با موفقیت به سامانه آپلود فایل دانشگاه شهید رجایی تهران وارد شدید");
+                    _historyManager.SendEmail(user.Email, "ورود به سامانه", "شما با موفقیت به سامانه آپلود فایل دانشگاه شهید رجایی تهران وارد شدید");
+                    #endregion
                 }
                 else
                 {

@@ -32,5 +32,16 @@ namespace BusinessLayer.Services.Log
 
             }
         }
+        public async Task SendEmail(string Email, string Title, string Dsr)
+        {
+            try
+            {
+                BackgroundJob.Enqueue<BusinessLayer.Services.Email.IEmailSender>(t => t.SendEmailAsync(Email, Title, Dsr));
+            }
+            catch
+            {
+
+            }
+        }
     }
 }

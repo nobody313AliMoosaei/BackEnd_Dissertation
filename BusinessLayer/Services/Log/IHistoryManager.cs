@@ -10,5 +10,6 @@ namespace BusinessLayer.Services.Log
     public interface IHistoryManager
     {
         Task InsertHistory(DateTime DateTime, string IP, string Url, string Level, string Client, string Message);
+        Task SendEmail(string Email, string Title, string Dsr);
     }
 }

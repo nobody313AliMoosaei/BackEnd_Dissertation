@@ -118,7 +118,7 @@ namespace BusinessLayer.Services.GeneralService
                         await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                                 this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                                 this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                                _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                                Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                                 $"پایان نامه {Dis.DissertationId} به وضعیت {Status.Title} تغییر کرد");
                         #endregion
 
@@ -142,7 +142,7 @@ namespace BusinessLayer.Services.GeneralService
                 await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"Error Message : {ex.Message}");
                 #endregion
 
@@ -349,7 +349,7 @@ namespace BusinessLayer.Services.GeneralService
                     await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                             this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                             this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                            _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                            Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                             $"کامنت برای پایان نامه {Dissertation.DissertationId} توسط کاربر {UserId} ثبت شد");
                     #endregion
 
@@ -365,7 +365,7 @@ namespace BusinessLayer.Services.GeneralService
                 await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"Error Message : {ex.Message}");
                 #endregion
 

@@ -115,6 +115,11 @@ namespace BusinessLayer.Services.Dissertation
                     var teacher1 = Teachers.Where(o => o.Id == data.Teacher_1.Value).FirstOrDefault();
                     if (teacher1 != null)
                     {
+                        // Delete All Teachers
+                        var teacherOfUser = await _context.Teachers.Where(o => o.StudentId == user.Id).ToListAsync();
+                        _context.Teachers.RemoveRange(teacherOfUser);
+                        await _context.SaveChangesAsync();
+
                         user.Teachers.Add(new DataLayer.Entities.Teachers()
                         {
                             StudentId = user.Id,
@@ -202,8 +207,12 @@ namespace BusinessLayer.Services.Dissertation
                         $"اطلاعات کاربر {user.UserName} بروز شده است و پایان نامه با موفقیت بارگزاري شد");
                 #endregion
 
-                var resultEmail = await _emailService.SendEmailAsync(user.Email,
+                #region Send Email
+                //var resultEmail = await _emailService.SendEmailAsync(user.Email,
+                //    "پیش ثبت نام", "پیش ثبت نام شما در سامانه پایان نامه دانشگاه تربیت دبیر شهید رجایی با موفقیت انجام شد.");
+                _historyManager.SendEmail(user.Email,
                     "پیش ثبت نام", "پیش ثبت نام شما در سامانه پایان نامه دانشگاه تربیت دبیر شهید رجایی با موفقیت انجام شد.");
+                #endregion
 
                 res.Message = "عمليات موفقيت آمیز بود";
                 res.IsValid = true;
@@ -300,7 +309,11 @@ namespace BusinessLayer.Services.Dissertation
                     var teacher = Teachers.Where(o => o.Id == UDissertation.Teacher1).FirstOrDefault();
                     if (teacher != null)
                     {
-                        user.Teachers = new List<Teachers>();
+                        // Delete Teachers of User
+                        var TeachersOfUser = await _context.Teachers.Where(o => o.StudentId == user.Id).ToListAsync();
+                        _context.Teachers.RemoveRange(TeachersOfUser);
+                        await _context.SaveChangesAsync();
+
                         user.Teachers.Add(new Teachers
                         {
                             StudentId = user.Id,
@@ -424,7 +437,7 @@ namespace BusinessLayer.Services.Dissertation
                     await _historyManager.InsertHistory(DateTime.Now.ToPersianDateTime(),
                             this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                             this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                            _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                            Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                             $"پایان نامه {Dissertation.DissertationId} با موفقیت برای کاربر {user.Id} به روز رسانی شد");
                     #endregion
 

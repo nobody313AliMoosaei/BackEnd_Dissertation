@@ -3039,7 +3039,8 @@
         "dependencies": {
           "DataLayer": "1.0.0",
           "Hangfire": "1.8.6",
-          "Microsoft.AspNetCore.Session": "2.2.0"
+          "Microsoft.AspNetCore.Session": "2.2.0",
+          "Newtonsoft.Json": "13.0.3"
         },
         "compile": {
           "bin/placeholder/BusinessLayer.dll": {}

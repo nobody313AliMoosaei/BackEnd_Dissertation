@@ -107,7 +107,11 @@ namespace Dissertation_Project.Controllers.V1
         [HttpPost("SendComment")]
         public async Task<IActionResult> SendComment([FromBody] BusinessLayer.Models.INPUT.CommentInputDTO Comment)
         {
-            var result = await _generalService.SendComment(Comment.UserId, Comment.DissertationId, Comment.Title, Comment.Dsr, Comment.CommentId);
+            var userid = this.User.Claims.Where(o => o.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value;
+            if (userid.IsNullOrEmpty())
+                return Unauthorized();
+
+            var result = await _generalService.SendComment(userid.Val64(), Comment.DissertationId, Comment.Title, Comment.Dsr, Comment.CommentId);
             if (result.IsValid)
                 return Ok(result);
             return BadRequest(result);

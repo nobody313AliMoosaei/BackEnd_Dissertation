@@ -256,9 +256,14 @@ namespace BusinessLayer.Services.Administrator
                 if (NewUser.Teacher1_Ref.HasValue && NewUser.Teacher1_Ref != 0)
                 {
                     var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher1_Ref.Value).FirstOrDefaultAsync();
+                    
                     if (teacher != null && (await _userManager.IsInRoleAsync(teacher, DataLayer.Tools.RoleName_enum.GuideMaster.ToString())))
                     {
-                        user.Teachers = new HashSet<DataLayer.Entities.Teachers>();
+                        // Delete Of Teachers
+                        var TeacherOfUser = await _context.Teachers.Where(o => o.StudentId == user.Id).ToListAsync();
+                        _context.Teachers.RemoveRange(TeacherOfUser);
+                        await _context.SaveChangesAsync();
+
                         DataLayer.Entities.Teachers _teacher = new DataLayer.Entities.Teachers()
                         {
                             StudentId = user.Id,
@@ -308,7 +313,7 @@ namespace BusinessLayer.Services.Administrator
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"کاربر با نام کاربری {NewUser.UserName} بروز شد");
                 #endregion
 
@@ -326,7 +331,7 @@ namespace BusinessLayer.Services.Administrator
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"Message Error : {ex.Message}");
                 #endregion
 
@@ -358,7 +363,7 @@ namespace BusinessLayer.Services.Administrator
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"کاربر با شناسه {user.Id} غیر فعال شد");
                 #endregion
 
@@ -374,7 +379,7 @@ namespace BusinessLayer.Services.Administrator
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"Message Error : {ex.Message}");
                 #endregion
 
@@ -576,7 +581,7 @@ namespace BusinessLayer.Services.Administrator
                         await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                                 this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                                 this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                                _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                                Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                                 $"کاربر با نام کاربری {user.UserName} ایجاد شد");
                         #endregion
 
@@ -603,7 +608,7 @@ namespace BusinessLayer.Services.Administrator
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"Error Message : {ex.Message}");
                 #endregion
 
@@ -723,7 +728,7 @@ namespace BusinessLayer.Services.Administrator
                     await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                             this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                             this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                            _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                            Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                             $"پایان نامه برای کاربر {UserId} آپلود شد");
                     #endregion
 
@@ -738,8 +743,8 @@ namespace BusinessLayer.Services.Administrator
                 #region Set Log
                 await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
-                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
-                        _contextAccessor?.HttpContext?.Request?.Headers["sec-ch-ua"].ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
                         $"Error Message : {ex.Message}");
                 #endregion
 
@@ -884,6 +889,16 @@ namespace BusinessLayer.Services.Administrator
                     await _context.SaveChangesAsync();
                     model.IsValid = true;
                     model.Message = "دانشکده با موفقیت ثبت شد";
+
+                    #region Set Log
+                    await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                            this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                            this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                            Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
+                            $"دانشکده {newBasLookup.Title} با موفقیت ثبت شد ");
+                    #endregion
+
+
                 }
             }
             catch (Exception ex)
@@ -892,6 +907,16 @@ namespace BusinessLayer.Services.Administrator
                 model.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     model.ErrorList.Add(ex.InnerException.Message);
+
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
+                        $"Error Message : {ex.Message}");
+                #endregion
+
+
             }
             return model;
         }
@@ -906,6 +931,16 @@ namespace BusinessLayer.Services.Administrator
                 await _context.SaveChangesAsync();
                 model.IsValid = true;
                 model.Message = "دانشکده حذف شد";
+
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
+                        $"دانشکده {Newtonsoft.Json.JsonConvert.SerializeObject(baslookups.Select(o=>o.Title).ToList())} با موفقیت حذف شد");
+                #endregion
+
+
             }
             catch (Exception ex)
             {
@@ -913,6 +948,14 @@ namespace BusinessLayer.Services.Administrator
                 model.ErrorList.Add(ex.Message);
                 if (ex.InnerException != null)
                     model.ErrorList.Add(ex.InnerException.Message);
+                #region Set Log
+                await _HistoryService.InsertHistory(DateTime.Now.ToPersianDateTime(),
+                        this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
+                        this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Error.ToString(),
+                        Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
+                        $"Error Message : {ex.Message}");
+                #endregion
+
             }
             return model;
         }
