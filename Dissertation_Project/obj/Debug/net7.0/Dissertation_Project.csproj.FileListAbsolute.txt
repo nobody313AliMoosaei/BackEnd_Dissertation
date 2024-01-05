@@ -498,3 +498,4 @@ D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Disser
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Debug\net7.0\Dissertation_Project.pdb
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Debug\net7.0\Dissertation_Project.genruntimeconfig.cache
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Debug\net7.0\ref\Dissertation_Project.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\bin\Debug\net7.0\MimeMapping.dll

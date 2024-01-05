@@ -11,6 +11,7 @@
           "DataLayer": "1.0.0",
           "Hangfire": "1.8.6",
           "Microsoft.AspNetCore.Session": "2.2.0",
+          "MimeMapping": "2.0.0",
           "Newtonsoft.Json": "13.0.3"
         },
         "runtime": {
@@ -557,6 +558,14 @@
             "assetType": "runtime",
             "assemblyVersion": "5.0.0.0",
             "fileVersion": "5.0.20.51904"
+          }
+        }
+      },
+      "MimeMapping/2.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/MimeMapping.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.0"
           }
         }
       },
@@ -1172,6 +1181,13 @@
       "sha512": "sha512-Bh6blKG8VAKvXiLe2L+sEsn62nc1Ij34MrNxepD2OCrS5cpCwQa9MeLyhVQPQ/R4Wlzwuy6wMK8hLb11QPDRsQ==",
       "path": "microsoft.win32.systemevents/5.0.0",
       "hashPath": "microsoft.win32.systemevents.5.0.0.nupkg.sha512"
+    },
+    "MimeMapping/2.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hJRJLm91AF3OSs61y3uVZ5e2NRbq9bj0X2FS5q2PKUifP0T2Eu0FsdRL9gXa537tFQIKf+2TANkzsW2s0BZenA==",
+      "path": "mimemapping/2.0.0",
+      "hashPath": "mimemapping.2.0.0.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.3": {
       "type": "package",

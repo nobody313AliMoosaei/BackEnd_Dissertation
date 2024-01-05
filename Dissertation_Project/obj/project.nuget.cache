@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vNsGSwhnvTXhTjBThxLv9Xku7I93ujHCHyP3CKC8m+Gp7CAuJMxQGqa86XtQxUlIjotH57OM7M05kbr1XcWmuA==",
+  "dgSpecHash": "USet+ntgYy6HmLp7b6iDIFdYO73uhctBSR8mMIFPogOVEiEGwyfoaPQnsWI9IpcJHNdiChDoljKTe7877GE1Vg==",
   "success": true,
   "projectFilePath": "D:\\Project\\GitHub\\Diisertation_Project_Both\\Back-end\\BackEnd_Dissertation\\Dissertation_Project\\Dissertation_Project.csproj",
   "expectedPackageFiles": [
@@ -74,6 +74,7 @@
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\microsoft.win32.systemevents\\7.0.0\\microsoft.win32.systemevents.7.0.0.nupkg.sha512",
+    "C:\\Users\\AliMoosaei\\.nuget\\packages\\mimemapping\\2.0.0\\mimemapping.2.0.0.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\AliMoosaei\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",

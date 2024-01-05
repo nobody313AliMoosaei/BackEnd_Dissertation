@@ -383,7 +383,7 @@ namespace BusinessLayer.Services.GeneralService
                     var File_Info = new FileInfo(FileAddress);
                     model.FileStream = System.IO.File.OpenRead(FileAddress);
                     //string contentType = "application/octet-stream";
-
+                    model.ContentType = MimeMapping.MimeUtility.GetMimeMapping(FileAddress);
                     model.FileDownloadName = ("__" + File_Info.Name).Trim();
                 }
             }
