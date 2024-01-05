@@ -245,6 +245,12 @@ namespace BusinessLayer.Services.Administrator
 
                 if (!NewUser.UserName.IsNullOrEmpty())
                     user.UserName = NewUser.UserName;
+                if (_context.Users.Where(o => o.UserName == NewUser.UserName || o.NationalCode == NewUser.NationalCode).Any(o => o.Id != NewUser.UserId))
+                {
+                    Err.Message = "کاربر با کدملی و شماره دانشجویی وارد شده وجود دارد";
+                    return Err;
+                }
+
 
                 if (NewUser.CollegeRef.HasValue && NewUser.CollegeRef != 0)
                 {
