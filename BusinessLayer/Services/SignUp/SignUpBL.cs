@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using BusinessLayer.Models;
+﻿using BusinessLayer.Models;
 using BusinessLayer.Models.OUTPUT.SignUp;
 using BusinessLayer.Utilities;
 using DataLayer.Entities;
@@ -49,11 +48,12 @@ namespace BusinessLayer.Services.SignUp
             try
             {
                 if (_newUser.NationalCode.IsNullOrEmpty())
-                {
                     err.ErrorList.Add("کد ملی وارد نشده است");
-                }
                 if (!_newUser.NationalCode.IsValidNationalCode())
                     err.ErrorList.Add("کد ملی درست نیست");
+
+                if (err.ErrorList.Count > 0)
+                    return err;
 
                 var newuser = new Users()
                 {
@@ -131,7 +131,7 @@ namespace BusinessLayer.Services.SignUp
 
         public async Task<LoginUserInfoDTO> Login(Models.INPUT.SignUp.LoginUserDTO LoginInfo)
         {
-            LoginUserInfoDTO model = null;
+            LoginUserInfoDTO model = new LoginUserInfoDTO();
             StringBuilder sb = new StringBuilder();
             try
             {

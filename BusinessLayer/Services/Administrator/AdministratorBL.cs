@@ -225,7 +225,11 @@ namespace BusinessLayer.Services.Administrator
                     Err.Message = "کاربر یافت نشد";
                     return Err;
                 }
-
+                if (!NewUser.NationalCode.IsValidNationalCode())
+                {
+                    Err.Message = "کدملی اشتباه است";
+                    return Err;
+                }
                 // Edit
                 if (!NewUser.FirstName.IsNullOrEmpty())
                     user.FirstName = NewUser.FirstName;
@@ -256,7 +260,7 @@ namespace BusinessLayer.Services.Administrator
                 if (NewUser.Teacher1_Ref.HasValue && NewUser.Teacher1_Ref != 0)
                 {
                     var teacher = await _context.Users.Where(o => o.Id == NewUser.Teacher1_Ref.Value).FirstOrDefaultAsync();
-                    
+
                     if (teacher != null && (await _userManager.IsInRoleAsync(teacher, DataLayer.Tools.RoleName_enum.GuideMaster.ToString())))
                     {
                         // Delete Of Teachers
@@ -491,6 +495,11 @@ namespace BusinessLayer.Services.Administrator
                     Err.Message = "اطلاعات کاربر ناقص است";
                     return Err;
                 }
+                if (!NewUser.NationalCode.IsValidNationalCode())
+                {
+                    Err.ErrorList.Add("کد ملی اشتباه است");
+                    return Err;
+                }
                 var user = new DataLayer.Entities.Users()
                 {
                     FirstName = NewUser.FirstName,
@@ -500,7 +509,7 @@ namespace BusinessLayer.Services.Administrator
                 };
 
                 // Check Duplicat User
-                if ((await _context.Users.Where(o => o.Active==true && ( o.UserName == NewUser.UserName
+                if ((await _context.Users.Where(o => o.Active == true && (o.UserName == NewUser.UserName
                  || o.NationalCode == NewUser.NationalCode)).CountAsync()) > 0)
                 {
                     Err.ErrorList.Add("کاربر تکراری می باشد");
@@ -946,7 +955,7 @@ namespace BusinessLayer.Services.Administrator
                         this._contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString(),
                         this._contextAccessor.HttpContext.Request.Path, BusinessLayer.Utilities.Utility.Level_log.Informational.ToString(),
                         Newtonsoft.Json.JsonConvert.SerializeObject(_contextAccessor?.HttpContext?.Request?.Headers.ToList()),
-                        $"دانشکده {Newtonsoft.Json.JsonConvert.SerializeObject(baslookups.Select(o=>o.Title).ToList())} با موفقیت حذف شد");
+                        $"دانشکده {Newtonsoft.Json.JsonConvert.SerializeObject(baslookups.Select(o => o.Title).ToList())} با موفقیت حذف شد");
                 #endregion
 
 
