@@ -48,6 +48,7 @@ D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Disser
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Microsoft.SqlServer.Server.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Microsoft.Web.Infrastructure.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Microsoft.Win32.SystemEvents.dll
+D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\MimeMapping.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Newtonsoft.Json.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\SixLabors.Fonts.dll
 D:\Project\GitHub\Diisertation_Project_Both\Back-end\BackEnd_Dissertation\Dissertation_Project\obj\Release\net7.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
